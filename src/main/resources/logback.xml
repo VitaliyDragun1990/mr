@@ -23,7 +23,7 @@
 	
 	<logger name="com.revenat.iblog.repository.jdbc" level="debug"/>
 	
-	<root level="info">
+	<root level="debug">
 		<appender-ref ref="STDOUT" />
 		<!-- <appender-ref ref="ROLLING" /> -->
 	</root>
