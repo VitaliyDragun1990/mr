@@ -1,0 +1,3 @@
+<sitemash>
+	<mapping path="/*" decorator="/WEB-INF/template/page-template.jsp" />
+</sitemash>

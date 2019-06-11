@@ -485,7 +485,7 @@ public class TestDataGenerator {
 			if (!entry.getValue().isEmpty()) {
 				ps.setLong(1, profileId);
 				ps.setShort(2, getCategory(entry.getKey()));
-				ps.setString(3, StringUtils.join(entry.getValue().toArray(), ","));
+				ps.setString(3, StringUtils.join(entry.getValue().toArray(), ", "));
 				
 				ps.addBatch();
 			}
