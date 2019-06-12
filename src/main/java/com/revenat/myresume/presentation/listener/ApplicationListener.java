@@ -6,25 +6,19 @@ import javax.servlet.ServletContextListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-@Component
 public class ApplicationListener implements ServletContextListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationListener.class);
 	
-	private final boolean production;
-
-	@Autowired
-	public ApplicationListener(@Value("${application.production}") boolean production) {
-		this.production = production;
-	}
-
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		ServletContext container = sce.getServletContext();
-		container.setAttribute("production", production);	
+		WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(container);
+		ConfigurableEnvironment env = (ConfigurableEnvironment) context.getEnvironment();
+		container.setAttribute("production", env.getRequiredProperty("application.production", Boolean.class));	
 		
 		LOGGER.info("Aplication started");
 	}

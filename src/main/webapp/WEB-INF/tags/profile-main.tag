@@ -6,7 +6,7 @@
 		<img class="img-responsive photo" src='<c:url value="/media/avatar/027a8821-153e-4563-b79a-29032d4a90db.jpg" />' alt="photo" />
 	</a>
 	<h1 class="text-center">
-		<a href='<c:url value="/edit" />' style="color:black;">Sheldon Cooper</a>
+		<a href='<c:url value="/edit" />' style="color:black;">${!empty name ? name : 'Sheldon Cooper'}</a>
 	</h1>
 	<h6 class="text-center">
 		<strong>Odessa, Ukraine</strong>
