@@ -6,10 +6,12 @@ import javax.servlet.ServletException;
 
 import org.sitemesh.builder.SiteMeshFilterBuilder;
 import org.sitemesh.config.ConfigurableSiteMeshFilter;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.revenat.myresume.application.config.ServiceConfig;
+import com.revenat.myresume.infrastructure.config.JPAConfig;
 import com.revenat.myresume.presentation.filter.ErrorHandlerFilter;
 import com.revenat.myresume.presentation.listener.ApplicationListener;
 
@@ -45,7 +47,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class<?>[] {ServiceConfig.class};
+		return new Class<?>[] {ServiceConfig.class, JPAConfig.class};
 	}
 
 	@Override
@@ -62,7 +64,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	protected Filter[] getServletFilters() {
 		return new Filter[] {
 				new ErrorHandlerFilter(),
-				new CharacterEncodingFilter("UTF-8", true)
+				new CharacterEncodingFilter("UTF-8", true),
+				new OpenEntityManagerInViewFilter()
 				};
 	}
 

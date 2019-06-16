@@ -1,7 +1,7 @@
 ## Public URLS
-GET  /{uid}
+GET  /profile/{uid}
+GET  /profile/search
 GET  /welcome
-GET  /search
 GET  /sign-up
 POST /sign-up
 GET  /sign-up/success
@@ -14,31 +14,31 @@ POST /restore
 GET  /restore/{token}
 
 ## Edit account data URLS
-GET  /my-profile
-GET  /edit
-POST /edit
-GET  /edit/contacts
-POST /edit/contacts
-GET  /edit/skills
-POST /edit/skills
-GET  /edit/practics
-POST /edit/practics
-GET  /edit/certificates
-POST /edit/certificates
-POST /edit/certificates/upload
-GET  /edit/courses
-POST /edit/courses
-GET  /edit/education
-POST /edit/education
-GET  /edit/languages
-POST /edit/languages
-GET  /edit/hobbies
-POST /edit/hobbies
-GET  /edit/info
-POST /edit/info
-GET  /edit/password
-POST /edit/password
+GET  /profile/my-profile
+GET  /profile/edit
+POST /profile/edit
+GET  /profile/edit/contacts
+POST /profile/edit/contacts
+GET  /profile/edit/skills
+POST /profile/edit/skills
+GET  /profile/edit/practics
+POST /profile/edit/practics
+GET  /profile/edit/certificates
+POST /profile/edit/certificates
+POST /profile/edit/certificates/upload
+GET  /profile/edit/courses
+POST /profile/edit/courses
+GET  /profile/edit/education
+POST /profile/edit/education
+GET  /profile/edit/languages
+POST /profile/edit/languages
+GET  /profile/edit/hobbies
+POST /profile/edit/hobbies
+GET  /profile/edit/info
+POST /profile/edit/info
+GET  /profile/edit/password
+POST /profile/edit/password
 
 ## Remove account data URLS
-GET  /remove
-POST /remove
+GET  /profile/remove
+POST /profile/remove

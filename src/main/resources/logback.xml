@@ -21,9 +21,10 @@
 		</encoder>
 	</appender>
 	
-	<logger name="com.revenat.iblog.repository.jdbc" level="debug"/>
+<!-- 	<logger name="org.hibernate" level="info"/> -->
+<!-- 	<logger name="org.hibernate.SQL" level="debug"/> -->
 	
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="STDOUT" />
 		<!-- <appender-ref ref="ROLLING" /> -->
 	</root>

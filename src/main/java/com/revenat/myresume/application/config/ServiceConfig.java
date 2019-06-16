@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -13,7 +14,8 @@ import org.springframework.core.io.Resource;
 @Configuration
 @PropertySource("classpath:application.properties")
 @ComponentScan({
-	"com.revenat.myresume.application.service.impl"
+	"com.revenat.myresume.application.service.impl",
+	"com.revenat.myresume.application.converter"
 })
 public class ServiceConfig {
 
@@ -29,6 +31,16 @@ public class ServiceConfig {
 		PropertySourcesPlaceholderConfigurer conf = new PropertySourcesPlaceholderConfigurer();
 		conf.setLocations(getResources());
 		return conf;
+	}
+	
+	@Bean
+	public static ConverterRegistryPostProcessor converterRegistryPostProcessor() {
+		return new ConverterRegistryPostProcessor();
+	}
+	
+	@Bean
+	public ConversionServiceFactoryBean conversionService() {
+		return new ConversionServiceFactoryBean();
 	}
 
 	private static Resource[] getResources() {

@@ -1,27 +1,30 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="resume" tagdir="/WEB-INF/tags"%>
+
+<%@ attribute name="info" required="true" type="com.revenat.myresume.application.dto.MainInfoDTO" %>
+<%@ attribute name="fullName" required="true" type="java.lang.String" %>
+<%@ attribute name="contacts" required="false" type="com.revenat.myresume.application.dto.ContactsDTO" %>
 
 <div class="panel panel-primary">
-	<a href='<c:url value="/edit" />'>
-		<img class="img-responsive photo" src='<c:url value="/media/avatar/027a8821-153e-4563-b79a-29032d4a90db.jpg" />' alt="photo" />
+	<a href='<c:url value="/profile/edit" />'>
+		<img class="img-responsive photo" src='<c:url value="${info.largePhoto}" />' alt="photo" />
 	</a>
 	<h1 class="text-center">
-		<a href='<c:url value="/edit" />' style="color:black;">${!empty name ? name : 'Sheldon Cooper'}</a>
+		<a href='<c:url value="/profile/edit" />' style="color:black;">${fullName}</a>
 	</h1>
 	<h6 class="text-center">
-		<strong>Odessa, Ukraine</strong>
+		<strong>${info.city}, ${info.country}</strong>
 	</h6>
 	<h6 class="text-center">
-		<strong>Age:</strong> 27, <strong>Birthday: </strong> Feb 26, 1989
+		<fmt:parseDate value="${info.birthDate}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+		<fmt:formatDate pattern="EEE MMM d, yyyy" value="${parsedDate}" var="birthDate" />
+		<strong>Age:</strong> ${info.age}, <strong>Birthday: </strong> ${birthDate }
 	</h6>
 	<div class="list-group contacts">
-		<a class="list-group-item" href="tel:+380507525137"><i class="fa fa-phone"></i> +380507525137</a> 
-		<a class="list-group-item" href="mailto:sheldon-cooper@gmail.com"><i class="fa fa-envelope"></i> sheldon-cooper@gmail.com</a> 
-		<a class="list-group-item" href="javascript:void(0);"><i class="fa fa-skype"></i>sheldon-cooper</a> 
-		<a target="_blank" class="list-group-item" href="https://vk.com/sheldon-cooper"><i class="fa fa-vk"></i> https://vk.com/sheldon-cooper</a> 
-		<a target="_blank" class="list-group-item" href="https://facebook.com/sheldon-cooper"><i class="fa fa-facebook"></i> https://facebook.com/sheldon-cooper</a> 
-		<a target="_blank" class="list-group-item" href="https://linkedin.com/sheldon-cooper"><i class="fa fa-linkedin"></i> https://linkedin.com/sheldon-cooper</a> 
-		<a target="_blank" class="list-group-item" href="https://github.com/sheldon-cooper"><i class="fa fa-github"></i> https://github.com/sheldon-cooper</a> 
-		<a target="_blank" class="list-group-item" href="https://stackoverflow.com/sheldon-cooper"><i class="fa fa-stack-overflow"></i> https://stackoverflow.com/sheldon-cooper</a>
+		<a class="list-group-item" href="tel:${info.phone}"><i class="fa fa-phone"></i> ${info.phone}</a> 
+		<a class="list-group-item" href="mailto:${info.email}"><i class="fa fa-envelope"></i> ${info.email}</a> 
+		<resume:contact-list contacts="${contacts}"/>
 	</div>
 </div>

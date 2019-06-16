@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -32,7 +33,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/static/**").addResourceLocations("/static/");
 		registry.addResourceHandler("/media/**").addResourceLocations("/media/");
-		registry.addResourceHandler("/favicon.ico").addResourceLocations("/favicon.ico");
+		registry.addResourceHandler("/favicon.ico").addResourceLocations("/static/favicon.ico");
 		super.addResourceHandlers(registry);
 	}
 	
@@ -42,5 +43,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		messageSource.setBasename("i18n.messages");
 		messageSource.setDefaultEncoding("UTF-8");
 		return messageSource;
+	}
+	
+	@Bean
+	public CommonsMultipartResolver multipartResolver() {
+		return new CommonsMultipartResolver();
 	}
 }

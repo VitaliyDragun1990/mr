@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/remove")
+@RequestMapping("/profile/remove")
 public class RemoveProfileController {
 
 }

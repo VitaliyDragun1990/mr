@@ -19,10 +19,14 @@
 		<thumbnailator.version>0.4.8</thumbnailator.version>
 		<commons-lang3.version>3.8.1</commons-lang3.version>
 		<commons-io.version>2.6</commons-io.version>
+		<commons-dbcp2.version>2.6.0</commons-dbcp2.version>
 		<common-text.version>1.6</common-text.version>
+		<commons-fileupload.version>1.4</commons-fileupload.version>
 		<joda-time.version>2.10.2</joda-time.version>
 		<sitemash.version>3.0.1</sitemash.version>
 		<spring.version>4.3.24.RELEASE</spring.version>
+		<spring-data-jpa.version>1.11.22.RELEASE</spring-data-jpa.version>
+		<hibernate.version>5.4.3.Final</hibernate.version>
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.13.0</mockito.version>
 		<hamcrest.version>2.1</hamcrest.version>
@@ -62,6 +66,11 @@
 			<version>${postgresql.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>${commons-dbcp2.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
 			<version>${thumbnailator.version}</version>
@@ -81,6 +90,11 @@
 			<artifactId>commons-text</artifactId>
 			<version>${common-text.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${commons-fileupload.version}</version>
+		</dependency>
 		<!-- <dependency> <groupId>joda-time</groupId> <artifactId>joda-time</artifactId> 
 			<version>${joda-time.version}</version> </dependency> -->
 		<dependency>
@@ -99,6 +113,16 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring-data-jpa.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 
@@ -149,6 +173,22 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.2.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.hibernate.orm.tooling</groupId>
+				<artifactId>hibernate-enhance-maven-plugin</artifactId>
+				<version>${hibernate.version}</version>
+				<executions>
+					<execution>
+						<configuration>
+							<failOnError>true</failOnError>
+							<enableLazyInitialization>true</enableLazyInitialization>
+						</configuration>
+						<goals>
+							<goal>enhance</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
