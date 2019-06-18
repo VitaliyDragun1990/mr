@@ -106,6 +106,20 @@ class ProfileServiceImpl implements ProfileService {
 	}
 	
 	@Override
+	public String getInfoFor(long profileId) {
+		Profile profile = profileRepo.findOne(profileId);
+		return profile.getInfo();
+	}
+	
+	@Override
+	@Transactional
+	public void updateInfoFor(long profileId, String info) {
+		Profile profile = profileRepo.findOne(profileId);
+		profile.setInfo(info);
+		profileRepo.save(profile);
+	}
+	
+	@Override
 	public ContactsDTO getContactsFor(long profileId) {
 		return getDTO(profileId, ContactsDTO.class);
 	}
@@ -126,14 +140,7 @@ class ProfileServiceImpl implements ProfileService {
 	@Override
 	@Transactional
 	public void updateExperience(long profileId, List<ExperienceDTO> updatedExperience) {
-		Profile profile = profileRepo.findOne(profileId);
-		List<ExperienceDTO> profileExperience = transformer.transformToList(profile, ExperienceDTO.class);
-		if (CollectionUtils.isEqualCollection(updatedExperience, profileExperience)) {
-			LOGGER.debug("Experience for profile with id:{} - nothing to update", profileId);
-		} else {
-			profile.updateExperience(transformer.transformToList(updatedExperience, ExperienceDTO.class, Experience.class));
-			profileRepo.save(profile);
-		}
+		updateProfile(profileId, updatedExperience, ExperienceDTO.class, Experience.class, (profile, experiences) -> profile.updateExperience(experiences));
 	}
 	
 	@Override
@@ -144,14 +151,7 @@ class ProfileServiceImpl implements ProfileService {
 	@Override
 	@Transactional
 	public void updateCertificates(long profileId, List<CertificateDTO> updatedCertificates) {
-		Profile profile = profileRepo.findOne(profileId);
-		List<CertificateDTO> profileCertificates = transformer.transformToList(profile, CertificateDTO.class);
-		if (CollectionUtils.isEqualCollection(updatedCertificates, profileCertificates)) {
-			LOGGER.debug("Certificates for profile with id:{} - nothing to update", profileId);
-		} else {
-			profile.updateCertificates(transformer.transformToList(updatedCertificates, CertificateDTO.class, Certificate.class));
-			profileRepo.save(profile);
-		}
+		updateProfile(profileId, updatedCertificates, CertificateDTO.class, Certificate.class, (profile, certificates) -> profile.updateCertificates(certificates));
 	}
 	
 	@Override
@@ -162,14 +162,7 @@ class ProfileServiceImpl implements ProfileService {
 	@Override
 	@Transactional
 	public void updateCourses(long profileId, List<CourseDTO> updatedCourses) {
-		Profile profile = profileRepo.findOne(profileId);
-		List<CourseDTO> profileCourses = transformer.transformToList(profile, CourseDTO.class);
-		if (CollectionUtils.isEqualCollection(updatedCourses, profileCourses)) {
-			LOGGER.debug("Courses for profile with id:{} - nothing to update", profileId);
-		} else {
-			profile.updateCourses(transformer.transformToList(updatedCourses, CourseDTO.class, Course.class));
-			profileRepo.save(profile);
-		}
+		updateProfile(profileId, updatedCourses, CourseDTO.class, Course.class, (profile, courses) -> profile.updateCourses(courses));
 	}
 	
 	@Override
@@ -180,14 +173,7 @@ class ProfileServiceImpl implements ProfileService {
 	@Override
 	@Transactional
 	public void updateEducation(long profileId, List<EducationDTO> updatedEducation) {
-		Profile profile = profileRepo.findOne(profileId);
-		List<EducationDTO> profileEducation = transformer.transformToList(profile, EducationDTO.class);
-		if (CollectionUtils.isEqualCollection(updatedEducation, profileEducation)) {
-			LOGGER.debug("Education for profile with id:{} - nothing to update", profileId);
-		} else {
-			profile.updateEducation(transformer.transformToList(updatedEducation, EducationDTO.class, Education.class));
-			profileRepo.save(profile);
-		}
+		updateProfile(profileId, updatedEducation, EducationDTO.class, Education.class, (profile, educations) -> profile.updateEducation(educations));
 	}
 	
 	@Override
@@ -198,14 +184,7 @@ class ProfileServiceImpl implements ProfileService {
 	@Override
 	@Transactional
 	public void updateLanguages(long profileId, List<LanguageDTO> updatedLanguages) {
-		Profile profile = profileRepo.findOne(profileId);
-		List<LanguageDTO> profileLanguages = transformer.transformToList(profile, LanguageDTO.class);
-		if (CollectionUtils.isEqualCollection(updatedLanguages, profileLanguages)) {
-			LOGGER.debug("Foreign languages for profile with id:{} - nothing to update", profileId);
-		} else {
-			profile.updateLanguages(transformer.transformToList(updatedLanguages, LanguageDTO.class, Language.class));
-			profileRepo.save(profile);
-		}
+		updateProfile(profileId, updatedLanguages, LanguageDTO.class, Language.class, (profile, langs) -> profile.updateLanguages(langs));
 	}
 	
 	@Override
@@ -216,14 +195,7 @@ class ProfileServiceImpl implements ProfileService {
 	@Override
 	@Transactional
 	public void updateHobbies(long profileId, List<HobbyDTO> updatedHobbies) {
-		Profile profile = profileRepo.findOne(profileId);
-		List<HobbyDTO> profileHobbies = transformer.transformToList(profile, HobbyDTO.class);
-		if (CollectionUtils.isEqualCollection(updatedHobbies, profileHobbies)) {
-			LOGGER.debug("Foreign languages for profile with id:{} - nothing to update", profileId);
-		} else {
-			profile.updateHobbies(transformer.transformToList(updatedHobbies, HobbyDTO.class, Hobby.class));
-			profileRepo.save(profile);
-		}
+		updateProfile(profileId, updatedHobbies, HobbyDTO.class, Hobby.class, (profile, hobbies) -> profile.updateHobbies(hobbies));
 	}
 
 	@Override
@@ -234,28 +206,7 @@ class ProfileServiceImpl implements ProfileService {
 	@Override
 	@Transactional
 	public void updateSkills(long profileId, List<SkillDTO> updatedSkills) {
-		Profile profile = profileRepo.findOne(profileId);
-		List<SkillDTO> profileSkills = transformer.transformToList(profile, SkillDTO.class);
-		if (CollectionUtils.isEqualCollection(updatedSkills, profileSkills)) {
-			LOGGER.debug("Skills for profile with id:{} - nothing to update", profileId);
-		} else {
-			profile.updateSkills(transformer.transformToList(updatedSkills, SkillDTO.class, Skill.class));
-			profileRepo.save(profile);
-		}
-	}
-	
-	@Override
-	public String getInfoFor(long profileId) {
-		Profile profile = profileRepo.findOne(profileId);
-		return profile.getInfo();
-	}
-	
-	@Override
-	@Transactional
-	public void updateInfoFor(long profileId, String info) {
-		Profile profile = profileRepo.findOne(profileId);
-		profile.setInfo(info);
-		profileRepo.save(profile);
+		updateProfile(profileId, updatedSkills, SkillDTO.class, Skill.class, (profile, skills) -> profile.updateSkills(skills));
 	}
 
 	@Override
@@ -285,6 +236,11 @@ class ProfileServiceImpl implements ProfileService {
 		return languageLevels;
 	}
 	
+	@FunctionalInterface
+	private interface ProfileUpdate<V> {
+		void update(Profile p, V value);
+	}
+	
 	private <T> T getDTO(long profileId, Class<T> dtoClass) {
 		Profile profile = profileRepo.findOne(profileId);
 		return transformer.transform(profile, dtoClass);
@@ -293,6 +249,19 @@ class ProfileServiceImpl implements ProfileService {
 	private <T> List<T> getDTOList(long profileId, Class<T> dtoClass) {
 		Profile profile = profileRepo.findOne(profileId);
 		return transformer.transformToList(profile, dtoClass);
+	}
+	
+	private <T,E> void updateProfile(long profileId, List<T> updatedDTOList, Class<T> dtoClass, Class<E> entityClass,
+			ProfileUpdate<List<E>> profileUpdate) {
+		Profile profile = profileRepo.findOne(profileId);
+		List<T> profileDTOList = transformer.transformToList(profile, dtoClass);
+		if (CollectionUtils.isEqualCollection(updatedDTOList, profileDTOList)) {
+			LOGGER.debug("{} for profile with id:{} - nothing to update", entityClass.getSimpleName(), profileId);
+		} else {
+			List<E> updatedEntityList = transformer.transformToList(updatedDTOList, dtoClass, entityClass);
+			profileUpdate.update(profile, updatedEntityList);
+			profileRepo.save(profile);
+		}
 	}
 
 	private void updateProfileMainInfo(Profile profile, MainInfoDTO mainInfo) {
