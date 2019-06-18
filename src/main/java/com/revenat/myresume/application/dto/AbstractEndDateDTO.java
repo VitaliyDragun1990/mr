@@ -2,7 +2,7 @@ package com.revenat.myresume.application.dto;
 
 import java.time.LocalDate;
 
-public class AbstractEndDateDTO {
+public abstract class AbstractEndDateDTO {
 
 	private LocalDate endDate;
 	private Integer endDateMonth;

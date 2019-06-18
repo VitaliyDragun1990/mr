@@ -2,7 +2,7 @@ package com.revenat.myresume.application.dto;
 
 import java.io.Serializable;
 
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class ProfileRestoreDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -28,6 +28,6 @@ public class ProfileRestoreDTO implements Serializable {
 	
 	@Override
 	public String toString() {
-		return CommonUtil.toString(this);
+		return CommonUtils.toString(this);
 	}
 }

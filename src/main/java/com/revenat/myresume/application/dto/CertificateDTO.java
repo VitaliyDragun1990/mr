@@ -2,23 +2,33 @@ package com.revenat.myresume.application.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.domain.entity.Certificate;
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class CertificateDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private Long profileId;
+	@NotBlank
+	@Size(max = 50)
+	@EnglishLanguage
 	private String name;
+	@NotBlank
+	@Size(max = 255)
 	private String largeUrl;
+	@NotBlank
+	@Size(max = 255)
 	private String smallUrl;
 	
 	public CertificateDTO() {}
 	
-	public CertificateDTO(Certificate entity, Long prodileId) {
+	public CertificateDTO(Certificate entity) {
 		this.id = entity.getId();
-		this.profileId = prodileId;
 		this.largeUrl = entity.getLargeUrl();
 		this.name = entity.getName();
 		this.smallUrl = entity.getSmallUrl();
@@ -30,14 +40,6 @@ public class CertificateDTO implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getProfileId() {
-		return profileId;
-	}
-
-	public void setProfileId(Long profileId) {
-		this.profileId = profileId;
 	}
 
 	public String getName() {
@@ -67,7 +69,7 @@ public class CertificateDTO implements Serializable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((largeUrl == null) ? 0 : largeUrl.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -79,8 +81,6 @@ public class CertificateDTO implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
 		if (!(obj instanceof CertificateDTO))
 			return false;
 		CertificateDTO other = (CertificateDTO) obj;
@@ -109,6 +109,6 @@ public class CertificateDTO implements Serializable {
 	
 	@Override
 	public String toString() {
-		return CommonUtil.toString(this);
+		return CommonUtils.toString(this);
 	}
 }

@@ -10,12 +10,15 @@ import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:application.properties") // for Environment.getProperty(...)
+@EnableScheduling
 @ComponentScan({
 	"com.revenat.myresume.application.service.impl",
-	"com.revenat.myresume.application.converter"
+	"com.revenat.myresume.application.transformer.impl",
+	"com.revenat.myresume.application.generator.impl"
 })
 public class ServiceConfig {
 
@@ -44,6 +47,6 @@ public class ServiceConfig {
 	}
 
 	private static Resource[] getResources() {
-		return new Resource[] {new ClassPathResource("application.properties")};
+		return new Resource[] {new ClassPathResource("application.properties"), new ClassPathResource("logic.properties")};
 	}
 }

@@ -14,6 +14,8 @@ public interface ProfileRepository extends PagingAndSortingRepository<Profile, L
 
 	Optional<Profile> findOneByUid(String uid);
 	
+	Optional<Profile> findOneById(Long id);
+	
 	Optional<Profile> findByPhone(String phone);
 	
 	Optional<Profile> findByEmail(String email);

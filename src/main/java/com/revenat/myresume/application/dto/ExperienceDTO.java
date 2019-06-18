@@ -3,30 +3,56 @@ package com.revenat.myresume.application.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import com.revenat.myresume.domain.entity.Experience;
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.URL;
+
+import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
+import com.revenat.myresume.application.validation.annotation.FirstFieldLessThanSecond;
+import com.revenat.myresume.domain.entity.Experience;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
+
+@FirstFieldLessThanSecond.List({
+	@FirstFieldLessThanSecond(first = "startDate", second = "endDate"),
+	@FirstFieldLessThanSecond(first = "startDateMonth", second = "endDateMonth"),
+	@FirstFieldLessThanSecond(first = "startDateYear", second = "endDateYear"),
+})
 public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private Long profileId;
+	@NotBlank
+	@Size(max = 100)
+	@EnglishLanguage
 	private String position;
+	@NotBlank
+	@Size(max = 100)
+	@EnglishLanguage
 	private String company;
+	@NotNull
 	private LocalDate startDate;
+	@NotBlank
+	@EnglishLanguage
 	private String responsibilities;
+	@Size(max = 255)
+	@URL
 	private String demo;
+	@Size(max = 255)
+	@URL
 	private String sourceCode;
 	
+	@NotNull
 	private Integer startDateMonth;
+	@NotNull
 	private Integer startDateYear;
 	
 	public ExperienceDTO() {
 	}
 
-	public ExperienceDTO(Experience entity, Long profileId) {
+	public ExperienceDTO(Experience entity) {
 		this.id = entity.getId();
-		this.profileId = profileId;
 		this.position = entity.getPosition();
 		this.company = entity.getCompany();
 		this.startDate = entity.getStartDate();
@@ -42,14 +68,6 @@ public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getProfileId() {
-		return profileId;
-	}
-
-	public void setProfileId(Long profileId) {
-		this.profileId = profileId;
 	}
 
 	public String getPosition() {
@@ -137,7 +155,7 @@ public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
 		result = prime * result + ((company == null) ? 0 : company.hashCode());
 		result = prime * result + ((demo == null) ? 0 : demo.hashCode());
@@ -153,8 +171,6 @@ public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
 		if (!(obj instanceof ExperienceDTO))
 			return false;
 		ExperienceDTO other = (ExperienceDTO) obj;
@@ -203,7 +219,7 @@ public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
 	
 	@Override
 	public String toString() {
-		return CommonUtil.toString(this);
+		return CommonUtils.toString(this);
 	}
 
 }

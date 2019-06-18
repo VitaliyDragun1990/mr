@@ -154,23 +154,29 @@ public class Profile extends AbstractEntity<Long> {
 		certificate.setProfile(this);
 	}
 	
-	public void removeCertificate(Certificate certificate) {
-		Optional<Certificate> opt = certificates.stream().filter(c -> c.equals(certificate)).findFirst();
-		if (opt.isPresent()) {
-			Certificate toRemove = opt.get();
-			certificates.remove(toRemove);
-			toRemove.setProfile(null);
-		}
-	}
+//	public void removeCertificate(Certificate certificate) {
+//		Optional<Certificate> opt = certificates.stream().filter(c -> c.equals(certificate)).findFirst();
+//		if (opt.isPresent()) {
+//			Certificate toRemove = opt.get();
+//			certificates.remove(toRemove);
+//			toRemove.setProfile(null);
+//		}
+//	}
+//	
+//	public void updateCertificate(Certificate certificate) {
+//		Optional<Certificate> opt = certificates.stream().filter(c -> c.equals(certificate)).findFirst();
+//		if (opt.isPresent()) {
+//			Certificate toUpdate = opt.get();
+//			toUpdate.setName(certificate.getName());
+//			toUpdate.setLargeUrl(certificate.getLargeUrl());
+//			toUpdate.setSmallUrl(certificate.getSmallUrl());
+//		}
+//	}
 	
-	public void updateCertificate(Certificate certificate) {
-		Optional<Certificate> opt = certificates.stream().filter(c -> c.equals(certificate)).findFirst();
-		if (opt.isPresent()) {
-			Certificate toUpdate = opt.get();
-			toUpdate.setName(certificate.getName());
-			toUpdate.setLargeUrl(certificate.getLargeUrl());
-			toUpdate.setSmallUrl(certificate.getSmallUrl());
-		}
+	public void updateCertificates(List<Certificate> certificates) {
+		this.certificates.clear();
+		this.certificates.addAll(certificates);
+		this.certificates.forEach(c -> c.setProfile(this));
 	}
 	
 	public void addCourse(Course course) {
@@ -178,23 +184,29 @@ public class Profile extends AbstractEntity<Long> {
 		course.setProfile(this);
 	}
 	
-	public void removeCourse(Course course) {
-		Optional<Course> opt = courses.stream().filter(c -> c.equals(course)).findFirst();
-		if (opt.isPresent()) {
-			Course toRemove = opt.get();
-			courses.remove(toRemove);
-			toRemove.setProfile(null);
-		}
-	}
+//	public void removeCourse(Course course) {
+//		Optional<Course> opt = courses.stream().filter(c -> c.equals(course)).findFirst();
+//		if (opt.isPresent()) {
+//			Course toRemove = opt.get();
+//			courses.remove(toRemove);
+//			toRemove.setProfile(null);
+//		}
+//	}
+//	
+//	public void updateCourse(Course course) {
+//		Optional<Course> opt = courses.stream().filter(c -> c.equals(course)).findFirst();
+//		if (opt.isPresent()) {
+//			Course toUpdate = opt.get();
+//			toUpdate.setName(course.getName());
+//			toUpdate.setSchool(course.getSchool());
+//			toUpdate.setEndDate(course.getEndDate());
+//		}
+//	}
 	
-	public void updateCourse(Course course) {
-		Optional<Course> opt = courses.stream().filter(c -> c.equals(course)).findFirst();
-		if (opt.isPresent()) {
-			Course toUpdate = opt.get();
-			toUpdate.setName(course.getName());
-			toUpdate.setSchool(course.getSchool());
-			toUpdate.setEndDate(course.getEndDate());
-		}
+	public void updateCourses(List<Course> courses) {
+		this.courses.clear();
+		this.courses.addAll(courses);
+		this.courses.forEach(c -> c.setProfile(this));
 	}
 	
 	public void addEducation(Education education) {
@@ -202,25 +214,31 @@ public class Profile extends AbstractEntity<Long> {
 		education.setProfile(this);
 	}
 	
-	public void removeEducation(Education education) {
-		Optional<Education> opt = educations.stream().filter(c -> c.equals(education)).findFirst();
-		if (opt.isPresent()) {
-			Education toRemove = opt.get();
-			educations.remove(toRemove);
-			toRemove.setProfile(null);
-		}
-	}
+//	public void removeEducation(Education education) {
+//		Optional<Education> opt = educations.stream().filter(c -> c.equals(education)).findFirst();
+//		if (opt.isPresent()) {
+//			Education toRemove = opt.get();
+//			educations.remove(toRemove);
+//			toRemove.setProfile(null);
+//		}
+//	}
+//	
+//	public void updateEducation(Education education) {
+//		Optional<Education> opt = educations.stream().filter(c -> c.equals(education)).findFirst();
+//		if (opt.isPresent()) {
+//			Education toUpdate = opt.get();
+//			toUpdate.setSummary(education.getSummary());
+//			toUpdate.setUniversity(education.getUniversity());
+//			toUpdate.setFaculty(education.getFaculty());
+//			toUpdate.setStartYear(education.getStartYear());
+//			toUpdate.setEndYear(education.getEndYear());
+//		}
+//	}
 	
-	public void updateEducation(Education education) {
-		Optional<Education> opt = educations.stream().filter(c -> c.equals(education)).findFirst();
-		if (opt.isPresent()) {
-			Education toUpdate = opt.get();
-			toUpdate.setSummary(education.getSummary());
-			toUpdate.setUniversity(education.getUniversity());
-			toUpdate.setFaculty(education.getFaculty());
-			toUpdate.setStartYear(education.getStartYear());
-			toUpdate.setEndYear(education.getEndYear());
-		}
+	public void updateEducation(List<Education> educations) {
+		this.educations.clear();
+		this.educations.addAll(educations);
+		this.educations.forEach(e -> e.setProfile(this));
 	}
 	
 	public void addExerience(Experience experience) {
@@ -228,27 +246,33 @@ public class Profile extends AbstractEntity<Long> {
 		experience.setProfile(this);
 	}
 	
-	public void removeExperience(Experience experience) {
-		Optional<Experience> opt = this.experience.stream().filter(c -> c.equals(experience)).findFirst();
-		if (opt.isPresent()) {
-			Experience toRemove = opt.get();
-			this.experience.remove(toRemove);
-			toRemove.setProfile(null);
-		}
-	}
+//	public void removeExperience(Experience experience) {
+//		Optional<Experience> opt = this.experience.stream().filter(c -> c.equals(experience)).findFirst();
+//		if (opt.isPresent()) {
+//			Experience toRemove = opt.get();
+//			this.experience.remove(toRemove);
+//			toRemove.setProfile(null);
+//		}
+//	}
+//	
+//	public void updateExperience(Experience experience) {
+//		Optional<Experience> opt = this.experience.stream().filter(c -> c.equals(experience)).findFirst();
+//		if (opt.isPresent()) {
+//			Experience toUpdate = opt.get();
+//			toUpdate.setCompany(experience.getCompany());
+//			toUpdate.setDemo(experience.getDemo());
+//			toUpdate.setEndDate(experience.getEndDate());
+//			toUpdate.setPosition(experience.getPosition());
+//			toUpdate.setResponsibilities(experience.getResponsibilities());
+//			toUpdate.setSourceCode(experience.getSourceCode());
+//			toUpdate.setStartDate(experience.getStartDate());
+//		}
+//	}
 	
-	public void updateExperience(Experience experience) {
-		Optional<Experience> opt = this.experience.stream().filter(c -> c.equals(experience)).findFirst();
-		if (opt.isPresent()) {
-			Experience toUpdate = opt.get();
-			toUpdate.setCompany(experience.getCompany());
-			toUpdate.setDemo(experience.getDemo());
-			toUpdate.setEndDate(experience.getEndDate());
-			toUpdate.setPosition(experience.getPosition());
-			toUpdate.setResponsibilities(experience.getResponsibilities());
-			toUpdate.setSourceCode(experience.getSourceCode());
-			toUpdate.setStartDate(experience.getStartDate());
-		}
+	public void updateExperience(List<Experience> experience) {
+		this.experience.clear();
+		this.experience.addAll(experience);
+		this.experience.forEach(exp -> exp.setProfile(this));
 	}
 	
 	public void addLanguage(Language language) {
@@ -256,23 +280,29 @@ public class Profile extends AbstractEntity<Long> {
 		language.setProfile(this);
 	}
 	
-	public void removeLanguage(Language language) {
-		Optional<Language> opt = languages.stream().filter(c -> c.equals(language)).findFirst();
-		if (opt.isPresent()) {
-			Language toRemove = opt.get();
-			languages.remove(toRemove);
-			toRemove.setProfile(null);
-		}
-	}
+//	public void removeLanguage(Language language) {
+//		Optional<Language> opt = languages.stream().filter(c -> c.equals(language)).findFirst();
+//		if (opt.isPresent()) {
+//			Language toRemove = opt.get();
+//			languages.remove(toRemove);
+//			toRemove.setProfile(null);
+//		}
+//	}
+//	
+//	public void updateLanguage(Language language) {
+//		Optional<Language> opt = languages.stream().filter(c -> c.equals(language)).findFirst();
+//		if (opt.isPresent()) {
+//			Language toUpdate = opt.get();
+//			toUpdate.setLevel(language.getLevel());
+//			toUpdate.setName(language.getName());
+//			toUpdate.setType(language.getType());
+//		}
+//	}
 	
-	public void updateLanguage(Language language) {
-		Optional<Language> opt = languages.stream().filter(c -> c.equals(language)).findFirst();
-		if (opt.isPresent()) {
-			Language toUpdate = opt.get();
-			toUpdate.setLevel(language.getLevel());
-			toUpdate.setName(language.getName());
-			toUpdate.setType(language.getType());
-		}
+	public void updateLanguages(List<Language> languages) {
+		this.languages.clear();
+		this.languages.addAll(languages);
+		this.languages.forEach(l -> l.setProfile(this));
 	}
 	
 	public void addSkill(Skill skill) {
@@ -280,22 +310,28 @@ public class Profile extends AbstractEntity<Long> {
 		skill.setProfile(this);
 	}
 	
-	public void removeSkill(Skill skill) {
-		Optional<Skill> opt = skills.stream().filter(c -> c.equals(skill)).findFirst();
-		if (opt.isPresent()) {
-			Skill toRemove = opt.get();
-			skills.remove(toRemove);
-			toRemove.setProfile(null);
-		}
-	}
+//	public void removeSkill(Skill skill) {
+//		Optional<Skill> opt = skills.stream().filter(c -> c.equals(skill)).findFirst();
+//		if (opt.isPresent()) {
+//			Skill toRemove = opt.get();
+//			skills.remove(toRemove);
+//			toRemove.setProfile(null);
+//		}
+//	}
+//	
+//	public void updateSkill(Skill skill) {
+//		Optional<Skill> opt = skills.stream().filter(c -> c.equals(skill)).findFirst();
+//		if (opt.isPresent()) {
+//			Skill toUpdate = opt.get();
+//			toUpdate.setCategory(skill.getCategory());
+//			toUpdate.setValue(skill.getValue());
+//		}
+//	}
 	
-	public void updateSkill(Skill skill) {
-		Optional<Skill> opt = skills.stream().filter(c -> c.equals(skill)).findFirst();
-		if (opt.isPresent()) {
-			Skill toUpdate = opt.get();
-			toUpdate.setCategory(skill.getCategory());
-			toUpdate.setValue(skill.getValue());
-		}
+	public void updateSkills(List<Skill> skills) {
+		this.skills.clear();
+		this.skills.addAll(skills);
+		this.skills.forEach(skill -> skill.setProfile(this));
 	}
 	
 	public void addHobby(Hobby hobby) {
@@ -303,21 +339,27 @@ public class Profile extends AbstractEntity<Long> {
 		hobby.setProfile(this);
 	}
 	
-	public void removeHobby(Hobby hobby) {
-		Optional<Hobby> opt = hobbies.stream().filter(c -> c.equals(hobby)).findFirst();
-		if (opt.isPresent()) {
-			Hobby toRemove = opt.get();
-			hobbies.remove(toRemove);
-			toRemove.setProfile(null);
-		}
-	}
+//	public void removeHobby(Hobby hobby) {
+//		Optional<Hobby> opt = hobbies.stream().filter(c -> c.equals(hobby)).findFirst();
+//		if (opt.isPresent()) {
+//			Hobby toRemove = opt.get();
+//			hobbies.remove(toRemove);
+//			toRemove.setProfile(null);
+//		}
+//	}
+//	
+//	public void updateHobby(Hobby hobby) {
+//		Optional<Hobby> opt = hobbies.stream().filter(c -> c.equals(hobby)).findFirst();
+//		if (opt.isPresent()) {
+//			Hobby toUpdate = opt.get();
+//			toUpdate.setName(hobby.getName());
+//		}
+//	}
 	
-	public void updateHobby(Hobby hobby) {
-		Optional<Hobby> opt = hobbies.stream().filter(c -> c.equals(hobby)).findFirst();
-		if (opt.isPresent()) {
-			Hobby toUpdate = opt.get();
-			toUpdate.setName(hobby.getName());
-		}
+	public void updateHobbies(List<Hobby> hobbies) {
+		this.hobbies.clear();
+		this.hobbies.addAll(hobbies);
+		this.hobbies.forEach(h -> h.setProfile(this));
 	}
 
 	@Override

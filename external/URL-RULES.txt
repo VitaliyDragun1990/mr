@@ -21,8 +21,8 @@ GET  /profile/edit/contacts
 POST /profile/edit/contacts
 GET  /profile/edit/skills
 POST /profile/edit/skills
-GET  /profile/edit/practics
-POST /profile/edit/practics
+GET  /profile/edit/experience
+POST /profile/edit/experience
 GET  /profile/edit/certificates
 POST /profile/edit/certificates
 POST /profile/edit/certificates/upload

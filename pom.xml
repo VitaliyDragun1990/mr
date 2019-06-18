@@ -22,6 +22,7 @@
 		<commons-dbcp2.version>2.6.0</commons-dbcp2.version>
 		<common-text.version>1.6</common-text.version>
 		<commons-fileupload.version>1.4</commons-fileupload.version>
+		<commons-beanutils.version>1.9.3</commons-beanutils.version>
 		<joda-time.version>2.10.2</joda-time.version>
 		<sitemash.version>3.0.1</sitemash.version>
 		<spring.version>4.3.24.RELEASE</spring.version>
@@ -95,6 +96,11 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>${commons-fileupload.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>${commons-beanutils.version}</version>
+		</dependency>
 		<!-- <dependency> <groupId>joda-time</groupId> <artifactId>joda-time</artifactId> 
 			<version>${joda-time.version}</version> </dependency> -->
 		<dependency>
@@ -119,9 +125,16 @@
 			<artifactId>spring-data-jpa</artifactId>
 			<version>${spring-data-jpa.version}</version>
 		</dependency>
+
+		<!-- Hibernate dependencies -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
 

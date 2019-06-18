@@ -3,8 +3,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="resume" tagdir="/WEB-INF/tags" %>
 
-<h3 class="text-info text-center">Edit Skills</h3>
-
 <div class="panel panel-default">
 	<div class="panel-body">
 		<h4 class="data-header">Technical skills in frameworks and technologies</h4>

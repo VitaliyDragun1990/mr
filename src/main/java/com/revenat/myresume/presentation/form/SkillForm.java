@@ -4,12 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.revenat.myresume.application.dto.SkillDTO;
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import javax.validation.Valid;
 
-public class SkillForm implements Serializable {
+import com.revenat.myresume.application.dto.SkillDTO;
+
+public class SkillForm extends AbstractForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private List<SkillDTO> items = new ArrayList<>();
 	
 	public SkillForm() {
@@ -25,11 +27,6 @@ public class SkillForm implements Serializable {
 
 	public void setItems(List<SkillDTO> items) {
 		this.items = items;
-	}
-	
-	@Override
-	public String toString() {
-		return CommonUtil.toString(this);
 	}
 	
 }

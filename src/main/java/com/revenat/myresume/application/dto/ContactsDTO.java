@@ -2,17 +2,33 @@ package com.revenat.myresume.application.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.URL;
+
 import com.revenat.myresume.domain.entity.Contacts;
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class ContactsDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@URL
+	@Size(max = 80)
 	private String skype;
+	@URL
+	@Size(max = 255)
 	private String vkontakte;
+	@URL
+	@Size(max = 255)
 	private String facebook;
+	@URL
+	@Size(max = 255)
 	private String linkedin;
+	@URL
+	@Size(max = 255)
 	private String github;
+	@URL
+	@Size(max = 255)
 	private String stackoverflow;
 	
 	public ContactsDTO() {
@@ -79,7 +95,7 @@ public class ContactsDTO implements Serializable {
 	
 	@Override
 	public String toString() {
-		return CommonUtil.toString(this);
+		return CommonUtils.toString(this);
 	}
 
 }

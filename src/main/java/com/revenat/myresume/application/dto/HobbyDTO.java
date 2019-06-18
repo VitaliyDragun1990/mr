@@ -2,8 +2,13 @@ package com.revenat.myresume.application.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.domain.entity.Hobby;
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 /**
  * @author Vitaliy Dragun
@@ -13,7 +18,9 @@ public class HobbyDTO implements Serializable, Comparable<HobbyDTO> {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private Long profileId;
+	@NotBlank
+	@Size(max = 30)
+	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
 	private String name;
 	private boolean selected;
 	
@@ -29,9 +36,8 @@ public class HobbyDTO implements Serializable, Comparable<HobbyDTO> {
 		this.selected = selected;
 	}
 	
-	public HobbyDTO(Hobby entity, Long profileId) {
+	public HobbyDTO(Hobby entity) {
 		this.id = entity.getId();
-		this.profileId = profileId;
 		this.name = entity.getName();
 	}
 
@@ -50,7 +56,7 @@ public class HobbyDTO implements Serializable, Comparable<HobbyDTO> {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 0;
+		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -82,7 +88,7 @@ public class HobbyDTO implements Serializable, Comparable<HobbyDTO> {
 	
 	@Override
 	public String toString() {
-		return CommonUtil.toString(this);
+		return CommonUtils.toString(this);
 	}
 
 	public Long getId() {
@@ -91,14 +97,6 @@ public class HobbyDTO implements Serializable, Comparable<HobbyDTO> {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getProfileId() {
-		return profileId;
-	}
-
-	public void setProfileId(Long profileId) {
-		this.profileId = profileId;
 	}
 
 	public String getName() {

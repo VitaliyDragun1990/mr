@@ -2,57 +2,65 @@ package com.revenat.myresume.application.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.domain.entity.Course;
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class CourseDTO extends AbstractEndDateDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private Long profileId;
+	@NotBlank
+	@Size(max = 60)
+	@EnglishLanguage
 	private String name;
+	@NotBlank
+	@Size(max = 60)
+	@EnglishLanguage
 	private String school;
-	
+
 	public CourseDTO() {
 	}
-	
-	public CourseDTO(Course entity, Long profileId) {
+
+	public CourseDTO(Course entity) {
 		this.id = entity.getId();
 		this.name = entity.getName();
-		this.profileId = profileId;
 		this.school = entity.getSchool();
 		this.setEndDate(entity.getEndDate());
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getProfileId() {
-		return profileId;
-	}
-	public void setProfileId(Long profileId) {
-		this.profileId = profileId;
-	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getSchool() {
 		return school;
 	}
+
 	public void setSchool(String school) {
 		this.school = school;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result + ((getEndDate() == null) ? 0 : getEndDate().hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -64,8 +72,6 @@ public class CourseDTO extends AbstractEndDateDTO implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
 		if (!(obj instanceof CourseDTO))
 			return false;
 		CourseDTO other = (CourseDTO) obj;
@@ -91,10 +97,10 @@ public class CourseDTO extends AbstractEndDateDTO implements Serializable {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
-		return CommonUtil.toString(this);
+		return CommonUtils.toString(this);
 	}
-	
+
 }

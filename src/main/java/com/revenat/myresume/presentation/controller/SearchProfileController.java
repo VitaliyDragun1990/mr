@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/profile/search")
+@RequestMapping("/search")
 public class SearchProfileController {
 
 }

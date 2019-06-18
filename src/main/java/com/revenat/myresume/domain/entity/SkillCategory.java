@@ -23,6 +23,7 @@ public enum SkillCategory {
 		categoryMapping.put(BACKEND.category, BACKEND);
 		categoryMapping.put(IDE.category, IDE);
 		categoryMapping.put(CVS.category, CVS);
+		categoryMapping.put(WEB_SERVERS.category, WEB_SERVERS);
 		categoryMapping.put(BUILD_SYSTEMS.category, BUILD_SYSTEMS);
 		categoryMapping.put(CLOUD.category, CLOUD);
 	}

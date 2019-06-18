@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class UploadExampleForm implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -26,6 +26,6 @@ public class UploadExampleForm implements Serializable {
 	
 	@Override
 	public String toString() {
-		return CommonUtil.toString(this);
+		return CommonUtils.toString(this);
 	}
 }

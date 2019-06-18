@@ -2,26 +2,41 @@ package com.revenat.myresume.application.dto;
 
 import java.io.Serializable;
 
-import com.revenat.myresume.domain.entity.Education;
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
+import com.revenat.myresume.application.validation.annotation.FirstFieldLessThanSecond;
+import com.revenat.myresume.domain.entity.Education;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
+
+@FirstFieldLessThanSecond(first = "startYear", second = "endYear")
 public class EducationDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private Long profileId;
+	@NotBlank
+	@EnglishLanguage
 	private String summary;
+	@NotNull
 	private Integer startYear;
 	private Integer endYear;
+	@NotBlank
+	@Size(max = 100)
+	@EnglishLanguage
 	private String university;
+	@NotBlank
+	@Size(max = 255)
+	@EnglishLanguage
 	private String faculty;
 	
 	public EducationDTO() {
 	}
 
-	public EducationDTO(Education entity, Long profileId) {
+	public EducationDTO(Education entity) {
 		this.id = entity.getId();
-		this.profileId = profileId;
 		this.summary = entity.getSummary();
 		this.startYear = entity.getStartYear();
 		this.endYear = entity.getEndYear();
@@ -35,14 +50,6 @@ public class EducationDTO implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getProfileId() {
-		return profileId;
-	}
-
-	public void setProfileId(Long profileId) {
-		this.profileId = profileId;
 	}
 
 	public String getSummary() {
@@ -88,7 +95,7 @@ public class EducationDTO implements Serializable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result + ((startYear == null) ? 0 : startYear.hashCode());
 		result = prime * result + ((faculty == null) ? 0 : faculty.hashCode());
 		result = prime * result + ((startYear == null) ? 0 : startYear.hashCode());
@@ -102,8 +109,6 @@ public class EducationDTO implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
 		if (!(obj instanceof EducationDTO))
 			return false;
 		EducationDTO other = (EducationDTO) obj;
@@ -142,7 +147,7 @@ public class EducationDTO implements Serializable {
 	
 	@Override
 	public String toString() {
-		return CommonUtil.toString(this);
+		return CommonUtils.toString(this);
 	}
 
 }

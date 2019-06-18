@@ -4,20 +4,49 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.revenat.myresume.application.validation.annotation.Adulthood;
+import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.domain.entity.Profile;
-import com.revenat.myresume.infrastructure.util.CommonUtil;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class MainInfoDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@NotBlank
+	@Size(max = 255)
 	private String largePhoto;
+	@NotBlank
+	@Size(max = 255)
 	private String smallPhoto;
+	@NotNull
+	@Adulthood
 	private LocalDate birthDate;
+	@NotBlank
+	@Size(max = 60)
+	@EnglishLanguage
 	private String country;
+	@NotBlank
+	@Size(max = 100)
+	@EnglishLanguage
 	private String city;
+	@NotBlank
+	@Email
+	@Size(max = 100)
 	private String email;
+	@NotBlank
+	@Size(max = 20)
 	private String phone;
+	@NotBlank
+	@EnglishLanguage
 	private String objective;
+	@NotBlank
+	@EnglishLanguage
 	private String summary;
 	
 	public MainInfoDTO() {
@@ -130,7 +159,7 @@ public class MainInfoDTO implements Serializable {
 	
 	@Override
 	public String toString() {
-		return CommonUtil.toString(this);
+		return CommonUtils.toString(this);
 	}
 
 }
