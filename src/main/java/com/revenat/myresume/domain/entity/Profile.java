@@ -129,7 +129,7 @@ public class Profile extends AbstractEntity<Long> {
 			orphanRemoval = true,
 			fetch = FetchType.LAZY
 			)
-	@OrderBy("id ASC")
+	@OrderBy("category ASC")
 	private List<Skill> skills = new ArrayList<>();
 	
 	@OneToMany(

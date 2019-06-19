@@ -9,9 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,11 +84,11 @@ class ProfileServiceImpl implements ProfileService {
 	}
 
 	@Override
-	public List<ProfileDTO> get(int page, int limit) {
-		Pageable sortByName = new PageRequest(page - 1, limit, Direction.ASC, "firstName", "lastName");
-		Page<Profile> profilesPage = profileRepo.findAll(sortByName);
-		List<Profile> content = profilesPage.getContent();
-		return transformer.transformToList(content, Profile.class, ProfileDTO.class);
+	public Page<ProfileDTO> get(Pageable pageable) {
+		Page<Profile> page = profileRepo.findAll(pageable);
+		List<Profile> content = page.getContent();
+		List<ProfileDTO> dtoList = transformer.transformToList(content, Profile.class, ProfileDTO.class);
+		return new PageImpl<>(dtoList, pageable, page.getTotalElements());
 	}
 	
 	@Override

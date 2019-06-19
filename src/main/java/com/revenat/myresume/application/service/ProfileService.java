@@ -2,6 +2,9 @@ package com.revenat.myresume.application.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.revenat.myresume.application.dto.CertificateDTO;
 import com.revenat.myresume.application.dto.ContactsDTO;
 import com.revenat.myresume.application.dto.CourseDTO;
@@ -19,7 +22,7 @@ public interface ProfileService {
 
 	ProfileDTO getByUid(String uid);
 
-	List<ProfileDTO> get(int page, int limit);
+	Page<ProfileDTO> get(Pageable pageable);
 
 	MainInfoDTO getMainInfoFor(long profileId);
 	
