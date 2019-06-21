@@ -20,8 +20,8 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @EnableSpringDataWebSupport
 @ComponentScan({
-	"com.revenat.myresume.presentation.controller",
-	"com.revenat.myresume.presentation.advise"
+	"com.revenat.myresume.presentation.web.controller",
+	"com.revenat.myresume.presentation.web.advise"
 	})
 public class WebConfig extends WebMvcConfigurerAdapter {
 

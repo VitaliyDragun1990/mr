@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.revenat.myresume.application.service.DateTimeProvider;
 import com.revenat.myresume.application.service.TaskPerformer;
 import com.revenat.myresume.domain.entity.Profile;
-import com.revenat.myresume.infrastructure.repository.ProfileRepository;
+import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 
 @Service
 class ScheduledTaskPerformer implements TaskPerformer {

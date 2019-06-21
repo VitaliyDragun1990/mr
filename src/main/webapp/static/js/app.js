@@ -12,7 +12,10 @@ var resume = {
 			$('#loadMoreContainer').remove();
 			return;
 		}
-		var url = ctx + '/fragment/more?page=' + page;
+		var pathname = location.pathname;
+		var queryString = location.search.substring(1);
+		
+		var url = ctx + pathname +  '/fragment/more?page=' + page + '&' + queryString;
 		
 		$('#loadMoreContainer').css('display', 'none');
 		$('#loadMoreIndicator').css('display', 'block');
@@ -35,5 +38,22 @@ var resume = {
 				resume.alert('Error! Try again later...');
 			}
 		});
+	},
+	
+	logout : function() {
+		var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
+		var csrfToken = $("meta[name='_csrf']").attr("content");
+		var url = ctx + '/sign-out';
+		
+		var form = $('<form>', {
+			action: url,
+			method: 'POST',
+		}).append($('<input>', {
+			name : csrfParameter,
+			value : csrfToken,
+			type : 'hidden'
+		}));
+		$('body').append(form);
+		form.submit();
 	}
 };

@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "certificate")
 public class Certificate extends AbstractEntity<Long> implements ProfileEntity {
@@ -23,6 +25,7 @@ public class Certificate extends AbstractEntity<Long> implements ProfileEntity {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "profile_id", nullable = false)
+	@JsonIgnore
 	private Profile profile;
 	
 	@Column(length = 50, nullable = false)

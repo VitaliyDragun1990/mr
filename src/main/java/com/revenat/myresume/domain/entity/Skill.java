@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "f_skill")
 public class Skill extends AbstractEntity<Long> implements ProfileEntity {
@@ -25,6 +27,7 @@ public class Skill extends AbstractEntity<Long> implements ProfileEntity {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "profile_id", nullable = false)
+	@JsonIgnore
 	private Profile profile;
 	
 	@Enumerated(EnumType.ORDINAL)

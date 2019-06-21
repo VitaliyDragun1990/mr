@@ -19,8 +19,13 @@ import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.springframework.data.elasticsearch.annotations.Document;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "profile")
+@Document(indexName = "my_resume", type = "profile")
 public class Profile extends AbstractEntity<Long> {
 	private static final long serialVersionUID = 8326456967466271180L;
 
@@ -42,9 +47,11 @@ public class Profile extends AbstractEntity<Long> {
 	private LocalDate birthDay;
 
 	@Column(length = 20, unique = true)
+	@JsonIgnore
 	private String phone;
 
 	@Column(length = 100, unique = true)
+	@JsonIgnore
 	private String email;
 
 	@Column(length = 60)
@@ -60,6 +67,7 @@ public class Profile extends AbstractEntity<Long> {
 	private String summary;
 
 	@Column(name = "large_photo")
+	@JsonIgnore
 	private String largePhoto;
 
 	@Column(name = "small_photo")
@@ -69,15 +77,19 @@ public class Profile extends AbstractEntity<Long> {
 	private String info;
 
 	@Column(nullable = false)
+	@JsonIgnore
 	private String password;
 
 	@Column(nullable = false)
+	@JsonIgnore
 	private boolean completed;
 
 	@Column(nullable = false, updatable = false)
+	@JsonIgnore
 	private LocalDateTime created;
 
 	@Embedded
+	@JsonIgnore
 	private Contacts contacts;
 	
 	@OneToMany(
@@ -104,6 +116,7 @@ public class Profile extends AbstractEntity<Long> {
 			fetch = FetchType.LAZY
 			)
 	@OrderBy("endYear DESC, startYear DESC, id DESC")
+	@JsonIgnore
 	private List<Education> educations = new ArrayList<>();
 	
 	@OneToMany(
@@ -139,6 +152,7 @@ public class Profile extends AbstractEntity<Long> {
 			fetch = FetchType.LAZY
 			)
 	@OrderBy("name ASC")
+	@JsonIgnore
 	private List<Hobby> hobbies = new ArrayList<>();
 	
 	@PrePersist

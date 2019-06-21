@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @PropertySource("classpath:application.properties")
 @EnableTransactionManagement
-@EnableJpaRepositories("com.revenat.myresume.infrastructure.repository")
+@EnableJpaRepositories("com.revenat.myresume.infrastructure.repository.storage")
 public class JPAConfig {
 
 	@Autowired

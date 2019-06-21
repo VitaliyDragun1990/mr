@@ -8,12 +8,14 @@ import org.sitemesh.builder.SiteMeshFilterBuilder;
 import org.sitemesh.config.ConfigurableSiteMeshFilter;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.revenat.myresume.application.config.ServiceConfig;
+import com.revenat.myresume.infrastructure.config.ElasticSearchConfig;
 import com.revenat.myresume.infrastructure.config.JPAConfig;
-import com.revenat.myresume.presentation.filter.ErrorHandlerFilter;
-import com.revenat.myresume.presentation.listener.ApplicationListener;
+import com.revenat.myresume.presentation.web.filter.ErrorHandlerFilter;
+import com.revenat.myresume.presentation.web.listener.ApplicationListener;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 	
@@ -42,14 +44,21 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 			protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
 				builder
 					.addDecoratorPath("/*", "/WEB-INF/template/page-template.jsp")
-					.addDecoratorPath("/fragment/*", "/WEB-INF/template/fragment-template.jsp");
+					.addDecoratorPath("/fragment/*", "/WEB-INF/template/fragment-template.jsp")
+					.addDecoratorPath("/welcome/fragment/*", "/WEB-INF/template/fragment-template.jsp")
+					.addDecoratorPath("/search/fragment/*", "/WEB-INF/template/fragment-template.jsp");
 			}
 		};
 	}
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class<?>[] {ServiceConfig.class, JPAConfig.class};
+		return new Class<?>[] {
+			WebSecurityConfig.class,
+			ServiceConfig.class,
+			JPAConfig.class,
+			ElasticSearchConfig.class
+			};
 	}
 
 	@Override
@@ -65,6 +74,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	protected Filter[] getServletFilters() {
 		return new Filter[] {
+				new RequestContextFilter(),
 				new ErrorHandlerFilter(),
 				new CharacterEncodingFilter("UTF-8", true),
 				new OpenEntityManagerInViewFilter()

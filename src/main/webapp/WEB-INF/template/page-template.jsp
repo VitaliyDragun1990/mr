@@ -1,9 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html lang="eng">
 <head>
 <meta name="viewpoint" content="with=device-width, initial-scale=1">
+<security:csrfMetaTags/>
 <jsp:include page="../section/css.jsp"/>
 </head>
 <body class="resume">

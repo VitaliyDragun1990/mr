@@ -11,6 +11,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @PropertySource("classpath:application.properties") // for Environment.getProperty(...)
@@ -44,6 +46,11 @@ public class ServiceConfig {
 	@Bean
 	public ConversionServiceFactoryBean conversionService() {
 		return new ConversionServiceFactoryBean();
+	}
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 	private static Resource[] getResources() {
