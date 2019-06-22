@@ -2,6 +2,8 @@ package com.revenat.myresume.application.exception;
 
 import java.io.Serializable;
 
+import com.revenat.myresume.domain.exception.ApplicationException;
+
 /**
  * Represents specific kind of exception when needed resource
  * can't be found.

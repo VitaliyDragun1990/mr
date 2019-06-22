@@ -1,4 +1,4 @@
-package com.revenat.myresume.application.service.impl;
+package com.revenat.myresume.application.service.profile.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +29,8 @@ import com.revenat.myresume.application.dto.ProfileDTO;
 import com.revenat.myresume.application.dto.SkillDTO;
 import com.revenat.myresume.application.exception.NotFoundException;
 import com.revenat.myresume.application.generator.UidGenerator;
-import com.revenat.myresume.application.service.EditProfileService;
-import com.revenat.myresume.application.service.SearchProfileService;
+import com.revenat.myresume.application.service.profile.EditProfileService;
+import com.revenat.myresume.application.service.profile.SearchProfileService;
 import com.revenat.myresume.application.transformer.Transformer;
 import com.revenat.myresume.application.util.DataUtil;
 import com.revenat.myresume.domain.entity.Certificate;

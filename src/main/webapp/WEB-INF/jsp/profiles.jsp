@@ -2,6 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="resume" tagdir="/WEB-INF/tags"%>
 
+
+<div class="container">
+<c:if test="${!empty query}">
+	<div class="alert alert-info col-xs-12">Found ${page.totalElements} profiles</div>
+</c:if>
+
 <div class="row profiles">
 	<div id="profileContainer" class="col-xs-12" data-profile-total="${page.totalPages}" data-profile-number="${page.number}">
 		<jsp:include page="fragment/profile-items.jsp"/>
@@ -14,4 +20,5 @@
 			<img src="/static/img/large-loading.gif" alt="loading..." />
 		</div>
 	</c:if>
+</div>
 </div>

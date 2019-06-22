@@ -2,6 +2,7 @@ package com.revenat.myresume.infrastructure.util;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,6 +34,15 @@ public class CommonUtils {
 	public static <T> List<T> getSafeList(List<T> source) {
 		return Collections.unmodifiableList(
 				Optional.ofNullable(source).orElse(Collections.emptyList())
+				);
+	}
+	
+	/**
+	 * Returns non-null unmodifiable copy of the source map
+	 */
+	public static <K,V> Map<K,V> getSafeMap(Map<K,V> source) {
+		return Collections.unmodifiableMap(
+				Optional.ofNullable(source).orElse(Collections.emptyMap())
 				);
 	}
 	

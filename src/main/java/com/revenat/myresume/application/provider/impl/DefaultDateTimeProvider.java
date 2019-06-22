@@ -1,12 +1,12 @@
-package com.revenat.myresume.application.service.impl;
+package com.revenat.myresume.application.provider.impl;
 
 import java.time.LocalDateTime;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import com.revenat.myresume.application.service.DateTimeProvider;
+import com.revenat.myresume.application.provider.DateTimeProvider;
 
-@Service
+@Component
 class DefaultDateTimeProvider implements DateTimeProvider {
 
 	@Override

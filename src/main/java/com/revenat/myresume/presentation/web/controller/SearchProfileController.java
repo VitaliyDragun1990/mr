@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.revenat.myresume.application.dto.ProfileDTO;
-import com.revenat.myresume.application.service.SearchProfileService;
+import com.revenat.myresume.application.service.profile.SearchProfileService;
 import com.revenat.myresume.presentation.config.Constants;
 
 @Controller

@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import com.revenat.myresume.application.config.ServiceConfig;
 import com.revenat.myresume.infrastructure.config.ElasticSearchConfig;
+import com.revenat.myresume.infrastructure.config.EmailConfig;
 import com.revenat.myresume.infrastructure.config.JPAConfig;
 import com.revenat.myresume.presentation.web.filter.ErrorHandlerFilter;
 import com.revenat.myresume.presentation.web.listener.ApplicationListener;
@@ -57,7 +58,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 			WebSecurityConfig.class,
 			ServiceConfig.class,
 			JPAConfig.class,
-			ElasticSearchConfig.class
+			ElasticSearchConfig.class,
+			EmailConfig.class
 			};
 	}
 

@@ -1,4 +1,4 @@
-package com.revenat.myresume.application.service;
+package com.revenat.myresume.application.provider;
 
 import java.time.LocalDateTime;
 

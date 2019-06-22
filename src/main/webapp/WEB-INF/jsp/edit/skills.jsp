@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="resume" tagdir="/WEB-INF/tags" %>
 
+<div class="container">
 <div class="panel panel-default">
 	<div class="panel-body">
 		<h4 class="data-header">Technical skills in frameworks and technologies</h4>
@@ -31,4 +32,5 @@
 			</div>
 		</form:form>
 	</div>
+</div>
 </div>

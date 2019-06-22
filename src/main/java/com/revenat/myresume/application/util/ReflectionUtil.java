@@ -2,7 +2,7 @@ package com.revenat.myresume.application.util;
 
 import java.lang.reflect.Field;
 
-import com.revenat.myresume.application.exception.ApplicationException;
+import com.revenat.myresume.domain.exception.ApplicationException;
 
 public class ReflectionUtil {
 

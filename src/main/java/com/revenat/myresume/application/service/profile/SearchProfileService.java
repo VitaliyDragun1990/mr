@@ -1,4 +1,4 @@
-package com.revenat.myresume.application.service;
+package com.revenat.myresume.application.service.profile;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

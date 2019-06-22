@@ -2,13 +2,13 @@ package com.revenat.myresume.application.generator.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.revenat.myresume.application.exception.CantCompleteClientRequestException;
 import com.revenat.myresume.application.generator.UidGenerator;
 import com.revenat.myresume.application.util.DataUtil;
 
-@Service
+@Component
 class UidGeneratorImpl implements UidGenerator {
 	private final int generateUidSuffixLength;
 	private final String generateUidAlphabet;

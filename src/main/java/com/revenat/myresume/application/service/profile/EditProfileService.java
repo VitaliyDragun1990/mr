@@ -1,4 +1,4 @@
-package com.revenat.myresume.application.service;
+package com.revenat.myresume.application.service.profile;
 
 import java.util.List;
 

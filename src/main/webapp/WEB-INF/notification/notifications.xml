@@ -1,0 +1,37 @@
+<!DOCTYPE xml>
+<beans>
+	<bean id="restoreAccessNotification" class="com.revenat.myresume.application.model.NotificationMessage">
+		<property name="subject" value="Restore access" />
+		<property name="content">
+			<value>To restore access please click on ${restoreLink}.</value>
+			<value>
+			<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    			<head>
+       				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        			<title>Restore acces to MyResume</title>
+    			</head>
+    			<body>
+       				<p>
+            			Hello, <span>${profile.firstName} ${profile.lastName}</span>
+       				</p>
+        			<p>
+            			Please click the below link to reset your password. <br/>
+            			<a href="${restoreLink}">Reset Password</a>
+        			</p>
+        			<p>
+            			Regards, <br/>
+            			<em>The MyResume Team</em>
+        			</p>
+    			</body>
+			</html>
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="passwordChangedNotification" class="com.revenat.myresume.application.model.NotificationMessage">
+		<property name="subject" value="Password changed" />
+		<property name="content">
+			<value>This email is to notify you that the password for your account ${profile.uid} has been changed.</value>
+		</property>
+	</bean>
+</beans>

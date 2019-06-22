@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.revenat.myresume.application.dto.ProfileDTO;
-import com.revenat.myresume.application.service.SearchProfileService;
+import com.revenat.myresume.application.service.profile.SearchProfileService;
 
 @Controller
 @RequestMapping("/profile")

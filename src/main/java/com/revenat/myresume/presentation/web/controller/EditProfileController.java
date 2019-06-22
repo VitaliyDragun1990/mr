@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.revenat.myresume.application.dto.ContactsDTO;
 import com.revenat.myresume.application.dto.MainInfoDTO;
-import com.revenat.myresume.application.service.EditProfileService;
+import com.revenat.myresume.application.service.profile.EditProfileService;
 import com.revenat.myresume.presentation.security.AuthenticatedUser;
 import com.revenat.myresume.presentation.security.SecurityUtil;
 import com.revenat.myresume.presentation.web.form.CertificateForm;

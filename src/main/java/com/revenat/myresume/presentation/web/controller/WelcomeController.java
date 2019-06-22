@@ -13,7 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.revenat.myresume.application.dto.ProfileDTO;
-import com.revenat.myresume.application.service.SearchProfileService;
+import com.revenat.myresume.application.service.profile.SearchProfileService;
 import com.revenat.myresume.presentation.config.Constants;
 
 @Controller

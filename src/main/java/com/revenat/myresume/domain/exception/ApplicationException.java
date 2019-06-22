@@ -1,4 +1,4 @@
-package com.revenat.myresume.application.exception;
+package com.revenat.myresume.domain.exception;
 
 /**
  * Custom application specific general purpose exception.

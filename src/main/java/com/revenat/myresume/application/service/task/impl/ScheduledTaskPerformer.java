@@ -1,4 +1,4 @@
-package com.revenat.myresume.application.service.impl;
+package com.revenat.myresume.application.service.task.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.revenat.myresume.application.service.DateTimeProvider;
-import com.revenat.myresume.application.service.TaskPerformer;
+import com.revenat.myresume.application.provider.DateTimeProvider;
+import com.revenat.myresume.application.service.task.TaskPerformer;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 
