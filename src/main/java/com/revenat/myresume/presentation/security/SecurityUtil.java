@@ -6,7 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.revenat.myresume.application.dto.ProfileDTO;
+import com.revenat.myresume.domain.entity.Profile;
 
 public class SecurityUtil {
 	
@@ -28,10 +28,17 @@ public class SecurityUtil {
 		return authenticatedUser != null ? authenticatedUser.getId() : null;
 	}
 	
-	public static void authenticate(ProfileDTO profile) {
+	static AuthenticatedUser authenticate(Profile profile) {
 		AuthenticatedUser authenticatedUser = new AuthenticatedUser(profile);
 		Authentication authentication = new UsernamePasswordAuthenticationToken(
 				authenticatedUser, authenticatedUser.getPassword(), authenticatedUser.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		return authenticatedUser;
+	}
+	
+	static void authenticate(AuthenticatedUser authUser) {
+		Authentication authentication = new UsernamePasswordAuthenticationToken(
+				authUser, authUser.getPassword(), authUser.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 	

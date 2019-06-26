@@ -33,10 +33,17 @@
 			<div class="form-group">
 				<label><input type="checkbox" name="remember-me" value="true" />Remember me</label>
 			</div>
+			<hr />
 			<div class="form-group">
-				<button type="submit" class="btn btn-primary pull-left">Login</button>
-				<a href="#" class="pull-right">Restore access</a>
+				<button type="submit" class="btn btn-success pull-left">Login</button>
 			</div>
+			<div class="form-group text-canter col-xs-offset-7">
+				<a href='<c:url value="/fbLogin" />' class="btn btn-primary">
+					<i class="fa fa-facebook-official" aria-hidden="true"></i> Sign in with facebook
+				</a>
+			</div>
+			<hr />
+			<a href="#" class="col-xs-offset-4">Restore access</a>
 		</form>
 	</div>
 </div>

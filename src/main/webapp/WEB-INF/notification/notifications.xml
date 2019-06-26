@@ -3,7 +3,6 @@
 	<bean id="restoreAccessNotification" class="com.revenat.myresume.application.model.NotificationMessage">
 		<property name="subject" value="Restore access" />
 		<property name="content">
-			<value>To restore access please click on ${restoreLink}.</value>
 			<value>
 			<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     			<head>

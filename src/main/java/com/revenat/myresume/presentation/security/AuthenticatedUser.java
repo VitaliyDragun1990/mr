@@ -6,20 +6,22 @@ import java.util.Objects;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import com.revenat.myresume.application.dto.ProfileDTO;
+import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.presentation.config.Constants;
 
-public class AuthenticatedUser extends User {
+public final class AuthenticatedUser extends User {
 	private static final long serialVersionUID = 1L;
 
 	private final Long id;
 	private final String fullName;
-
-	public AuthenticatedUser(ProfileDTO profile) {
+	private final boolean isRegistrationCompleted;
+	
+	AuthenticatedUser(Profile profile) {
 		super(profile.getUid(), profile.getPassword(), true, true, true, true,
 				Collections.singleton(new SimpleGrantedAuthority(Constants.USER)));
 		this.id = profile.getId();
-		this.fullName = profile.getFullName();
+		this.fullName = profile.getFirstName() + " " + profile.getLastName();
+		this.isRegistrationCompleted = profile.isCompleted();
 	}
 
 	public Long getId() {
@@ -28,6 +30,10 @@ public class AuthenticatedUser extends User {
 
 	public String getFullName() {
 		return fullName;
+	}
+	
+	public boolean isRegistrationCompleted() {
+		return isRegistrationCompleted;
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -51,5 +52,9 @@ public class CommonUtils {
 	 */
 	public static String toString(Object param) {
 		return ReflectionToStringBuilder.toString(param, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
+	
+	public static boolean isBlank(String string) {
+		return StringUtils.isBlank(string);
 	}
 }

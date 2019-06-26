@@ -1,4 +1,4 @@
-package com.revenat.myresume.infrastructure.gateway.impl;
+package com.revenat.myresume.infrastructure.gateway.email.impl;
 
 import java.io.UnsupportedEncodingException;
 
@@ -14,7 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import com.revenat.myresume.infrastructure.exception.EmailGatewayException;
-import com.revenat.myresume.infrastructure.gateway.EmailGateway;
+import com.revenat.myresume.infrastructure.gateway.email.EmailGateway;
 
 @Component
 class EmailGatewayImpl implements EmailGateway {

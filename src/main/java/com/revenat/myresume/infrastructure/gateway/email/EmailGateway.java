@@ -1,4 +1,4 @@
-package com.revenat.myresume.infrastructure.gateway;
+package com.revenat.myresume.infrastructure.gateway.email;
 
 public interface EmailGateway {
 

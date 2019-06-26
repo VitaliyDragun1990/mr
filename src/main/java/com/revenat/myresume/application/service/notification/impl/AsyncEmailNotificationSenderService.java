@@ -12,7 +12,7 @@ import com.revenat.myresume.application.model.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationSenderService;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.exception.EmailGatewayException;
-import com.revenat.myresume.infrastructure.gateway.EmailGateway;
+import com.revenat.myresume.infrastructure.gateway.email.EmailGateway;
 
 /**
  * Implementation of {@link NotificationSenderService} which uses email to send

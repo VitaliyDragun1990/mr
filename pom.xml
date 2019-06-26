@@ -33,6 +33,7 @@
 		<hibernate.version>5.4.3.Final</hibernate.version>
 		<javax.mail.version>1.6.2</javax.mail.version>
 		<freemarker.version>2.3.28</freemarker.version>
+		<restfb.version>2.20.0</restfb.version>
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.13.0</mockito.version>
 		<hamcrest.version>2.1</hamcrest.version>
@@ -196,6 +197,11 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.restfb</groupId>
+			<artifactId>restfb</artifactId>
+			<version>${restfb.version}</version>
+		</dependency>
 
 
 		<!-- Test dependencies -->
@@ -238,7 +244,8 @@
 	</dependencies>
 
 	<build>
-		<finalName>my-resume</finalName>
+<!-- 		<finalName>my-resume</finalName> -->
+		<finalName>ROOT</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

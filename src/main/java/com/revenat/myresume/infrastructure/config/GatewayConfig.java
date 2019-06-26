@@ -10,10 +10,17 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-@Configuration
-@ComponentScan("com.revenat.myresume.infrastructure.gateway.impl")
-public class EmailConfig {
+import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkGateway;
+import com.revenat.myresume.infrastructure.gateway.social.impl.FacebookGateway;
 
+@Configuration
+@ComponentScan({
+	"com.revenat.myresume.infrastructure.gateway.email.impl",
+	"com.revenat.myresume.infrastructure.gateway.social.impl",
+	"com.revenat.myresume.infrastructure.gateway.filesystem.impl"
+})
+public class GatewayConfig {
+	
 	@Bean
 	@Autowired
 	public JavaMailSender javaMailSender(ConfigurableEnvironment env) {
@@ -28,6 +35,16 @@ public class EmailConfig {
 		}
 		
 		return javaMailSender;
+	}
+	
+	@Bean
+	@Autowired
+	public SocialNetworkGateway socialNetworkGateway(ConfigurableEnvironment env) {
+		String host = env.getRequiredProperty("app.host");
+		String redirectUrl = env.getRequiredProperty("social.redirectUri");
+		String appId = env.getRequiredProperty("social.facebook.appId");
+		String appSecret = env.resolveRequiredPlaceholders(env.getRequiredProperty("social.facebook.secret"));
+		return new FacebookGateway(appId, appSecret, host, redirectUrl);
 	}
 	
 	private Properties javaMailProperties() {

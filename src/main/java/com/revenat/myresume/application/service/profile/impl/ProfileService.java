@@ -81,6 +81,15 @@ class ProfileService implements SearchProfileService, EditProfileService {
 			throw new NotFoundException(Profile.class, "uid", uid);
 		}
 	}
+	
+	@Override
+	public Optional<ProfileDTO> findByEmail(String email) {
+		Optional<Profile> optional = profileRepo.findByEmail(email);
+		if (optional.isPresent()) {
+			return Optional.of(transformer.transform(optional.get(), ProfileDTO.class));
+		}
+		return Optional.empty();
+	}
 
 	@Override
 	public Page<ProfileDTO> findAll(Pageable pageable) {
@@ -100,23 +109,42 @@ class ProfileService implements SearchProfileService, EditProfileService {
 		return new PageImpl<>(dtoList, pageable, page.getTotalElements());
 	}
 
-	@Override
-	@Transactional
-	public ProfileDTO create(String firstName, String lastName, String password) {
-		Profile profile = new Profile();
-		profile.setUid(uidGenerator.generateUid(firstName, lastName, uid -> profileRepo.countByUid(uid) > 0));
-		profile.setFirstName(DataUtil.capitalizeName(firstName));
-		profile.setLastName(DataUtil.capitalizeName(lastName));
-		profile.setPassword(passwordEncoder.encode(password));
-		profile.setCompleted(false);
-		
-		Profile savedProfile = profileRepo.save(profile);
-		
-		LOGGER.info("New profile created: {}", profile.getUid());
-		executeIfTransactionSuccess(() -> searchIndexingService.createIndexProfile(savedProfile));
-		
-		return transformer.transform(savedProfile, ProfileDTO.class);
-	}
+//	@Override
+//	@Transactional
+//	public ProfileDTO create(String firstName, String lastName, String password) {
+//		Profile profile = new Profile();
+//		profile.setUid(uidGenerator.generateUid(firstName, lastName, uid -> profileRepo.countByUid(uid) > 0));
+//		profile.setFirstName(DataUtil.capitalizeName(firstName));
+//		profile.setLastName(DataUtil.capitalizeName(lastName));
+//		profile.setPassword(passwordEncoder.encode(password));
+//		profile.setCompleted(false);
+//		
+//		Profile savedProfile = profileRepo.save(profile);
+//		
+//		LOGGER.info("New profile created: {}", profile.getUid());
+//		executeIfTransactionSuccess(() -> searchIndexingService.createIndexProfile(savedProfile));
+//		
+//		return transformer.transform(savedProfile, ProfileDTO.class);
+//	}
+//	
+//	@Override
+//	@Transactional
+//	public ProfileDTO create(ProfileDTO newProfile) {
+//		Profile profile = new Profile();
+//		profile.setUid(uidGenerator.generateUid(newProfile.getFirstName(), newProfile.getLastName(), uid -> profileRepo.countByUid(uid) > 0));
+//		profile.setFirstName(DataUtil.capitalizeName(newProfile.getFirstName()));
+//		profile.setLastName(DataUtil.capitalizeName(newProfile.getLastName()));
+//		profile.setPassword(passwordEncoder.encode(newProfile.getPassword()));
+//		updateProfileMainInfo(profile, newProfile.getMainInfo());
+//		profile.setCompleted(false);
+//		
+//		Profile savedProfile = profileRepo.save(profile);
+//		
+//		LOGGER.info("New profile created: {}", profile.getUid());
+//		executeIfTransactionSuccess(() -> searchIndexingService.createIndexProfile(savedProfile));
+//		
+//		return transformer.transform(savedProfile, ProfileDTO.class);
+//	}
 	
 	@Override
 	public MainInfoDTO getMainInfoFor(long profileId) {

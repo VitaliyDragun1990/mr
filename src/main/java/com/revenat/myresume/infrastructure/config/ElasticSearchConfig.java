@@ -54,6 +54,7 @@ public class ElasticSearchConfig {
 
 	// Embedded elastic search server instance config
 
+
 	/*
 	@Value("${elasticsearch.home}")
 	private String elasticSearchHome;

@@ -15,7 +15,9 @@ import com.revenat.myresume.application.dto.SkillDTO;
 
 public interface EditProfileService {
 
-	ProfileDTO create(String firstName, String lastName, String password);
+//	ProfileDTO create(String firstName, String lastName, String password);
+//	
+//	ProfileDTO create(ProfileDTO newProfile);
 
 	MainInfoDTO getMainInfoFor(long profileId);
 	

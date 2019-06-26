@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.revenat.myresume.application.dto.ProfileDTO;
-import com.revenat.myresume.application.transformer.Transformer;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 
@@ -22,12 +20,10 @@ class CustomUserDetailsService implements UserDetailsService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomUserDetailsService.class);
 	
 	private final ProfileRepository profileRepo;
-	private final Transformer transformer;
 
 	@Autowired
-	public CustomUserDetailsService(ProfileRepository profileRepo, Transformer transformer) {
+	public CustomUserDetailsService(ProfileRepository profileRepo) {
 		this.profileRepo = profileRepo;
-		this.transformer = transformer;
 	}
 
 	@Override
@@ -35,7 +31,7 @@ class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Optional<Profile> profile = findProfile(username);
 		if (profile.isPresent()) {
-			return new AuthenticatedUser(transformer.transform(profile.get(), ProfileDTO.class));
+			return new AuthenticatedUser(profile.get());
 		} else {
 			LOGGER.error("Profile not found by {}", username);
 			throw new UsernameNotFoundException("Profile not found by " + username);
