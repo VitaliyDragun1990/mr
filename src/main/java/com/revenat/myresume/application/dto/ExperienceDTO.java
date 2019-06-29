@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.hibernate.validator.constraints.URL;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
@@ -14,31 +15,36 @@ import com.revenat.myresume.application.validation.annotation.FirstFieldLessThan
 import com.revenat.myresume.domain.entity.Experience;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
-@FirstFieldLessThanSecond.List({
-	@FirstFieldLessThanSecond(first = "startDate", second = "endDate"),
-	@FirstFieldLessThanSecond(first = "startDateMonth", second = "endDateMonth"),
-	@FirstFieldLessThanSecond(first = "startDateYear", second = "endDateYear"),
-})
+@FirstFieldLessThanSecond(first = "startDate", second = "endDate")
 public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	
 	@NotBlank
 	@Size(max = 100)
+	@SafeHtml
 	@EnglishLanguage
 	private String position;
+	
 	@NotBlank
 	@Size(max = 100)
+	@SafeHtml
 	@EnglishLanguage
 	private String company;
+	
 	@NotNull
 	private LocalDate startDate;
+	
 	@NotBlank
+	@SafeHtml
 	@EnglishLanguage
 	private String responsibilities;
+	
 	@Size(max = 255)
 	@URL
 	private String demo;
+	
 	@Size(max = 255)
 	@URL
 	private String sourceCode;

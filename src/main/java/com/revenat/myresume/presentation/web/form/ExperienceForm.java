@@ -7,7 +7,12 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.revenat.myresume.application.dto.ExperienceDTO;
+import com.revenat.myresume.application.validation.annotation.FirstFieldLessThanSecond;
+import com.revenat.myresume.presentation.web.form.annotation.EnableFormErrorConvertation;
 
+@EnableFormErrorConvertation(
+		formName = "experienceForm", fieldReference = "endDate", validationAnnotationClasses = FirstFieldLessThanSecond.class
+		)
 public class ExperienceForm extends AbstractForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 

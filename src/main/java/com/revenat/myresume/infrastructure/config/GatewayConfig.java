@@ -6,14 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkGateway;
 import com.revenat.myresume.infrastructure.gateway.social.impl.FacebookGateway;
+import com.revenat.myresume.infrastructure.media.converter.TranslitConverter;
 
 @Configuration
+@PropertySource({
+	"classpath:/properties/email.properties",
+	"classpath:/properties/social.properties",
+})
 @ComponentScan({
 	"com.revenat.myresume.infrastructure.gateway.email.impl",
 	"com.revenat.myresume.infrastructure.gateway.social.impl",
@@ -39,12 +45,12 @@ public class GatewayConfig {
 	
 	@Bean
 	@Autowired
-	public SocialNetworkGateway socialNetworkGateway(ConfigurableEnvironment env) {
+	public SocialNetworkGateway socialNetworkGateway(ConfigurableEnvironment env, TranslitConverter translitConverter) {
 		String host = env.getRequiredProperty("app.host");
 		String redirectUrl = env.getRequiredProperty("social.redirectUri");
 		String appId = env.getRequiredProperty("social.facebook.appId");
 		String appSecret = env.resolveRequiredPlaceholders(env.getRequiredProperty("social.facebook.secret"));
-		return new FacebookGateway(appId, appSecret, host, redirectUrl);
+		return new FacebookGateway(appId, appSecret, host, redirectUrl, translitConverter);
 	}
 	
 	private Properties javaMailProperties() {

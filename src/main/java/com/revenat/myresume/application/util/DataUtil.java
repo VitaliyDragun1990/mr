@@ -20,10 +20,10 @@ public class DataUtil {
 	}
 	
 	public static String generateUidWithRandomSuffix(String baseUid, String alphabet, int letterCount) {
-		return baseUid + UID_DELIMITER + generateRandomSuffix(alphabet, letterCount);
+		return baseUid + UID_DELIMITER + generateRandomString(alphabet, letterCount);
 	}
 	
-	public static String generateRandomSuffix(String alphabet, int letterCount) {
+	public static String generateRandomString(String alphabet, int letterCount) {
 		ThreadLocalRandom r = ThreadLocalRandom.current();
 		StringBuilder uid = new StringBuilder();
 		for (int i = 0; i < letterCount; i++) {

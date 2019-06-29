@@ -1,12 +1,14 @@
 package com.revenat.myresume.application.template;
 
+import javax.annotation.Nonnull;
+
 /**
- * Resolves template content of some kind.
+ * Resolves content from a some kind of template.
  * 
  * @author Vitaliy Dragun
  *
  */
 public interface TemplateContentResolver {
 
-	String resolve(String template, Object model);
+	@Nonnull String resolve(@Nonnull String template, @Nonnull Object model);
 }

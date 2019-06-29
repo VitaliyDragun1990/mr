@@ -5,7 +5,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import com.revenat.myresume.application.validation.annotation.MinSpecSymbolsCount;
 
-public class MinSpecSymbolCountConstraintValidator implements ConstraintValidator<MinSpecSymbolsCount, String> {
+public class MinSpecSymbolCountConstraintValidator implements ConstraintValidator<MinSpecSymbolsCount, CharSequence> {
 	
 	private String symbols;
 	private int minSymbolCount;
@@ -14,11 +14,10 @@ public class MinSpecSymbolCountConstraintValidator implements ConstraintValidato
 	public void initialize(MinSpecSymbolsCount constraintAnnotation) {
 		symbols = constraintAnnotation.specSymbols();
 		minSymbolCount = constraintAnnotation.value();
-		
 	}
 
 	@Override
-	public boolean isValid(String value, ConstraintValidatorContext context) {
+	public boolean isValid(CharSequence value, ConstraintValidatorContext context) {
 		if (value == null) {
 			return true;
 		}

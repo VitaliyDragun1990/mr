@@ -1,5 +1,7 @@
 package com.revenat.myresume.application.service.notification;
 
+import javax.annotation.Nonnull;
+
 import com.revenat.myresume.domain.entity.Profile;
 
 /**
@@ -27,4 +29,13 @@ public interface NotificationManagerService {
 	 * @param profile {@link Profile} which owner should get notification
 	 */
 	void sendPasswordChanged(Profile profile);
+	
+	/**
+	 * Sends notification to the profile owner with info that the password has been
+	 * generated
+	 * 
+	 * @param profile {@link Profile} which owner should get notification
+	 * @param generatedPassword generated password
+	 */
+	void sendPasswordGenerated(@Nonnull Profile profile, @Nonnull String generatedPassword);
 }

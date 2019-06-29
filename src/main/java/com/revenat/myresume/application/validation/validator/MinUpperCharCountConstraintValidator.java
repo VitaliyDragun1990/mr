@@ -6,8 +6,6 @@ import javax.validation.ConstraintValidatorContext;
 import com.revenat.myresume.application.validation.annotation.MinUpperCharCount;
 
 public class MinUpperCharCountConstraintValidator implements ConstraintValidator<MinUpperCharCount, String> {
-	private static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	
 	private int minUpperCharCount;
 	
 	@Override
@@ -23,8 +21,7 @@ public class MinUpperCharCountConstraintValidator implements ConstraintValidator
 		}
 		int upperCharCount = 0;
 		for (int i = 0; i < value.length(); i++) {
-			char ch = value.charAt(i);
-			if (LETTERS.indexOf(ch) != -1) {
+			if (Character.isUpperCase(value.charAt(i))) {
 				upperCharCount++;
 			}
 		}

@@ -1,21 +1,26 @@
 package com.revenat.myresume.presentation.config;
 
+import java.util.EnumSet;
+
 import javax.servlet.Filter;
+import javax.servlet.FilterRegistration.Dynamic;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.SessionTrackingMode;
 
 import org.sitemesh.builder.SiteMeshFilterBuilder;
 import org.sitemesh.config.ConfigurableSiteMeshFilter;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import com.revenat.myresume.application.config.ServiceConfig;
-import com.revenat.myresume.infrastructure.config.ElasticSearchConfig;
-import com.revenat.myresume.infrastructure.config.GatewayConfig;
-import com.revenat.myresume.infrastructure.config.JPAConfig;
-import com.revenat.myresume.infrastructure.config.MediaConfig;
+import com.revenat.myresume.application.config.ApplicationConfig;
+import com.revenat.myresume.infrastructure.config.InfrastructureConfig;
+import com.revenat.myresume.presentation.web.filter.DebugFilter;
 import com.revenat.myresume.presentation.web.filter.ErrorHandlerFilter;
 import com.revenat.myresume.presentation.web.listener.ApplicationListener;
 
@@ -24,12 +29,29 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	public void onStartup(ServletContext container) throws ServletException {
 		super.onStartup(container);
+		container.setSessionTrackingModes(EnumSet.of(SessionTrackingMode.COOKIE));
 		registerFilters(container);
 		container.addListener(ApplicationListener.class);
 	}
 
 	private void registerFilters(ServletContext container) {
 		registerFilter(container, buildConfigurableSiteMeshfiler(), "sitemesh");
+		registerDebugFilterIfEnabled(container, new DebugFilter());
+	}
+	
+	private void registerDebugFilterIfEnabled(ServletContext container, DebugFilter filter) {
+		WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(container);
+		ConfigurableEnvironment env = (ConfigurableEnvironment) context.getEnvironment();
+		
+		boolean isDebugEnabled = env.getRequiredProperty("app.debug.enabled", Boolean.class);
+		String[] debugUrl = env.getRequiredProperty("app.debug.url", String[].class);
+		
+		if (isDebugEnabled && debugUrl.length != 0) {
+			Dynamic filterRegistration = container.addFilter(filter.getClass().getSimpleName(), filter);
+			for (String url : debugUrl) {
+				filterRegistration.addMappingForUrlPatterns(null, true, url);
+			}
+		}
 	}
 	
 	private void registerFilter(ServletContext container, Filter filter, String... filterNames) {
@@ -57,11 +79,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class<?>[] {
 			WebSecurityConfig.class,
-			ServiceConfig.class,
-			JPAConfig.class,
-			ElasticSearchConfig.class,
-			GatewayConfig.class,
-			MediaConfig.class
+			ApplicationConfig.class,
+			InfrastructureConfig.class
 			};
 	}
 
@@ -78,10 +97,10 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	protected Filter[] getServletFilters() {
 		return new Filter[] {
-				new RequestContextFilter(),
 				new ErrorHandlerFilter(),
 				new CharacterEncodingFilter("UTF-8", true),
-				new OpenEntityManagerInViewFilter()
+				new OpenEntityManagerInViewFilter(), // TODO: remove this filter
+				new RequestContextFilter()
 				};
 	}
 

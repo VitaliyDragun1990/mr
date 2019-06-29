@@ -5,9 +5,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import com.revenat.myresume.application.validation.annotation.MinDigitCount;
 
-public class MinDigitCountConstraintValidator implements ConstraintValidator<MinDigitCount, String> {
-	private static final String NUMBERS = "0123456789";
-	
+public class MinDigitCountConstraintValidator implements ConstraintValidator<MinDigitCount, CharSequence> {
 	private int minDigitCount;
 	
 	@Override
@@ -17,15 +15,14 @@ public class MinDigitCountConstraintValidator implements ConstraintValidator<Min
 	}
 
 	@Override
-	public boolean isValid(String value, ConstraintValidatorContext context) {
+	public boolean isValid(CharSequence value, ConstraintValidatorContext context) {
 		if (value == null) {
 			return true;
 		}
 		int digitCount = 0;
 		for (int i = 0; i < value.length(); i++) {
-			char ch = value.charAt(i);
-			if (NUMBERS.indexOf(ch) != -1) {
-				digitCount ++;
+			if (Character.isDigit(value.charAt(i))) {
+				digitCount++;
 			}
 		}
 		return digitCount >= minDigitCount;

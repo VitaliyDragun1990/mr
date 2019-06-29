@@ -4,31 +4,44 @@ import java.io.Serializable;
 
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.SafeHtml;
 import org.hibernate.validator.constraints.URL;
 
+import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.domain.entity.Contacts;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class ContactsDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@URL
+	@SafeHtml
 	@Size(max = 80)
+	@EnglishLanguage
 	private String skype;
-	@URL
+	
+	@URL(host = "vk.com")
 	@Size(max = 255)
+	@EnglishLanguage
 	private String vkontakte;
-	@URL
+	
+	@URL(host = "facebook.com")
 	@Size(max = 255)
+	@EnglishLanguage
 	private String facebook;
-	@URL
+	
+	@URL(host = "linkedin.com")
 	@Size(max = 255)
+	@EnglishLanguage
 	private String linkedin;
-	@URL
+	
+	@URL(host = "github.com")
 	@Size(max = 255)
+	@EnglishLanguage
 	private String github;
-	@URL
+	
+	@URL(host = "stackoverflow.com")
 	@Size(max = 255)
+	@EnglishLanguage
 	private String stackoverflow;
 	
 	public ContactsDTO() {

@@ -28,7 +28,7 @@ import com.revenat.myresume.application.dto.MainInfoDTO;
 import com.revenat.myresume.application.dto.ProfileDTO;
 import com.revenat.myresume.application.dto.SkillDTO;
 import com.revenat.myresume.application.exception.NotFoundException;
-import com.revenat.myresume.application.generator.UidGenerator;
+import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.service.profile.EditProfileService;
 import com.revenat.myresume.application.service.profile.SearchProfileService;
 import com.revenat.myresume.application.transformer.Transformer;
@@ -57,12 +57,12 @@ class ProfileService implements SearchProfileService, EditProfileService {
 	private final ProfileSearchRepository searchRepository;
 	private final SearchIndexingService searchIndexingService;
 	private final Transformer transformer;
-	private final UidGenerator uidGenerator;
+	private final DataGenerator uidGenerator;
 	private final PasswordEncoder passwordEncoder;
 
 	@Autowired
 	public ProfileService(ProfileRepository profileRepo, ProfileSearchRepository searchRepository,
-			SearchIndexingService searchIndexingService, Transformer transformer, UidGenerator uidGenerator,
+			SearchIndexingService searchIndexingService, Transformer transformer, DataGenerator uidGenerator,
 			PasswordEncoder passwordEncoder) {
 		this.profileRepo = profileRepo;
 		this.searchRepository = searchRepository;

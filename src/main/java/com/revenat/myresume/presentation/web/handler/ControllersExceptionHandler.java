@@ -1,4 +1,4 @@
-package com.revenat.myresume.presentation.web.advise;
+package com.revenat.myresume.presentation.web.handler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.revenat.myresume.application.exception.NotFoundException;
 
+// TODO: check if this component work because of ApplicationHandlerExceptionResolver is registered in WebConfig.
 @ControllerAdvice
-public class ControllersExceptionHandler {
+class ControllersExceptionHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ControllersExceptionHandler.class);
 	
 	private final boolean production;
@@ -29,7 +30,7 @@ public class ControllersExceptionHandler {
 		model.addAttribute("resource", e.getClazz().getSimpleName());
 		model.addAttribute("propertyName", e.getPropertyName());
 		model.addAttribute("propertyValue", e.getPropertyValue());
-		return "profile-not-found";
+		return "resource-not-found";
 	}
 	
 	/* @ExceptionHandler({Exception.class}) */

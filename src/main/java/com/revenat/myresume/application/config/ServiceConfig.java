@@ -1,31 +1,41 @@
 package com.revenat.myresume.application.config;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.context.support.ServletContextResource;
 
 import com.revenat.myresume.application.model.NotificationMessage;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Configuration
-@PropertySource("classpath:application.properties") // for Environment.getProperty(...)
-@EnableScheduling
+@PropertySource({
+	"classpath:/properties/application.properties",
+	"classpath:logic.properties"
+})
 @ComponentScan({
 	"com.revenat.myresume.application.service.profile.impl",
 	"com.revenat.myresume.application.service.notification.impl",
@@ -35,10 +45,15 @@ import com.revenat.myresume.infrastructure.util.CommonUtils;
 	"com.revenat.myresume.application.template.impl",
 	"com.revenat.myresume.application.generator.impl"
 })
+@EnableAspectJAutoProxy
 public class ServiceConfig {
 	
 	@Value("${executorService.threadCount}")
 	private String threadCount;
+	
+	// TODO: relocate from this config
+	@Autowired(required = false)
+	private ServletContext servletContext;
 
 	/**
 	 * http://docs.spring.io/autorepo/docs/spring/4.2.5.RELEASE/spring-framework-reference/html/beans.html
@@ -48,10 +63,19 @@ public class ServiceConfig {
 	 * Otherwise, @Autowired and @Value won’t work on the configuration class itself since it is being created as a bean instance too early.
 	 */
 	@Bean
-	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() throws IOException {
-		PropertySourcesPlaceholderConfigurer conf = new PropertySourcesPlaceholderConfigurer();
-		conf.setLocations(getResources());
-		return conf;
+	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+	
+	/**
+	 * {@link PropertiesFactoryBean} is a FactoryBean implementation which reads a properties file
+	 * and exposes that as an {@code Properties} object in the applicationcontext.
+	 */
+	@Bean
+	public PropertiesFactoryBean properties() {
+		PropertiesFactoryBean properties = new PropertiesFactoryBean();
+		properties.setLocations(new ClassPathResource("logic.properties"));
+		return properties;
 	}
 	
 	@Bean
@@ -78,15 +102,34 @@ public class ServiceConfig {
 	
 	@Autowired
 	@Bean
-	public Map<String, NotificationMessage> getNotificationTemplates(@Value("${notification.config.path}") String configPath) {
+	public Map<String, NotificationMessage> getNotificationTemplates(@Value("${notification.config.path}") String configPath)
+			throws IOException {
 		DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
 		reader.setValidating(false);
-		reader.loadBeanDefinitions(new PathResource(configPath));
+		reader.loadBeanDefinitions(getResource(configPath));
 		return CommonUtils.getSafeMap(beanFactory.getBeansOfType(NotificationMessage.class));
 	}
 
-	private static Resource[] getResources() {
-		return new Resource[] {new ClassPathResource("application.properties"), new ClassPathResource("logic.properties")};
+	private Resource getResource(String resourcePath) throws IOException {
+		for (Resource resource : getResourceCandidates(resourcePath)) {
+			if (resource.exists()) {
+				return resource;
+			}
+		}
+		throw new IOException("Resource " + resourcePath + " not found");
+	}
+	
+	private Iterable<Resource> getResourceCandidates(String resourcePath) {
+		List<Resource> resourceCandidates = new ArrayList<>();
+		resourceCandidates.add(new ServletContextResource(servletContext, resourcePath));
+		resourceCandidates.add(new PathResource(resourcePath));
+		resourceCandidates.add(new ClassPathResource(resourcePath));
+		try {
+			resourceCandidates.add(new UrlResource(resourcePath));
+		} catch (MalformedURLException e) {
+			// ignore
+		}
+		return resourceCandidates;
 	}
 }

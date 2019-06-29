@@ -1,5 +1,7 @@
 package com.revenat.myresume.infrastructure.gateway.filesystem.impl;
 
+import static com.revenat.myresume.infrastructure.config.Constants.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,20 +25,21 @@ class FileSystemGatewayImpl implements FileSystemGateway {
 	private final String mediaDirParent;
 	
 	@Autowired
-	public FileSystemGatewayImpl(@Value("${app.root.dir}") String mediaDirParent) {
+	public FileSystemGatewayImpl(@Value("${media.storage.root.path}") String mediaDirParent) {
 		this.mediaDirParent = normalizeDirPath(mediaDirParent);
 	}
 
 	@Override
 	public String saveFile(InputStream in, String fileName) {
-		String normalizePath = mediaDirParent + normalizeFilePath(fileName);
-		File file = new File(normalizePath);
+		String normalizePath = PATH_SEPARATOR + MEDIA_DIR_NAME + PATH_SEPARATOR + normalizeFilePath(fileName);
+		String fullNormalizePath = mediaDirParent + normalizePath;
+		File file = new File(fullNormalizePath);
 		if (!file.getParentFile().exists()) {
 			file.getParentFile().mkdir();
 		}
 		InputStream input = in;
 		try {
-			Files.copy(input, Paths.get(normalizePath), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(input, Paths.get(fullNormalizePath), StandardCopyOption.REPLACE_EXISTING);
 			LOGGER.debug("File {} has been saved", file);
 			return normalizePath;
 		} catch (IOException e) {
@@ -47,7 +50,7 @@ class FileSystemGatewayImpl implements FileSystemGateway {
 	@Override
 	public boolean deleteFileIfExists(String fileName) {
 		if (fileName != null) {
-			File file = new File(mediaDirParent + normalizeFilePath(fileName));
+			File file = new File(mediaDirParent + PATH_SEPARATOR + normalizeFilePath(fileName));
 			if (file.exists()) {
 				if (file.delete()) {
 					LOGGER.debug("File {} has been deleted.", file);
@@ -61,7 +64,11 @@ class FileSystemGatewayImpl implements FileSystemGateway {
 	}
 	
 	private String normalizeDirPath(String path) {
-		return path.replace("\\", "/");
+		String normalizedPath =  path.replace("\\", "/");
+		if (normalizedPath.endsWith("/")) {
+			normalizedPath = normalizedPath.substring(0, normalizedPath.length() - 1);
+		}
+		return normalizedPath;
 	}
 	
 	private String normalizeFilePath(String path) {

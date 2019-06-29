@@ -11,6 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- Main dependencies -->
 		<servlet.version>3.1.0</servlet.version>
 		<jsp-api.version>2.2</jsp-api.version>
 		<jstl.version>1.2</jstl.version>
@@ -23,6 +24,8 @@
 		<common-text.version>1.6</common-text.version>
 		<commons-fileupload.version>1.4</commons-fileupload.version>
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
+		<commons-collections.version>4.3</commons-collections.version>
+		<libphonenumber.version>8.10.14</libphonenumber.version>
 		<joda-time.version>2.10.2</joda-time.version>
 		<sitemash.version>3.0.1</sitemash.version>
 		<spring.version>4.3.24.RELEASE</spring.version>
@@ -34,6 +37,11 @@
 		<javax.mail.version>1.6.2</javax.mail.version>
 		<freemarker.version>2.3.28</freemarker.version>
 		<restfb.version>2.20.0</restfb.version>
+		<gson.version>2.8.5</gson.version>
+		<jsoup.version>1.12.1</jsoup.version>
+		<junidecode.version>0.1.1</junidecode.version>
+		<jsr305-findbugs.version>3.0.2</jsr305-findbugs.version>
+		<!-- Test dependencies -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.13.0</mockito.version>
 		<hamcrest.version>2.1</hamcrest.version>
@@ -73,14 +81,14 @@
 			<version>${postgresql.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-dbcp2</artifactId>
-			<version>${commons-dbcp2.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
 			<version>${thumbnailator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>${commons-dbcp2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -107,12 +115,23 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>${commons-beanutils.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${commons-collections.version}</version>
+		</dependency>
 		<!-- <dependency> <groupId>joda-time</groupId> <artifactId>joda-time</artifactId> 
 			<version>${joda-time.version}</version> </dependency> -->
 		<dependency>
 			<groupId>org.sitemesh</groupId>
 			<artifactId>sitemesh</artifactId>
 			<version>${sitemash.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.libphonenumber</groupId>
+			<artifactId>libphonenumber</artifactId>
+			<version>${libphonenumber.version}</version>
 		</dependency>
 
 		<!-- Spring dependencies -->
@@ -136,6 +155,27 @@
 			<artifactId>spring-data-elasticsearch</artifactId>
 			<version>${spring-data-elasticsearch.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
 		<!-- For working with java.time.* classes -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
@@ -157,21 +197,6 @@
 			<artifactId>jna</artifactId>
 			<version>${jna.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.sun.mail</groupId>
@@ -183,6 +208,17 @@
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>${freemarker.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>${jsoup.version}</version>
 		</dependency>
 
 		<!-- Hibernate dependencies -->
@@ -201,6 +237,18 @@
 			<groupId>com.restfb</groupId>
 			<artifactId>restfb</artifactId>
 			<version>${restfb.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.moparisthebest</groupId>
+			<artifactId>junidecode</artifactId>
+			<version>${junidecode.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>${jsr305-findbugs.version}</version>
 		</dependency>
 
 
@@ -244,14 +292,33 @@
 	</dependencies>
 
 	<build>
-<!-- 		<finalName>my-resume</finalName> -->
+		<!-- <finalName>my-resume</finalName> -->
 		<finalName>ROOT</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+						<showWarnings>true</showWarnings>
+						<showDeprecation>true</showDeprecation>
+						<debug>true</debug>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>3.2.2</version>
+					<configuration>
+						<warSourceDirectory>src/main/webapp</warSourceDirectory>
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.2.2</version>
-			</plugin>
 			<plugin>
 				<groupId>org.hibernate.orm.tooling</groupId>
 				<artifactId>hibernate-enhance-maven-plugin</artifactId>
@@ -269,6 +336,74 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>com.samaxes.maven</groupId>
+				<artifactId>minify-maven-plugin</artifactId>
+				<version>1.7.6</version>
+				<executions>
+					<execution>
+						<id>common-minify</id>
+						<phase>package</phase>
+						<configuration>
+							<charset>UTF-8</charset>
+							<cssSourceDir>/static/css</cssSourceDir>
+							<cssSourceFiles>
+								<cssSourceFile>bootstrap-3.3.6.css</cssSourceFile>
+								<cssSourceFile>bootstrap-theme-3.3.6.css</cssSourceFile>
+								<cssSourceFile>font-awesome-4.6.1.css</cssSourceFile>
+								<cssSourceFile>timeline.css</cssSourceFile>
+								<cssSourceFile>app.css</cssSourceFile>
+							</cssSourceFiles>
+							<cssTargetDir>/static/css</cssTargetDir>
+							<cssFinalFile>resume-common.css</cssFinalFile>
+							<jsSourceDir>/static/js</jsSourceDir>
+							<jsSourceFiles>
+								<jsSourceFile>jquery-2.2.3.js</jsSourceFile>
+								<jsSourceFile>bootstrap-3.3.6.js</jsSourceFile>
+								<jsSourceFile>app.js</jsSourceFile>
+							</jsSourceFiles>
+							<jsFinalFile>resume-common.js</jsFinalFile>
+							<jsTargetDir>/static/js</jsTargetDir>
+							<verbose>true</verbose>
+							<jsEngine>CLOSURE</jsEngine>
+							<closureLanguage>ECMASCRIPT5</closureLanguage>
+						</configuration>
+						<goals>
+							<goal>minify</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>full-minify</id>
+						<phase>package</phase>
+						<configuration>
+							<charset>UTF-8</charset>
+							<cssSourceDir>/static/css</cssSourceDir>
+							<cssSourceFiles>
+								<cssSourceFile>bootstrap-datepicker-1.6.0.css</cssSourceFile>
+								<cssSourceFile>bootstrap-slider-6.1.6.css</cssSourceFile>
+								<cssSourceFile>fileinput-4.3.2.css</cssSourceFile>
+							</cssSourceFiles>
+							<cssTargetDir>/static/css</cssTargetDir>
+							<cssFinalFile>resume-ex.css</cssFinalFile>
+							<jsSourceDir>/static/js</jsSourceDir>
+							<jsSourceFiles>
+								<jsSourceFile>bootstrap-datepicker-1.6.0.js</jsSourceFile>
+								<jsSourceFile>bootstrap-slider-6.1.6.js</jsSourceFile>
+								<jsSourceFile>handlebars-4.0.5.js</jsSourceFile>
+								<jsSourceFile>fileinput-4.3.2.js</jsSourceFile>
+							</jsSourceFiles>
+							<jsFinalFile>resume-ex.js</jsFinalFile>
+							<jsTargetDir>/static/js</jsTargetDir>
+							<verbose>true</verbose>
+							<jsEngine>CLOSURE</jsEngine>
+							<closureLanguage>ECMASCRIPT5</closureLanguage>
+						</configuration>
+						<goals>
+							<goal>minify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.8</version>
 				<executions>
@@ -279,6 +414,10 @@
 						<configuration>
 							<tasks>
 								<delete dir="${basedir}/src/main/webapp/WEB-INF/lib" />
+								<delete dir="${basedir}/src/main/webapp/static/css/resume-common.min.css" />
+								<delete dir="${basedir}/src/main/webapp/static/css/resume-ex.min.css" />
+								<delete dir="${basedir}/src/main/webapp/static/js/resume-common.min.js" />
+								<delete dir="${basedir}/src/main/webapp/static/js/resume-ex.min.js" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -296,6 +435,10 @@
 									<fileset
 										dir="${basedir}/target/${project.build.finalName}/WEB-INF/lib" />
 								</copy>
+								<copy file="${basedir}/target/${project.build.finalName}/static/css/resume-common.min.css" tofile="${basedir}/src/main/webapp/static/css/resume-common.min.css" />
+								<copy file="${basedir}/target/${project.build.finalName}/static/css/resume-ex.min.css" tofile="${basedir}/src/main/webapp/static/css/resume-ex.min.css" />
+								<copy file="${basedir}/target/${project.build.finalName}/static/js/resume-common.min.js" tofile="${basedir}/src/main/webapp/static/js/resume-common.min.js" />
+								<copy file="${basedir}/target/${project.build.finalName}/static/js/resume-ex.min.js" tofile="${basedir}/src/main/webapp/static/js/resume-ex.min.js" />
 							</tasks>
 						</configuration>
 						<goals>

@@ -18,9 +18,20 @@ public class ApplicationListener implements ServletContextListener {
 		ServletContext container = sce.getServletContext();
 		WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(container);
 		ConfigurableEnvironment env = (ConfigurableEnvironment) context.getEnvironment();
-		container.setAttribute("production", env.getRequiredProperty("application.production", Boolean.class));	
+		
+		setAttributes(container, env);	
 		
 		LOGGER.info("Aplication started");
+	}
+
+	private void setAttributes(ServletContext container, ConfigurableEnvironment env) {
+		container.setAttribute("production", env.getRequiredProperty("app.production", Boolean.class));
+		container.setAttribute("cssCommonVersion", env.getRequiredProperty("app.css.common.version", String.class));
+		container.setAttribute("cssExVersion", env.getRequiredProperty("app.css.ex.version", String.class));
+		container.setAttribute("jsCommonVersion", env.getRequiredProperty("app.js.common.version", String.class));
+		container.setAttribute("jsExVersion", env.getRequiredProperty("app.js.ex.version", String.class));
+		container.setAttribute("jsMessagesVersion", env.getRequiredProperty("app.js.messages.version", String.class));
+		container.setAttribute("applicationHost", env.getRequiredProperty("app.host", String.class));
 	}
 
 	@Override

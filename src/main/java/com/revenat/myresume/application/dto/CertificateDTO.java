@@ -14,15 +14,18 @@ public class CertificateDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	
 	@NotBlank
 	@Size(max = 50)
 	@EnglishLanguage
 	private String name;
+	
 	@NotBlank
 	@Size(max = 255)
 	private String largeUrl;
-	@NotBlank
-	@Size(max = 255)
+	
+//	@NotBlank
+//	@Size(max = 255)
 	private String smallUrl;
 	
 	public CertificateDTO() {}

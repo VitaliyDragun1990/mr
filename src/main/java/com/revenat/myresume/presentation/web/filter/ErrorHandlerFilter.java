@@ -4,14 +4,9 @@ import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class ErrorHandlerFilter extends AbstractFilter {
 	
@@ -19,10 +14,9 @@ public class ErrorHandlerFilter extends AbstractFilter {
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		ServletContext container = filterConfig.getServletContext();
-		WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(container);
-		ConfigurableEnvironment env = (ConfigurableEnvironment) context.getEnvironment();
-		production =  env.getRequiredProperty("application.production", Boolean.class);	
+		super.init(filterConfig);
+		
+		production =  getEnv().getRequiredProperty("app.production", Boolean.class);	
 	}
 
 	@Override
@@ -35,12 +29,11 @@ public class ErrorHandlerFilter extends AbstractFilter {
 			LOGGER.error("Process request failed: " + requestUrl, th);
 			handleException(th, requestUrl, resp);
 		}
-
 	}
 
 	private void handleException(Throwable th, String requestUrl, HttpServletResponse resp) throws ServletException, IOException {
 		if (production) {
-			if ("/error".equals(requestUrl)) {
+			if (requestUrl.contains("/fragment") || "/error".equals(requestUrl)) {
 				sendErrorStatus(resp);
 			} else {
 				resp.sendRedirect("/error?url=" + requestUrl);

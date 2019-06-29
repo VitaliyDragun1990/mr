@@ -5,8 +5,9 @@ package com.revenat.myresume.application.service.notification;
  */
 public enum NotificationType {
 
-	RESTORE_ACCESS("passwordChangedNotification"),
-	PASSWORD_CHANGED("restoreAccessNotification");
+	RESTORE_ACCESS("restoreAccessNotification"),
+	PASSWORD_CHANGED("passwordChangedNotification"),
+	PASSWORD_GENERATED("passwordGeneratedNotification");
 	
 	private final String notificationName;
 

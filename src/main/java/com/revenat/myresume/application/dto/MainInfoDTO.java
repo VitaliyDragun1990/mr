@@ -9,42 +9,55 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.Adulthood;
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
+import com.revenat.myresume.application.validation.annotation.Phone;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class MainInfoDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@NotBlank
 	@Size(max = 255)
 	private String largePhoto;
-	@NotBlank
+	
 	@Size(max = 255)
 	private String smallPhoto;
+	
 	@NotNull
 	@Adulthood
 	private LocalDate birthDate;
+	
 	@NotBlank
 	@Size(max = 60)
-	@EnglishLanguage
+	@SafeHtml
+	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
 	private String country;
+	
 	@NotBlank
 	@Size(max = 100)
-	@EnglishLanguage
+	@SafeHtml
+	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
 	private String city;
+	
 	@NotBlank
 	@Email
 	@Size(max = 100)
+	@EnglishLanguage
 	private String email;
+	
 	@NotBlank
 	@Size(max = 20)
+	@Phone
 	private String phone;
+	
 	@NotBlank
+	@SafeHtml
 	@EnglishLanguage
 	private String objective;
+	
 	@NotBlank
 	@EnglishLanguage
 	private String summary;

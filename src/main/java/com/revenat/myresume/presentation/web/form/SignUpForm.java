@@ -5,22 +5,31 @@ import java.io.Serializable;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.application.validation.annotation.FieldMatch;
 import com.revenat.myresume.application.validation.annotation.PasswordStrength;
+import com.revenat.myresume.presentation.web.form.annotation.EnableFormErrorConvertation;
 
 @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
+@EnableFormErrorConvertation(
+		formName = "signUpForm",
+		fieldReference = "confirmPassword",
+		validationAnnotationClasses = FieldMatch.class
+		)
 public class SignUpForm extends AbstractForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotBlank
 	@Size(max = 50)
+	@SafeHtml
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
 	private String firstName;
 	
 	@NotBlank
 	@Size(max = 50)
+	@SafeHtml
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
 	private String lastName;
 	

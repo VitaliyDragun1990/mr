@@ -11,11 +11,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
+@PropertySource({
+	"classpath:/properties/elasticsearch.properties",
+})
 @ComponentScan("com.revenat.myresume.infrastructure.service.impl")
 @EnableElasticsearchRepositories("com.revenat.myresume.infrastructure.repository.search")
 public class ElasticSearchConfig {

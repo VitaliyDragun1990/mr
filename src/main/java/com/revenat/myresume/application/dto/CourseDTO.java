@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.domain.entity.Course;
@@ -14,13 +15,17 @@ public class CourseDTO extends AbstractEndDateDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	
 	@NotBlank
 	@Size(max = 60)
-	@EnglishLanguage
+	@EnglishLanguage(withSpecSymbols = false)
+	@SafeHtml
 	private String name;
+	
 	@NotBlank
 	@Size(max = 60)
-	@EnglishLanguage
+	@EnglishLanguage(withSpecSymbols = false)
+	@SafeHtml
 	private String school;
 
 	public CourseDTO() {

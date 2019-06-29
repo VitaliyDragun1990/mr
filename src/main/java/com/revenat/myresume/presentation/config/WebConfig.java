@@ -1,6 +1,9 @@
 package com.revenat.myresume.presentation.config;
 
+import java.util.List;
+
 import org.hibernate.validator.HibernateValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -9,6 +12,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -21,9 +25,12 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableSpringDataWebSupport
 @ComponentScan({
 	"com.revenat.myresume.presentation.web.controller",
-	"com.revenat.myresume.presentation.web.advise"
+	"com.revenat.myresume.presentation.web.handler"
 	})
 public class WebConfig extends WebMvcConfigurerAdapter {
+	
+	@Autowired
+	private HandlerExceptionResolver handlerExceptionresolver;
 
 	@Bean
 	public ViewResolver viewResolver() {
@@ -39,7 +46,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/static/**").addResourceLocations("/static/");
 		registry.addResourceHandler("/media/**").addResourceLocations("/media/");
 		registry.addResourceHandler("/favicon.ico").addResourceLocations("/static/favicon.ico");
-		super.addResourceHandlers(registry);
 	}
 	
 	@Bean
@@ -61,5 +67,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		localValidatorFactoryBean.setProviderClass(HibernateValidator.class);
 		localValidatorFactoryBean.setValidationMessageSource(messageSource());
 		return localValidatorFactoryBean;
+	}
+	
+	@Override
+	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+		exceptionResolvers.add(handlerExceptionresolver);
 	}
 }

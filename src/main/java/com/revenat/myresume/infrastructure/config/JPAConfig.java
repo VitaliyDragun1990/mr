@@ -18,7 +18,9 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource({
+	"classpath:/properties/jpa.properties",
+})
 @EnableTransactionManagement
 @EnableJpaRepositories("com.revenat.myresume.infrastructure.repository.storage")
 public class JPAConfig {
@@ -48,6 +50,7 @@ public class JPAConfig {
 		Properties props = new Properties();
 		props.put("hibernate.dialect", env.getRequiredProperty("hibernate.dialect"));
 		props.put("javax.persistence.validation.mode", "none");
+		props.put("org.hibernate.flushMode", "COMMIT"); // TODO: ????
 		props.put("show_sql", "true");
 		props.put("format_sql", "true");
 		props.put("use_sql_comments", "true");

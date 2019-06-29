@@ -28,7 +28,7 @@ public class WelcomeController {
 	@GetMapping({"/", "/welcome"})
 	public String listProfiles(Model model) {
 		Page<ProfileDTO> page = profileService.findAll(
-				new PageRequest(0, Constants.MAX_PROFILES_PER_PAGE, new Sort("firstName", "lastName")));
+				new PageRequest(0, Constants.UI.MAX_PROFILES_PER_PAGE, new Sort("firstName", "lastName")));
 		model.addAttribute("profiles", page.getContent());
 		model.addAttribute("page", page);
 		return "profiles";
@@ -36,7 +36,7 @@ public class WelcomeController {
 	
 	@GetMapping({"/fragment/more", "/welcome/fragment/more"})
 	public String moreProfiles(Model model,
-			@PageableDefault(size = Constants.MAX_PROFILES_PER_PAGE, sort = {"firstName", "lastName"}) Pageable pageable)
+			@PageableDefault(size = Constants.UI.MAX_PROFILES_PER_PAGE, sort = {"firstName", "lastName"}) Pageable pageable)
 	throws UnsupportedEncodingException {
 		Page<ProfileDTO> page = profileService.findAll(pageable);
 		model.addAttribute("profiles", page.getContent());

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.revenat.myresume.application.generator.UidGenerator;
+import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.util.DataUtil;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
@@ -22,12 +22,12 @@ class SignUpServiceImpl implements SignUpService {
 	
 	private final ProfileRepository profileRepo;
 	private final SearchIndexingService searchIndexingService;
-	private final UidGenerator uidGenerator;
+	private final DataGenerator uidGenerator;
 	private final PasswordEncoder passwordEncoder;
 
 	@Autowired
 	public SignUpServiceImpl(ProfileRepository profileRepo, SearchIndexingService searchIndexingService,
-			UidGenerator uidGenerator, PasswordEncoder passwordEncoder) {
+			DataGenerator uidGenerator, PasswordEncoder passwordEncoder) {
 		this.profileRepo = profileRepo;
 		this.searchIndexingService = searchIndexingService;
 		this.uidGenerator = uidGenerator;
@@ -51,7 +51,7 @@ class SignUpServiceImpl implements SignUpService {
 		profile.setUid(uidGenerator.generateUid(
 				newProfile.getFirstName(),
 				newProfile.getLastName(),
-				uid -> profileRepo.countByUid(uid) > 0));
+				uid -> profileRepo.countByUid(uid) == 0));
 		profile.setFirstName(DataUtil.capitalizeName(newProfile.getFirstName()));
 		profile.setLastName(DataUtil.capitalizeName(newProfile.getLastName()));
 		profile.setPassword(passwordEncoder.encode(newProfile.getPassword()));
@@ -77,11 +77,11 @@ class SignUpServiceImpl implements SignUpService {
 	}
 	
 	private boolean isRegistrationCompleted(Profile profile) {
-		boolean hasPhoto = !CommonUtils.isBlank(profile.getLargePhoto()) && !CommonUtils.isBlank(profile.getSmallPhoto());
-		boolean hasAddress = !CommonUtils.isBlank(profile.getCountry()) && !CommonUtils.isBlank(profile.getCity());
+		boolean hasPhoto = CommonUtils.isNotBlank(profile.getLargePhoto()) && CommonUtils.isNotBlank(profile.getSmallPhoto());
+		boolean hasAddress = CommonUtils.isNotBlank(profile.getCountry()) && CommonUtils.isNotBlank(profile.getCity());
 		boolean hasBirthday = profile.getBirthDay() != null;
-		boolean hasPhoneAndEmail = CommonUtils.isBlank(profile.getPhone()) && !CommonUtils.isBlank(profile.getEmail());
-		boolean hasInfo = CommonUtils.isBlank(profile.getObjective()) && !CommonUtils.isBlank(profile.getSummary());
+		boolean hasPhoneAndEmail = CommonUtils.isNotBlank(profile.getPhone()) && CommonUtils.isNotBlank(profile.getEmail());
+		boolean hasInfo = CommonUtils.isNotBlank(profile.getObjective()) && CommonUtils.isNotBlank(profile.getSummary());
 		return hasPhoto && hasAddress && hasBirthday && hasPhoneAndEmail && hasInfo;
 	}
 

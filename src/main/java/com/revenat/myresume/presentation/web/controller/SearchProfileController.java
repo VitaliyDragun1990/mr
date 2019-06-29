@@ -29,7 +29,7 @@ public class SearchProfileController {
 	@GetMapping
 	public String search(@RequestParam("query") String query, Model model) {
 		Page<ProfileDTO> page = searchService.findBySearchQuery(query,
-				new PageRequest(0, Constants.MAX_PROFILES_PER_PAGE, new Sort("firstName", "lastName")));
+				new PageRequest(0, Constants.UI.MAX_PROFILES_PER_PAGE, new Sort("firstName", "lastName")));
 		model.addAttribute("profiles", page.getContent());
 		model.addAttribute("page", page);
 		model.addAttribute("query", query);
@@ -38,7 +38,7 @@ public class SearchProfileController {
 	
 	@GetMapping("/fragment/more")
 	public String moreProfiles(@RequestParam("query") String query, Model model,
-			@PageableDefault(size = Constants.MAX_PROFILES_PER_PAGE, sort = {"firstName", "lastName"}) Pageable pageable)
+			@PageableDefault(size = Constants.UI.MAX_PROFILES_PER_PAGE, sort = {"firstName", "lastName"}) Pageable pageable)
 	throws UnsupportedEncodingException {
 		Page<ProfileDTO> page = searchService.findBySearchQuery(query, pageable);
 		model.addAttribute("profiles", page.getContent());

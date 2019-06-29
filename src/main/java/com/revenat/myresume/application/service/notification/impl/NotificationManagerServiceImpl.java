@@ -47,6 +47,15 @@ class NotificationManagerServiceImpl implements NotificationManagerService {
 		processNotification(profile, NotificationType.PASSWORD_CHANGED, model);
 	}
 	
+	@Override
+	public void sendPasswordGenerated(Profile profile, String generatedPassword) {
+		LOGGER.debug("Password generated for account {}", profile.getUid());
+		Map<String, Object> model = new HashMap<>();
+		model.put("profile", profile);
+		model.put("generatedPassword", generatedPassword);
+		processNotification(profile, NotificationType.PASSWORD_GENERATED, model);
+	}
+	
 	private void processNotification(Profile profile, NotificationType notificationType, Map<String, Object> model) {
 		String destinationAddress = notificationSenderService.getDestinationAddress(profile);
 		if (StringUtils.isNotBlank(destinationAddress)) {

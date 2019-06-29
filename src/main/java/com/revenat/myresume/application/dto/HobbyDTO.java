@@ -18,10 +18,12 @@ public class HobbyDTO implements Serializable, Comparable<HobbyDTO> {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	
 	@NotBlank
 	@Size(max = 30)
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
 	private String name;
+	
 	private boolean selected;
 	
 	public HobbyDTO() {

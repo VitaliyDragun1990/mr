@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.domain.entity.Language;
@@ -15,13 +16,17 @@ public class LanguageDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	
 	@NotBlank
 	@Size(max = 60)
 	@EnglishLanguage(withNumbers = false, withPunctuations = false, withSpecSymbols = false)
+	@SafeHtml
 	private String name;
+	
 	@NotBlank
 	@EnglishLanguage(withNumbers = false, withPunctuations = false, withSpecSymbols = false)
 	private String type;
+	
 	@NotBlank
 	@EnglishLanguage(withNumbers = false, withPunctuations = false)
 	private String level;

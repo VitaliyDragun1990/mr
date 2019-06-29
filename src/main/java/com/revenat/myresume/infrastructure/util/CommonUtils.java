@@ -57,4 +57,8 @@ public class CommonUtils {
 	public static boolean isBlank(String string) {
 		return StringUtils.isBlank(string);
 	}
+	
+	public static boolean isNotBlank(String string) {
+		return !StringUtils.isBlank(string);
+	}
 }

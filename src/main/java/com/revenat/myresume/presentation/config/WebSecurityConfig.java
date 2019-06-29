@@ -12,40 +12,33 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import com.revenat.myresume.presentation.security.CustomRememberMeService;
 
 @Configuration
 @ComponentScan("com.revenat.myresume.presentation.security")
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final UserDetailsService userDetailsService;
-	private final DataSource dataSource;
-	private final PasswordEncoder passwordEncoder;
-
 	@Autowired
-	public WebSecurityConfig(UserDetailsService userDetailsService, DataSource dataSource, PasswordEncoder passwordEncoder) {
-		this.userDetailsService = userDetailsService;
-		this.dataSource = dataSource;
-		this.passwordEncoder = passwordEncoder;
-	}
+	private UserDetailsService userDetailsService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private AccessDeniedHandler accessDeniedHandler;
+	@Autowired
+	private CustomRememberMeService persistentTokenRememberMeService;
 	
 	@Bean
-	public PersistentTokenRepository persistentTokenRepository() {
+	@Autowired
+	public PersistentTokenRepository persistentTokenRepository(DataSource dataSource) {
 		JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
 		persistentTokenRepository.setDataSource(dataSource);
 		return persistentTokenRepository;
 	}
-	
-	/*
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth
-			.userDetailsService(userDetailsService)
-			.passwordEncoder(passwordEncoder());
-	}
-	*/
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -76,8 +69,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.rememberMe()
 			.rememberMeParameter("remember-me")
-			.key("my-resume-online")
-			.tokenRepository(persistentTokenRepository())
+			.rememberMeServices(persistentTokenRememberMeService)
+		.and()
+		.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
 		/*
 		 * .and() .csrf() .disable()
 		 */;

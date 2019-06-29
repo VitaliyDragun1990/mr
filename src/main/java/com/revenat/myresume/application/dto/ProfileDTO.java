@@ -6,50 +6,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotBlank;
-
-import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
-import com.revenat.myresume.application.validation.annotation.PasswordStrength;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class ProfileDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	@NotBlank
-	@Size(max = 100)
+	
 	private String uid;
-	@NotBlank
-	@Size(max = 50)
+	
 	private String firstName;
-	@NotBlank
-	@Size(max = 50)
+	
 	private String lastName;
-	@PasswordStrength
+	
 	private String password;
+	
 	private boolean completed;
+	
 	private LocalDateTime created;
-	@EnglishLanguage
+	
 	private String info;
 
 	@Valid
 	private MainInfoDTO mainInfo;
+	
 	@Valid
 	private ContactsDTO contacts;
+	
 	@Valid
 	private List<CertificateDTO> certificates = new ArrayList<>();
+	
 	@Valid
 	private List<CourseDTO> courses = new ArrayList<>();
+	
 	@Valid
 	private List<EducationDTO> educations = new ArrayList<>();
+	
 	@Valid
 	private List<ExperienceDTO> experience = new ArrayList<>();
+	
 	@Valid
 	private List<LanguageDTO> languages = new ArrayList<>();
+	
 	@Valid
 	private List<SkillDTO> skills = new ArrayList<>();
+	
 	@Valid
 	private List<HobbyDTO> hobbies = new ArrayList<>();
 

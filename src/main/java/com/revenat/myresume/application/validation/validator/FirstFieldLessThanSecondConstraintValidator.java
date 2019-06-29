@@ -1,11 +1,5 @@
 package com.revenat.myresume.application.validation.validator;
 
-import java.time.Instant;
-import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.ChronoLocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -22,66 +16,24 @@ public class FirstFieldLessThanSecondConstraintValidator implements ConstraintVa
 		secondFieldName = constraintAnnotation.second();
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings("unchecked" )
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext context) {
 		try {
-			Object firstObj = ReflectionUtil.getFieldValue(value, firstFieldName);
-			Object secondObj = ReflectionUtil.getFieldValue(value, secondFieldName);
+			Object firstValue = ReflectionUtil.readProperty(value, firstFieldName);
+			Object secondValue = ReflectionUtil.readProperty(value, secondFieldName);
 			
-			if (firstObj == null && secondObj == null) {
+			if (firstValue == null || secondValue == null) {
 				return true;
-			}
-			else if (firstObj == null) {
-				return false;
-			} else if (secondObj == null) {
-				return true;
-			}
-			
-			
-			if (firstObj.getClass() != secondObj.getClass()) {
-				return false;
+			} else if (firstValue instanceof Comparable<?> && secondValue instanceof Comparable<?>) {
+				return ((Comparable<Object>)firstValue).compareTo((Comparable<Object>)secondValue) <= 0;
+			} else {
+				throw new IllegalArgumentException("first and second fields are not comparable!!!");
 			}
 			
-			if (firstObj instanceof ChronoLocalDate) {
-				ChronoLocalDate first = (ChronoLocalDate) firstObj;
-				ChronoLocalDate second = (ChronoLocalDate) secondObj;
-				return first.isBefore(second);
-			}
-			
-			if (firstObj instanceof ChronoLocalDateTime) {
-				ChronoLocalDateTime first = (ChronoLocalDateTime) firstObj;
-				ChronoLocalDateTime second = (ChronoLocalDateTime) secondObj;
-				return first.isBefore(second);
-			}
-			
-			if (firstObj instanceof Instant) {
-				Instant first = (Instant) firstObj;
-				Instant second = (Instant) secondObj;
-				return first.isBefore(second);
-			}
-			
-			if (firstObj instanceof Date) {
-				Date first = (Date) firstObj;
-				Date second = (Date) secondObj;
-				return first.before(second);
-			}
-			
-			if (firstObj instanceof Calendar) {
-				Calendar first = (Calendar) firstObj;
-				Calendar second = (Calendar) secondObj;
-				return first.before(second);
-			}
-			if (firstObj instanceof Number) {
-				Number first = (Number) firstObj;
-				Number second = (Number) secondObj;
-				return first.doubleValue() < second.doubleValue();
-			}
-			
-		} catch (Exception ignore) {
-			// ignore
+		} catch (IllegalArgumentException e) {
+			return false;
 		}
-		return false;
 	}
 
 }

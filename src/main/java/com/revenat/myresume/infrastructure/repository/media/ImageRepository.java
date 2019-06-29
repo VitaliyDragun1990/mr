@@ -11,30 +11,19 @@ import com.revenat.myresume.infrastructure.exception.PersistenceException;
  *
  */
 public interface ImageRepository {
-
+	
 	/**
 	 * Saves photo image in original and small size using data obtained from provided {@link InputStream}
 	 * 
 	 * @param in input stream to get data from
 	 * @param height height of the photo in pixels
 	 * @param width width of the photo in pixels
-	 * @return {@link ImagePair} which contains path to saved image or {@code null} if provided
+	 * @return {@link ImageLinkPair} which contains path to saved image or {@code null} if provided
 	 *         input stream was {@code null}
 	 * @throws PersistenceException
 	 */
-	ImagePair savePhoto(InputStream in);
-	
-	/**
-	 * Saves certificate image in original and small size using data obtained from provided {@link InputStream}
-	 * 
-	 * @param in input stream to get data from
-	 * @param height height of the photo in pixels
-	 * @param width width of the photo in pixels
-	 * @return {@link ImagePair} which contains path to saved image or {@code null} if provided
-	 *         input stream was {@code null}
-	 * @throws PersistenceException
-	 */
-	ImagePair saveCertificate(InputStream in);
+	ImageLinkPair saveImage(InputStream in, ImageType imageType);
+
 
 	/**
 	 * Deletes image if it exists in the first place

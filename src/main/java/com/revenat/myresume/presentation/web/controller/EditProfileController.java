@@ -24,15 +24,18 @@ import com.revenat.myresume.presentation.web.form.HobbyForm;
 import com.revenat.myresume.presentation.web.form.InfoForm;
 import com.revenat.myresume.presentation.web.form.LanguageForm;
 import com.revenat.myresume.presentation.web.form.SkillForm;
+import com.revenat.myresume.presentation.web.form.converter.FormErrorConverter;
 
 @Controller
 @RequestMapping("/profile/edit")
 public class EditProfileController {
 	private final EditProfileService profileService;
+	private final FormErrorConverter formErrorConverter;
 
 	@Autowired
-	public EditProfileController(EditProfileService profileService) {
+	public EditProfileController(EditProfileService profileService, FormErrorConverter formErrorConverter) {
 		this.profileService = profileService;
+		this.formErrorConverter = formErrorConverter;
 	}
 
 	@GetMapping
@@ -83,6 +86,7 @@ public class EditProfileController {
 	public String saveEditExperience(@Valid @ModelAttribute("experienceForm") ExperienceForm form, BindingResult bindingResult,
 			Model model, @AuthenticationPrincipal AuthenticatedUser authUser) {
 		if (bindingResult.hasErrors()) {
+			formErrorConverter.convertFromErrorToFieldError(form, form.getItems(), bindingResult);
 			return "edit/experience"; 
 		}
 		profileService.updateExperience(authUser.getId(), form.getItems());
@@ -142,6 +146,7 @@ public class EditProfileController {
 	public String saveEditEducation(@Valid @ModelAttribute("educationForm") EducationForm form,
 			BindingResult bindingResult, Model model, @AuthenticationPrincipal AuthenticatedUser authUser) {
 		if (bindingResult.hasErrors()) {
+			formErrorConverter.convertFromErrorToFieldError(form, form.getItems(), bindingResult);
 			return "edit/education";
 		}
 		profileService.updateEducation(authUser.getId(), form.getItems());

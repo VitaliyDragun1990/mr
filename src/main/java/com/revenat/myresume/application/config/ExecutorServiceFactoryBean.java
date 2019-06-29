@@ -8,14 +8,21 @@ import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.FactoryBean;
 
+/**
+ * Allows to create custom beans for components for wich source code we don't
+ * have access to.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 class ExecutorServiceFactoryBean implements FactoryBean<ExecutorService> {
 	public static final String AUTO = "AUTO";
-	
+
 	private ExecutorService executorService;
-	
+
 	private boolean autoThreadCount;
 	private int threadCount;
-	
+
 	public void setThreadCount(String threadCount) {
 		if (AUTO.equalsIgnoreCase(threadCount.trim())) {
 			autoThreadCount = true;
@@ -26,7 +33,7 @@ class ExecutorServiceFactoryBean implements FactoryBean<ExecutorService> {
 			}
 		}
 	}
-	
+
 	@PostConstruct
 	private void postConstruct() {
 		if (autoThreadCount) {
@@ -35,7 +42,7 @@ class ExecutorServiceFactoryBean implements FactoryBean<ExecutorService> {
 			executorService = Executors.newFixedThreadPool(threadCount);
 		}
 	}
-	
+
 	@PreDestroy
 	public void preDestroy() {
 		executorService.shutdown();
