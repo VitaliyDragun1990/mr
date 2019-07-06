@@ -21,8 +21,7 @@ import com.revenat.myresume.presentation.web.form.converter.FormErrorConverter;
 class FormErrorConverterImpl implements FormErrorConverter {
 
 	@Override
-	public void convertFromErrorToFieldError(Object formInstance, Object validatedInstance,
-			BindingResult bindingResult) {
+	public void convertFromErrorToFieldError(Object formInstance, Object validatedInstance, BindingResult bindingResult) {
 		List<EnableFormErrorConvertation> metaAnnotations = findMetaAnnotations(formInstance);
 		boolean found = false;
 		for (EnableFormErrorConvertation metaAnnotation : metaAnnotations) {

@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.revenat.myresume.infrastructure.repository.media.ImageType;
+import com.revenat.myresume.presentation.image.model.ImageType;
 
 public interface ImageStorageService {
 

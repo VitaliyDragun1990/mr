@@ -10,10 +10,10 @@ import javax.servlet.SessionTrackingMode;
 
 import org.sitemesh.builder.SiteMeshFilterBuilder;
 import org.sitemesh.config.ConfigurableSiteMeshFilter;
+import org.sitemesh.content.tagrules.html.Sm2TagRuleBundle;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -25,6 +25,7 @@ import com.revenat.myresume.presentation.web.filter.ErrorHandlerFilter;
 import com.revenat.myresume.presentation.web.listener.ApplicationListener;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+	private AnnotationConfigWebApplicationContext rootWebAppContext;
 	
 	@Override
 	public void onStartup(ServletContext container) throws ServletException {
@@ -40,8 +41,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	}
 	
 	private void registerDebugFilterIfEnabled(ServletContext container, DebugFilter filter) {
-		WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(container);
-		ConfigurableEnvironment env = (ConfigurableEnvironment) context.getEnvironment();
+		ConfigurableEnvironment env = rootWebAppContext.getEnvironment();
 		
 		boolean isDebugEnabled = env.getRequiredProperty("app.debug.enabled", Boolean.class);
 		String[] debugUrl = env.getRequiredProperty("app.debug.url", String[].class);
@@ -70,7 +70,8 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 					.addDecoratorPath("/*", "/WEB-INF/template/page-template.jsp")
 					.addDecoratorPath("/fragment/*", "/WEB-INF/template/fragment-template.jsp")
 					.addDecoratorPath("/welcome/fragment/*", "/WEB-INF/template/fragment-template.jsp")
-					.addDecoratorPath("/search/fragment/*", "/WEB-INF/template/fragment-template.jsp");
+					.addDecoratorPath("/search/fragment/*", "/WEB-INF/template/fragment-template.jsp")
+					.addTagRuleBundle(new Sm2TagRuleBundle());
 			}
 		};
 	}
@@ -78,6 +79,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class<?>[] {
+			ImageProcessingConfig.class,
 			WebSecurityConfig.class,
 			ApplicationConfig.class,
 			InfrastructureConfig.class
@@ -99,9 +101,16 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 		return new Filter[] {
 				new ErrorHandlerFilter(),
 				new CharacterEncodingFilter("UTF-8", true),
-				new OpenEntityManagerInViewFilter(), // TODO: remove this filter
+				//new OpenEntityManagerInViewFilter(), // TODO: remove this filter
 				new RequestContextFilter()
 				};
+	}
+	
+	@Override
+	protected WebApplicationContext createRootApplicationContext() {
+		this.rootWebAppContext = (AnnotationConfigWebApplicationContext) super.createRootApplicationContext();
+		rootWebAppContext.refresh();
+		return rootWebAppContext;
 	}
 
 }

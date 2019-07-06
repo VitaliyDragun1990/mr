@@ -11,8 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 @ComponentScan({
 	"com.revenat.myresume.infrastructure.media.converter.impl",
 	"com.revenat.myresume.infrastructure.media.optimizer.impl",
-	"com.revenat.myresume.infrastructure.media.resizer.impl",
-	"com.revenat.myresume.infrastructure.repository.media.impl"
+	"com.revenat.myresume.infrastructure.media.resizer.impl"
 })
 public class MediaConfig {
 

@@ -22,8 +22,7 @@ import com.revenat.myresume.infrastructure.media.converter.TranslitConverter;
 })
 @ComponentScan({
 	"com.revenat.myresume.infrastructure.gateway.email.impl",
-	"com.revenat.myresume.infrastructure.gateway.social.impl",
-	"com.revenat.myresume.infrastructure.gateway.filesystem.impl"
+	"com.revenat.myresume.infrastructure.gateway.social.impl"
 })
 public class GatewayConfig {
 	

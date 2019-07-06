@@ -389,7 +389,7 @@ class EditProfileServiceImpl implements EditProfileService {
 	private <E extends ProfileEntity> void updateProfileEntitiesIndexIfTransactionSuccess(
 			final Long profileId, final List<E> updatedEntityList, final Class<E> entityClass) {
 		executeIfTransactionSuccess(
-				() -> searchIndexingService.updateIndexProfileEntities(profileId, updatedEntityList, entityClass));
+				() -> searchIndexingService.updateProfileEntitiesIndex(profileId, updatedEntityList, entityClass));
 		
 	}
 

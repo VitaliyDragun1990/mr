@@ -20,6 +20,6 @@ public interface SearchIndexingService {
 
 	<T extends Annotation> void updateProfileIndex(Profile profile, Class<T> annotationClass);
 
-	<E extends ProfileEntity> void updateIndexProfileEntities(long profileId, List<E> updatedData,
+	<E extends ProfileEntity> void updateProfileEntitiesIndex(long profileId, List<E> updatedData,
 			Class<E> profileEntityClass);
 }

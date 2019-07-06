@@ -11,10 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.domain.exception.ApplicationException;
-import com.revenat.myresume.infrastructure.repository.media.ImageType;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.presentation.image.annotation.EnableTemporaryImageStorage;
 import com.revenat.myresume.presentation.image.exception.ImageUploadingException;
+import com.revenat.myresume.presentation.image.model.ImageType;
 import com.revenat.myresume.presentation.image.model.TemporaryImageStorage;
 import com.revenat.myresume.presentation.image.model.UploadedCertificateResult;
 import com.revenat.myresume.presentation.image.model.UploadedImageResult;

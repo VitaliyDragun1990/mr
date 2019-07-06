@@ -1,4 +1,4 @@
-package com.revenat.myresume.infrastructure.repository.media;
+package com.revenat.myresume.presentation.image.model;
 
 public enum ImageType {
 	AVATARS(110, 110, 400, 400),

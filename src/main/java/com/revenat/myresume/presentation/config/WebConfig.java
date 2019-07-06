@@ -1,9 +1,11 @@
 package com.revenat.myresume.presentation.config;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,10 +15,14 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
@@ -26,12 +32,14 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan({
 	"com.revenat.myresume.presentation.web.controller",
 	"com.revenat.myresume.presentation.web.handler",
-	"com.revenat.myresume.presentation.web.service"
+	"com.revenat.myresume.presentation.web.service",
+	"com.revenat.myresume.presentation.web.form.converter.impl"
 	})
 public class WebConfig extends WebMvcConfigurerAdapter {
 	
 	@Autowired
-	private HandlerExceptionResolver handlerExceptionresolver;
+	@Qualifier("applicationHandlerExceptionResolver")
+	private HandlerExceptionResolver handlerExceptionResolver;
 
 	@Bean
 	public ViewResolver viewResolver() {
@@ -40,6 +48,36 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		viewResolver.setPrefix("/WEB-INF/jsp/");
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
+	}
+	
+	/**
+	 * Uses a locale attribute in the user's session in case of a custom setting,
+	 * with a fallback to the specified default locale or the request'saccept-header locale. 
+	 */
+	@Bean
+	public LocaleResolver localResolver() {
+		SessionLocaleResolver localResolver = new SessionLocaleResolver();
+		localResolver.setDefaultLocale(Locale.US);
+		return localResolver;
+	}
+	
+	/**
+	 * Allows to switch to a new locale based on the value of the {@code lang} parameter
+	 * appended to a request.
+	 */
+	@Bean
+	public LocaleChangeInterceptor localeChangeInterceptor() {
+		LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
+		interceptor.setParamName("lang");
+		return interceptor;
+	}
+	
+	/**
+	 * Registers LocalChangeInterceptor in the application interceptor registry
+	 */
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(localeChangeInterceptor());
 	}
 	
 	@Override
@@ -72,6 +110,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-		exceptionResolvers.add(handlerExceptionresolver);
+		exceptionResolvers.add(handlerExceptionResolver);
 	}
 }

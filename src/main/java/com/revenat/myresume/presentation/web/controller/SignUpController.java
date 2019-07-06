@@ -30,12 +30,12 @@ public class SignUpController {
 
 	@GetMapping
 	public String signUp(Model model) {
-		model.addAttribute("profileForm", new SignUpForm());
+		model.addAttribute("signupForm", new SignUpForm());
 		return "sign-up";
 	}
 	
 	@PostMapping
-	public String signUp(@Valid @ModelAttribute("profileForm") SignUpForm form, BindingResult bindingResult) {
+	public String signUp(@Valid @ModelAttribute("signupForm") SignUpForm form, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			errorConverter.convertFromErrorToFieldError(form, form, bindingResult);
 			return "sign-up";

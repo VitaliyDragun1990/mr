@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.revenat.myresume.infrastructure.exception.ImageStorageException;
-import com.revenat.myresume.infrastructure.repository.media.ImageType;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
+import com.revenat.myresume.presentation.image.model.ImageType;
 
 @Service
 class FileImageStorageService implements ImageStorageService {

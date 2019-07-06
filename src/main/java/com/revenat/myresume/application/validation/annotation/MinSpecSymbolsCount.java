@@ -14,12 +14,12 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import com.revenat.myresume.application.validation.validator.MinSpecSymbolCountConstraintValidator;
+import com.revenat.myresume.application.validation.validator.MinSpecSymbolsCountConstraintValidator;
 
 @Documented
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD, PARAMETER, CONSTRUCTOR, ANNOTATION_TYPE })
-@Constraint(validatedBy = {MinSpecSymbolCountConstraintValidator.class})
+@Constraint(validatedBy = {MinSpecSymbolsCountConstraintValidator.class})
 public @interface MinSpecSymbolsCount {
 
 	int value() default 1;

@@ -11,8 +11,8 @@
 		</h3>
 	</div>
 	<div class="panel-body">
-		<resume:form-display-error-if-invalid formName="profileForm"/>
-		<form:form action="/sign-up" commandName="profileForm" method="post">
+		<resume:form-display-error-if-invalid formName="signupForm"/>
+		<form:form action="/sign-up" commandName="signupForm" method="post">
 			<security:csrfInput/>
 			<div class="help-block text-justify">
 				Keep in mind that provided first and last name can't be changed in the future! Please, provide real first and last name!

@@ -114,7 +114,7 @@ class ElasticSearchIndexingService implements SearchIndexingService {
 	}
 	
 	@Override
-	public <E extends ProfileEntity> void updateIndexProfileEntities(long profileId, List<E> updatedData,
+	public <E extends ProfileEntity> void updateProfileEntitiesIndex(long profileId, List<E> updatedData,
 			Class<E> profileEntityClass) {
 		updaterRegistry.get(profileEntityClass).updateProfileEntitiesIndex(profileId, updatedData);
 	}

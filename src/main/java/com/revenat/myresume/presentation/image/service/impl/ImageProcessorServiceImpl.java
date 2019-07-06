@@ -5,15 +5,17 @@ import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import com.revenat.myresume.infrastructure.media.converter.ImageFormatConverter;
 import com.revenat.myresume.infrastructure.media.optimizer.ImageOptimizer;
 import com.revenat.myresume.infrastructure.media.resizer.ImageResizer;
-import com.revenat.myresume.infrastructure.repository.media.ImageType;
 import com.revenat.myresume.presentation.image.exception.ImageProcessingException;
+import com.revenat.myresume.presentation.image.model.ImageType;
 import com.revenat.myresume.presentation.image.model.TemporaryImageStorage;
 import com.revenat.myresume.presentation.image.service.ImageProcessorService;
 
+@Service
 class ImageProcessorServiceImpl implements ImageProcessorService {
 
 	private final ImageFormatConverter pngToJpegFormatConverter;

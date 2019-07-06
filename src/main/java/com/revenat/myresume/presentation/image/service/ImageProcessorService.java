@@ -2,7 +2,7 @@ package com.revenat.myresume.presentation.image.service;
 
 import javax.annotation.Nonnull;
 
-import com.revenat.myresume.infrastructure.repository.media.ImageType;
+import com.revenat.myresume.presentation.image.model.ImageType;
 import com.revenat.myresume.presentation.image.model.TemporaryImageStorage;
 
 /**

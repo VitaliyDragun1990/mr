@@ -11,7 +11,7 @@ public interface ProfileSearchRepository extends ElasticsearchRepository<Profile
 	/**
 	 * Example query if you're not using fuzzy elasticsearch 
 	 */
-	Page<Profile> findByObjectiveLikeOrSummaryLikeOrInfoLikeOrCertificatesNameLikeOrLanguagesNameLikeOrExperiencesCompanyLikeOrExperiencesPositionLikeOrExperiencesResponsibilitiesLikeOrSkillsValueLike(
+	Page<Profile> findByObjectiveLikeOrSummaryLikeOrInfoLikeOrCertificatesNameLikeOrLanguagesNameLikeOrExperienceCompanyLikeOrExperiencePositionLikeOrExperienceResponsibilitiesLikeOrSkillsValueLike(
 			String objective, String summary, String info, String certificateName, String languageName, String experienceCompany,
 			String experiencePosition, String experienceResponsibities, String skillValue, Pageable pageable);
 }
