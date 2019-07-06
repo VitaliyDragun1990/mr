@@ -20,7 +20,7 @@ public interface NotificationManagerService {
 	 * @param restoreLink link owner of the profile should follow to set new
 	 *                    password
 	 */
-	void sendRestoreAccessLink(Profile profile, String restoreLink);
+	void sendRestoreAccessLink(@Nonnull Profile profile, @Nonnull String restoreLink);
 
 	/**
 	 * Sends notification to the profile owner with info that the password has been
@@ -28,7 +28,7 @@ public interface NotificationManagerService {
 	 * 
 	 * @param profile {@link Profile} which owner should get notification
 	 */
-	void sendPasswordChanged(Profile profile);
+	void sendPasswordChanged(@Nonnull Profile profile);
 	
 	/**
 	 * Sends notification to the profile owner with info that the password has been

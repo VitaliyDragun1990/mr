@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -22,6 +21,8 @@ import javax.persistence.Table;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.revenat.myresume.domain.annotation.OptionalInfoField;
+import com.revenat.myresume.domain.annotation.RequiredInfoField;
 
 @Entity
 @Table(name = "profile")
@@ -44,26 +45,33 @@ public class Profile extends AbstractEntity<Long> {
 	private String lastName;
 
 	@Column(name = "birth_day")
+	@RequiredInfoField
 	private LocalDate birthDay;
 
 	@Column(length = 20, unique = true)
 	@JsonIgnore
+	@RequiredInfoField
 	private String phone;
 
 	@Column(length = 100, unique = true)
 	@JsonIgnore
+	@RequiredInfoField
 	private String email;
 
 	@Column(length = 60)
+	@RequiredInfoField
 	private String country;
 
 	@Column(length = 100)
+	@RequiredInfoField
 	private String city;
 
 	@Column
+	@RequiredInfoField
 	private String objective;
 	
 	@Column
+	@RequiredInfoField
 	private String summary;
 
 	@Column(name = "large_photo")
@@ -74,6 +82,7 @@ public class Profile extends AbstractEntity<Long> {
 	private String smallPhoto;
 
 	@Column
+	@OptionalInfoField
 	private String info;
 
 	@Column(nullable = false)
@@ -94,64 +103,72 @@ public class Profile extends AbstractEntity<Long> {
 	
 	@OneToMany(
 			mappedBy = "profile",
-			cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-			orphanRemoval = true,
+			/*
+			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
+			 */
 			fetch = FetchType.LAZY
 			)
 	private List<Certificate> certificates = new ArrayList<>();
 	
 	@OneToMany(
 			mappedBy = "profile",
-			cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-			orphanRemoval = true,
+			/*
+			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
+			 */
 			fetch = FetchType.LAZY
 			)
-	@OrderBy("endDate DESC")
+	@OrderBy("id ASC"/* "endDate DESC" */)
 	private List<Course> courses = new ArrayList<>();
 	
 	@OneToMany(
 			mappedBy = "profile",
-			cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-			orphanRemoval = true,
+			/*
+			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
+			 */
 			fetch = FetchType.LAZY
 			)
-	@OrderBy("endYear DESC, startYear DESC, id DESC")
+	@OrderBy("id ASC"/* "endYear DESC, startYear DESC, id DESC" */)
 	@JsonIgnore
 	private List<Education> educations = new ArrayList<>();
 	
 	@OneToMany(
 			mappedBy = "profile",
-			cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-			orphanRemoval = true,
+			/*
+			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
+			 */
 			fetch = FetchType.LAZY
 			)
-	@OrderBy("endDate DESC")
-	private List<Experience> experience = new ArrayList<>();
+	@OrderBy("id ASC"/* "endDate DESC" */)
+	private List<PracticalExperience> experience = new ArrayList<>();
 	
 	@OneToMany(
 			mappedBy = "profile",
-			cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-			orphanRemoval = true,
+			/*
+			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
+			 */
 			fetch = FetchType.LAZY
 			)
+	@OrderBy("id ASC")
 	private List<Language> languages = new ArrayList<>();
 	
 	@OneToMany(
 			mappedBy = "profile",
-			cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-			orphanRemoval = true,
+			/*
+			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
+			 */
 			fetch = FetchType.LAZY
 			)
-	@OrderBy("category ASC")
+	@OrderBy("id ASC"/* "category ASC" */)
 	private List<Skill> skills = new ArrayList<>();
 	
 	@OneToMany(
 			mappedBy = "profile",
-			cascade = {CascadeType.MERGE, CascadeType.PERSIST},
-			orphanRemoval = true,
+			/*
+			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
+			 */
 			fetch = FetchType.LAZY
 			)
-	@OrderBy("name ASC")
+	@OrderBy("id ASC"/* "name ASC" */)
 	@JsonIgnore
 	private List<Hobby> hobbies = new ArrayList<>();
 	
@@ -195,12 +212,12 @@ public class Profile extends AbstractEntity<Long> {
 		this.educations.forEach(e -> e.setProfile(this));
 	}
 	
-	public void addExerience(Experience experience) {
+	public void addExerience(PracticalExperience experience) {
 		this.experience.add(experience);
 		experience.setProfile(this);
 	}
 	
-	public void updateExperience(List<Experience> experience) {
+	public void updateExperience(List<PracticalExperience> experience) {
 		this.experience.clear();
 		this.experience.addAll(experience);
 		this.experience.forEach(exp -> exp.setProfile(this));
@@ -412,11 +429,11 @@ public class Profile extends AbstractEntity<Long> {
 		this.educations = educations;
 	}
 
-	public List<Experience> getExperience() {
+	public List<PracticalExperience> getExperience() {
 		return experience;
 	}
 
-	public void setExperience(List<Experience> experience) {
+	public void setExperience(List<PracticalExperience> experience) {
 		this.experience = experience;
 	}
 

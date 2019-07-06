@@ -6,18 +6,19 @@ import java.util.List;
 import org.springframework.core.convert.converter.Converter;
 
 import com.revenat.myresume.application.config.annotation.TypeConverter;
-import com.revenat.myresume.application.dto.ExperienceDTO;
-import com.revenat.myresume.domain.entity.Experience;
+import com.revenat.myresume.application.dto.PracticalExperienceDTO;
+import com.revenat.myresume.domain.entity.PracticalExperience;
 import com.revenat.myresume.domain.entity.Profile;
 
+@Deprecated
 @TypeConverter
-class ProfileToExperienceDTOsTransformer implements Converter<Profile, List<ExperienceDTO>> {
+class ProfileToPracticalExperienceDTOsTransformer implements Converter<Profile, List<PracticalExperienceDTO>> {
 
 	@Override
-	public List<ExperienceDTO> convert(Profile profile) {
-		List<ExperienceDTO> dtoList = new ArrayList<>();
-		for (Experience exp : profile.getExperience()) {
-			dtoList.add(new ExperienceDTO(exp));
+	public List<PracticalExperienceDTO> convert(Profile profile) {
+		List<PracticalExperienceDTO> dtoList = new ArrayList<>();
+		for (PracticalExperience exp : profile.getExperience()) {
+			dtoList.add(new PracticalExperienceDTO(exp));
 		}
 		
 		return dtoList;

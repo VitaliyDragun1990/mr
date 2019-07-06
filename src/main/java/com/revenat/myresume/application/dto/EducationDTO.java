@@ -14,7 +14,7 @@ import com.revenat.myresume.domain.entity.Education;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @FirstFieldLessThanSecond(first = "startYear", second = "endYear")
-public class EducationDTO implements Serializable {
+public class EducationDTO implements Serializable, Comparable<EducationDTO> {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -151,6 +151,16 @@ public class EducationDTO implements Serializable {
 		} else if (!university.equals(other.university))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public int compareTo(EducationDTO o) {
+		int result = CommonUtils.compareValues(o.getEndYear(), getEndYear(), true);
+		if (result == 0) {
+			return CommonUtils.compareValues(o.getStartYear(), getStartYear(), true);
+		} else {
+			return result;
+		}
 	}
 	
 	@Override

@@ -2,6 +2,8 @@ package com.revenat.myresume.application.service.notification;
 
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import com.revenat.myresume.application.model.NotificationMessage;
 
 /**
@@ -20,5 +22,5 @@ public interface NotificationBuilderService {
 	 *                         build notification messsage
 	 * @return {@link NotificationMessage} instance
 	 */
-	NotificationMessage createNotificationMessage(NotificationType notificationType, Map<String, Object> model);
+	NotificationMessage createNotificationMessage(@Nonnull NotificationType notificationType, @Nonnull Map<String, Object> model);
 }

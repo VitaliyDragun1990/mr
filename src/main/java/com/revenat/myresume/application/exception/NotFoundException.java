@@ -11,26 +11,26 @@ import com.revenat.myresume.domain.exception.ApplicationException;
 public class NotFoundException extends ApplicationException {
 	private static final long serialVersionUID = 1L;
 	
-	private final Class<?> clazz;
-	private final String propertyName;
-	private final Serializable propertyValue;
+	private final Class<?> resourceClass;
+	private final String resourcePropertyName;
+	private final Serializable resourcePropertyValue;
 
 	public <T, V extends Serializable> NotFoundException(Class<T> clazz, String propertyName, V propertyValue) {
 		super(String.format("%s with %s: %s does not exists!", clazz.getSimpleName(), propertyName, propertyValue));
-		this.clazz = clazz;
-		this.propertyName = propertyName;
-		this.propertyValue = propertyValue;
+		this.resourceClass = clazz;
+		this.resourcePropertyName = propertyName;
+		this.resourcePropertyValue = propertyValue;
 	}
 
-	public Class<?> getClazz() {
-		return clazz;
+	public Class<?> getResourceClass() {
+		return resourceClass;
 	}
 
-	public String getPropertyName() {
-		return propertyName;
+	public String getResourcePropertyName() {
+		return resourcePropertyName;
 	}
 
-	public Object getPropertyValue() {
-		return propertyValue;
+	public Object getResourcePropertyValue() {
+		return resourcePropertyValue;
 	}
 }

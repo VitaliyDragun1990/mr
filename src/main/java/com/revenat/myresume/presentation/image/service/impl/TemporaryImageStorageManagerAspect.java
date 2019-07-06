@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.revenat.myresume.application.exception.CantCompleteClientRequestException;
+import com.revenat.myresume.presentation.image.exception.TemporaryImageStorageException;
 import com.revenat.myresume.presentation.image.model.TemporaryImageStorage;
 import com.revenat.myresume.presentation.image.service.TemporaryImageStorageManager;
 
@@ -23,7 +23,12 @@ class TemporaryImageStorageManagerAspect implements TemporaryImageStorageManager
 
 	@Override
 	public TemporaryImageStorage getCurrentTemporaryImageStorage() {
-		return currentTemporaryImageStorage.get();
+		TemporaryImageStorage temporaryImageStorage = currentTemporaryImageStorage.get();
+		if (temporaryImageStorage == null) {
+			throw new TemporaryImageStorageException("Can not get current instance of TemporaryImageStorage."
+					+ " Are you invoking this method inside one annotated with @EnableTemporaryImageStorage annotation?");
+		}
+		return temporaryImageStorage;
 	}
 	
 	@Around("@annotation (com.revenat.myresume.presentation.image.annotation.EnableTemporaryImageStorage)")
@@ -35,7 +40,7 @@ class TemporaryImageStorageManagerAspect implements TemporaryImageStorageManager
 			LOGGER.debug("Before method: {}", joinPoint.getSignature());
 			return joinPoint.proceed();
 		} catch (IOException e) {
-			throw new CantCompleteClientRequestException("Can't create temp image files: " + e.getMessage(), e);
+			throw new TemporaryImageStorageException("Can't create temp image files: " + e.getMessage(), e);
 		} finally {
 			LOGGER.debug("After method: {}", joinPoint.getSignature());
 			currentTemporaryImageStorage.remove();

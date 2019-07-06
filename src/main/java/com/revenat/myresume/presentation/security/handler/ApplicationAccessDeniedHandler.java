@@ -1,4 +1,4 @@
-package com.revenat.myresume.presentation.web.handler;
+package com.revenat.myresume.presentation.security.handler;
 
 import java.io.IOException;
 

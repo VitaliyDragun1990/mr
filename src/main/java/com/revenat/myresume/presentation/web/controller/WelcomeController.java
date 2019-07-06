@@ -1,6 +1,6 @@
 package com.revenat.myresume.presentation.web.controller;
 
-import java.io.UnsupportedEncodingException;
+import static com.revenat.myresume.presentation.config.Constants.UI.MAX_PROFILES_PER_PAGE;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.revenat.myresume.application.dto.ProfileDTO;
 import com.revenat.myresume.application.service.profile.SearchProfileService;
-import com.revenat.myresume.presentation.config.Constants;
 
 @Controller
 public class WelcomeController {
@@ -28,16 +27,15 @@ public class WelcomeController {
 	@GetMapping({"/", "/welcome"})
 	public String listProfiles(Model model) {
 		Page<ProfileDTO> page = profileService.findAll(
-				new PageRequest(0, Constants.UI.MAX_PROFILES_PER_PAGE, new Sort("firstName", "lastName")));
+				new PageRequest(0, MAX_PROFILES_PER_PAGE, new Sort("firstName", "lastName")));
 		model.addAttribute("profiles", page.getContent());
 		model.addAttribute("page", page);
-		return "profiles";
+		return "welcome";
 	}
 	
 	@GetMapping({"/fragment/more", "/welcome/fragment/more"})
 	public String moreProfiles(Model model,
-			@PageableDefault(size = Constants.UI.MAX_PROFILES_PER_PAGE, sort = {"firstName", "lastName"}) Pageable pageable)
-	throws UnsupportedEncodingException {
+			@PageableDefault(size = MAX_PROFILES_PER_PAGE, sort = {"firstName", "lastName"}) Pageable pageable) {
 		Page<ProfileDTO> page = profileService.findAll(pageable);
 		model.addAttribute("profiles", page.getContent());
 		return "fragment/profile-items";

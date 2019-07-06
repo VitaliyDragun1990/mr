@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
@@ -26,7 +24,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.context.support.ServletContextResource;
 
 import com.revenat.myresume.application.model.NotificationMessage;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
@@ -50,10 +47,6 @@ public class ServiceConfig {
 	
 	@Value("${executorService.threadCount}")
 	private String threadCount;
-	
-	// TODO: relocate from this config
-	@Autowired(required = false)
-	private ServletContext servletContext;
 
 	/**
 	 * http://docs.spring.io/autorepo/docs/spring/4.2.5.RELEASE/spring-framework-reference/html/beans.html
@@ -122,7 +115,7 @@ public class ServiceConfig {
 	
 	private Iterable<Resource> getResourceCandidates(String resourcePath) {
 		List<Resource> resourceCandidates = new ArrayList<>();
-		resourceCandidates.add(new ServletContextResource(servletContext, resourcePath));
+//		resourceCandidates.add(new ServletContextResource(servletContext, resourcePath));
 		resourceCandidates.add(new PathResource(resourcePath));
 		resourceCandidates.add(new ClassPathResource(resourcePath));
 		try {

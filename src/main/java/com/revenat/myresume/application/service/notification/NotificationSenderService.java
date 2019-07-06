@@ -1,5 +1,7 @@
 package com.revenat.myresume.application.service.notification;
 
+import javax.annotation.Nonnull;
+
 import com.revenat.myresume.application.model.NotificationMessage;
 import com.revenat.myresume.domain.entity.Profile;
 
@@ -11,7 +13,7 @@ import com.revenat.myresume.domain.entity.Profile;
  */
 public interface NotificationSenderService {
 
-	void sendNotification(NotificationMessage message);
+	void sendNotification(@Nonnull NotificationMessage message);
 
-	String getDestinationAddress(Profile profile);
+	String getDestinationAddress(@Nonnull Profile profile);
 }

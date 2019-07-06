@@ -8,19 +8,27 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Represents top-level error-handler component that intercepts all exception
+ * can be thrown in the applicaiton and handles them appropriatelly.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 public class ErrorHandlerFilter extends AbstractFilter {
-	
+
 	private boolean production;
-	
+
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		super.init(filterConfig);
-		
-		production =  getEnv().getRequiredProperty("app.production", Boolean.class);	
+
+		production = getEnv().getRequiredProperty("app.production", Boolean.class);
 	}
 
 	@Override
-	protected void doFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws ServletException, IOException {
+	protected void doFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain chain)
+			throws ServletException, IOException {
 		String requestUrl = req.getRequestURI();
 		req.setAttribute("REQUEST_URL", requestUrl);
 		try {
@@ -31,7 +39,8 @@ public class ErrorHandlerFilter extends AbstractFilter {
 		}
 	}
 
-	private void handleException(Throwable th, String requestUrl, HttpServletResponse resp) throws ServletException, IOException {
+	private void handleException(Throwable th, String requestUrl, HttpServletResponse resp)
+			throws ServletException, IOException {
 		if (production) {
 			if (requestUrl.contains("/fragment") || "/error".equals(requestUrl)) {
 				sendErrorStatus(resp);

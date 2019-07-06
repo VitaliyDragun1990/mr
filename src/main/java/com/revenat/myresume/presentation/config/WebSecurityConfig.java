@@ -16,10 +16,13 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
-import com.revenat.myresume.presentation.security.CustomRememberMeService;
+import com.revenat.myresume.presentation.security.service.CustomRememberMeService;
 
 @Configuration
-@ComponentScan("com.revenat.myresume.presentation.security")
+@ComponentScan({
+	"com.revenat.myresume.presentation.security.service",
+	"com.revenat.myresume.presentation.security.handler"
+})
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 

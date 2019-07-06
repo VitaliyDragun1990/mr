@@ -10,6 +10,7 @@ import com.revenat.myresume.application.dto.SkillDTO;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.domain.entity.Skill;
 
+@Deprecated
 @TypeConverter
 class ProfileToSkillDTOsTransformer implements Converter<Profile, List<SkillDTO>> {
 

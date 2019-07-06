@@ -12,11 +12,11 @@ import org.hibernate.validator.constraints.URL;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.application.validation.annotation.FirstFieldLessThanSecond;
-import com.revenat.myresume.domain.entity.Experience;
+import com.revenat.myresume.domain.entity.PracticalExperience;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @FirstFieldLessThanSecond(first = "startDate", second = "endDate")
-public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
+public class PracticalExperienceDTO extends AbstractEndDateDTO implements Serializable, Comparable<PracticalExperienceDTO> {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -54,10 +54,10 @@ public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
 	@NotNull
 	private Integer startDateYear;
 	
-	public ExperienceDTO() {
+	public PracticalExperienceDTO() {
 	}
 
-	public ExperienceDTO(Experience entity) {
+	public PracticalExperienceDTO(PracticalExperience entity) {
 		this.id = entity.getId();
 		this.position = entity.getPosition();
 		this.company = entity.getCompany();
@@ -177,9 +177,9 @@ public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof ExperienceDTO))
+		if (!(obj instanceof PracticalExperienceDTO))
 			return false;
-		ExperienceDTO other = (ExperienceDTO) obj;
+		PracticalExperienceDTO other = (PracticalExperienceDTO) obj;
 		if (startDate == null) {
 			if (other.startDate != null)
 				return false;
@@ -221,6 +221,16 @@ public class ExperienceDTO extends AbstractEndDateDTO implements Serializable {
 		} else if (!sourceCode.equals(other.sourceCode))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public int compareTo(PracticalExperienceDTO o) {
+		int result = CommonUtils.compareValues(o.getEndDate(), getEndDate(), true);
+		if (result == 0) {
+			return CommonUtils.compareValues(o.getStartDate(), getStartDate(), true);
+		} else {
+			return result;
+		}
 	}
 	
 	@Override

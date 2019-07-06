@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.revenat.myresume.application.exception.CantCompleteClientRequestException;
+import com.revenat.myresume.application.exception.NotificationException;
 import com.revenat.myresume.application.model.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationBuilderService;
 import com.revenat.myresume.application.service.notification.NotificationType;
@@ -52,7 +52,7 @@ class TemplateNotificationBuilderService implements NotificationBuilderService {
 		String templateName = notificationType.getNotificationName();
 		NotificationMessage message = notificationTemplates.get(templateName);
 		if (message == null) {
-			throw new CantCompleteClientRequestException("Notification template '" + templateName + "' not found");
+			throw new NotificationException("Notification template '" + templateName + "' not found");
 		}
 		String resolvedSubject = contentResolver.resolve(message.getSubject(), model);
 		String resolvedContent = contentResolver.resolve(message.getContent(), model);

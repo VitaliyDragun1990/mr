@@ -15,6 +15,7 @@ class DataGeneratorImpl implements DataGenerator {
 	private final int maxTryCountToGenerateUid;
 	private final String generatedPasswordAlphabet;
 	private final int generatedPasswordLength;
+	private final String appHost;
 	
 	@Autowired
 	public DataGeneratorImpl(
@@ -22,12 +23,14 @@ class DataGeneratorImpl implements DataGenerator {
 			@Value("${generate.uid.alphabet}") String generateUidAlphabet,
 			@Value("${generate.uid.max.try.count}") int maxTryCountToGenerateUid,
 			@Value("${generate.password.alphabet}") String generatedPasswordAlphabet,
-			@Value("${generate.password.length}") int generatedPasswordLength) {
+			@Value("${generate.password.length}") int generatedPasswordLength,
+			@Value("${app.host}") String appHost) {
 		this.generateUidSuffixLength = generateUidSuffixLength;
 		this.generateUidAlphabet = generateUidAlphabet;
 		this.maxTryCountToGenerateUid = maxTryCountToGenerateUid;
 		this.generatedPasswordAlphabet = generatedPasswordAlphabet;
 		this.generatedPasswordLength = generatedPasswordLength;
+		this.appHost = appHost;
 	}
 
 	@Override
@@ -45,7 +48,7 @@ class DataGeneratorImpl implements DataGenerator {
 	}
 	
 	@Override
-	public String generateRestoreAccessLink(String appHost, String token) {
+	public String generateRestoreAccessLink(String token) {
 		return appHost + "/restore/" + token;
 	}
 	

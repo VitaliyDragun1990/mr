@@ -1,4 +1,4 @@
-package com.revenat.myresume.presentation.security;
+package com.revenat.myresume.presentation.security.model;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -16,7 +16,7 @@ public final class AuthenticatedUser extends User {
 	private final String fullName;
 	private final boolean isRegistrationCompleted;
 	
-	AuthenticatedUser(Profile profile) {
+	public AuthenticatedUser(Profile profile) {
 		super(profile.getUid(), profile.getPassword(), true, true, true, true,
 				Collections.singleton(new SimpleGrantedAuthority(Constants.USER)));
 		this.id = profile.getId();

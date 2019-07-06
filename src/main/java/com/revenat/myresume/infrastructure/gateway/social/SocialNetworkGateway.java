@@ -1,5 +1,7 @@
 package com.revenat.myresume.infrastructure.gateway.social;
 
+import javax.annotation.Nonnull;
+
 import com.revenat.myresume.infrastructure.exception.SocialNetworkAuthenticationException;
 
 /**
@@ -16,7 +18,7 @@ public interface SocialNetworkGateway {
 	 * authenticate themselves as users of some social network.
 	 * 
 	 */
-	String getAuthorizeUrl();
+	@Nonnull String getAuthorizeUrl();
 
 	/**
 	 * Gets {@link SocialAccount} of authenticated social network user using
@@ -29,5 +31,5 @@ public interface SocialNetworkGateway {
 	 * @throws SocialNetworkAuthenticationException if error occurs while getting information
 	 *                                 about client's social network account
 	 */
-	SocialNetworkAccount getSocialAccount(String verificationCode);
+	@Nonnull SocialNetworkAccount getSocialAccount(@Nonnull String verificationCode);
 }

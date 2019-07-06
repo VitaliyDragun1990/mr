@@ -7,9 +7,10 @@ import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.domain.entity.Skill;
+import com.revenat.myresume.domain.entity.SkillCategory;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
-public class SkillDTO implements Serializable {
+public class SkillDTO implements Serializable, Comparable<SkillDTO> {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -90,6 +91,11 @@ public class SkillDTO implements Serializable {
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public int compareTo(SkillDTO o) {
+		return SkillCategory.getCategory(category).compareTo(SkillCategory.getCategory(o.getCategory()));
 	}
 	
 	@Override

@@ -6,8 +6,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.revenat.myresume.presentation.security.AuthenticatedUser;
-import com.revenat.myresume.presentation.security.SecurityUtil;
+import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
+import com.revenat.myresume.presentation.security.service.SecurityUtil;
 
 @Controller
 public class SignInController {
@@ -28,9 +28,10 @@ public class SignInController {
 	
 	@GetMapping("/sign-in-failed")
 	public String signinFailed(HttpSession session) {
-		if (session.getAttribute("SPRING_SECURITY_LAST_EXCEPTION") == null) {
-			return "redirect:/sign-in";
+		boolean errorDuringSignIn = session.getAttribute("SPRING_SECURITY_LAST_EXCEPTION") != null;
+		if (errorDuringSignIn) {
+			return "sign-in";
 		}
-		return "sign-in";
+		return "redirect:/sign-in";
 	}
 }

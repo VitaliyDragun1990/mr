@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.revenat.myresume.application.exception.NotFoundException;
+import com.revenat.myresume.application.exception.ProfileNotFoundException;
 
 // TODO: check if this component work because of ApplicationHandlerExceptionResolver is registered in WebConfig.
 @ControllerAdvice
@@ -25,12 +25,9 @@ class ControllersExceptionHandler {
 		this.production = Boolean.parseBoolean(production);
 	}
 
-	@ExceptionHandler({NotFoundException.class})
-	public String handleNotFoundException(NotFoundException e, Model model) {
-		model.addAttribute("resource", e.getClazz().getSimpleName());
-		model.addAttribute("propertyName", e.getPropertyName());
-		model.addAttribute("propertyValue", e.getPropertyValue());
-		return "resource-not-found";
+	@ExceptionHandler({ProfileNotFoundException.class})
+	public String handleProfileNotFoundException(ProfileNotFoundException e, Model model) {
+		return "profile-not-found";
 	}
 	
 	/* @ExceptionHandler({Exception.class}) */

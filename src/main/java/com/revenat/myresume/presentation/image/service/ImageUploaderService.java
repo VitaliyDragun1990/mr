@@ -28,9 +28,17 @@ public interface ImageUploaderService {
 	/**
 	 * Uploads certificate image represented as {@link MultipartFile}
 	 * 
-	 * @return {@link UploadedCertificateResult} object containig links to uploaded certificate
+	 * @return {@link UploadedCertificateResult} object containig links to uploaded
+	 *         certificate
 	 * @throws ImageUploadingException
 	 */
 	@Nonnull
 	UploadedCertificateResult uploadNewCertificateImage(@Nonnull MultipartFile uploadedCertificateImage);
+
+	/**
+	 * Clears temporary resources that may be created during uploading process.
+	 * Optional operation. Implementations may provide empty realization or
+	 * implement some clearing logic.
+	 */
+	void clearTemporaryResources();
 }

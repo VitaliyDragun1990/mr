@@ -14,6 +14,7 @@ import org.hibernate.validator.constraints.SafeHtml;
 import com.revenat.myresume.application.validation.annotation.Adulthood;
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.application.validation.annotation.Phone;
+import com.revenat.myresume.domain.annotation.RequiredInfoField;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
@@ -28,38 +29,45 @@ public class MainInfoDTO implements Serializable {
 	
 	@NotNull
 	@Adulthood
+	@RequiredInfoField
 	private LocalDate birthDate;
 	
 	@NotBlank
 	@Size(max = 60)
 	@SafeHtml
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
+	@RequiredInfoField
 	private String country;
 	
 	@NotBlank
 	@Size(max = 100)
 	@SafeHtml
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
+	@RequiredInfoField
 	private String city;
 	
 	@NotBlank
 	@Email
 	@Size(max = 100)
 	@EnglishLanguage
+	@RequiredInfoField
 	private String email;
 	
 	@NotBlank
 	@Size(max = 20)
 	@Phone
+	@RequiredInfoField
 	private String phone;
 	
 	@NotBlank
 	@SafeHtml
 	@EnglishLanguage
+	@RequiredInfoField
 	private String objective;
 	
 	@NotBlank
 	@EnglishLanguage
+	@RequiredInfoField
 	private String summary;
 	
 	public MainInfoDTO() {
@@ -77,6 +85,15 @@ public class MainInfoDTO implements Serializable {
 			setSmallPhoto(profile.getSmallPhoto());
 			setSummary(profile.getSummary());
 		}
+	}
+	
+	public boolean isCompleted() {
+		boolean hasPhoto = CommonUtils.isNotBlank(getLargePhoto()) && CommonUtils.isNotBlank(getSmallPhoto());
+		boolean hasAddress = CommonUtils.isNotBlank(getCountry()) && CommonUtils.isNotBlank(getCity());
+		boolean hasBirthday = getBirthDate() != null;
+		boolean hasPhoneAndEmail = CommonUtils.isNotBlank(getPhone()) && CommonUtils.isNotBlank(getEmail());
+		boolean hasInfo = CommonUtils.isNotBlank(getObjective()) && CommonUtils.isNotBlank(getSummary());
+		return hasPhoto && hasAddress && hasBirthday && hasPhoneAndEmail && hasInfo;
 	}
 	
 	public int getAge() {

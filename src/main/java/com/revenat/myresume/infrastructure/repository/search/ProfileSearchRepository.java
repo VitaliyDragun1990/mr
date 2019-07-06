@@ -8,6 +8,10 @@ import com.revenat.myresume.domain.entity.Profile;
 
 public interface ProfileSearchRepository extends ElasticsearchRepository<Profile, Long> {
 
-	Page<Profile> findByObjectiveLikeOrSummaryLikeOrExperienceCompanyLikeOrExperiencePositionLike(
-			String objective, String summary, String experienceCompany, String experiencePosition, Pageable pageable);
+	/**
+	 * Example query if you're not using fuzzy elasticsearch 
+	 */
+	Page<Profile> findByObjectiveLikeOrSummaryLikeOrInfoLikeOrCertificatesNameLikeOrLanguagesNameLikeOrExperiencesCompanyLikeOrExperiencesPositionLikeOrExperiencesResponsibilitiesLikeOrSkillsValueLike(
+			String objective, String summary, String info, String certificateName, String languageName, String experienceCompany,
+			String experiencePosition, String experienceResponsibities, String skillValue, Pageable pageable);
 }

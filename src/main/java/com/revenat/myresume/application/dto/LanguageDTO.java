@@ -12,7 +12,7 @@ import com.revenat.myresume.domain.entity.Language;
 import com.revenat.myresume.domain.entity.LanguageType;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
-public class LanguageDTO implements Serializable {
+public class LanguageDTO implements Serializable, Comparable<LanguageDTO> {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -75,6 +75,11 @@ public class LanguageDTO implements Serializable {
 	
 	public boolean isHasLanguageType() {
 		return !type.equals(LanguageType.ALL.getType());
+	}
+	
+	@Override
+	public int compareTo(LanguageDTO o) {
+		return getName().compareToIgnoreCase(o.getName());
 	}
 
 	@Override

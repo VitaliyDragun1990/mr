@@ -11,7 +11,7 @@
 				</a>
 			</div>
 			<div class="media-body search-result-item">
-				<a href='<c:url value="/profile/${profile.uid}" />' class="btn btn-primary pull-right">
+				<a href='<c:url value="/profile/${profile.uid}" />' class="btn btn-primary pull-right hidden-xs">
 					Details
 				</a>
 				<h4 class="media-heading">

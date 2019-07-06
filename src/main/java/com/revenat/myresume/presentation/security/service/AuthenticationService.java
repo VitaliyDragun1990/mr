@@ -1,4 +1,4 @@
-package com.revenat.myresume.presentation.security;
+package com.revenat.myresume.presentation.security.service;
 
 import java.util.Optional;
 
@@ -7,28 +7,28 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
+import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
 @Service
-class CustomUserDetailsService implements UserDetailsService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomUserDetailsService.class);
+class AuthenticationService implements UserDetailsService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
 	
 	private final ProfileRepository profileRepo;
 
 	@Autowired
-	public CustomUserDetailsService(ProfileRepository profileRepo) {
+	public AuthenticationService(ProfileRepository profileRepo) {
 		this.profileRepo = profileRepo;
 	}
 
 	@Override
 	@Transactional
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public AuthenticatedUser loadUserByUsername(String username) throws UsernameNotFoundException {
 		Optional<Profile> profile = findProfile(username);
 		if (profile.isPresent()) {
 			return new AuthenticatedUser(profile.get());
@@ -39,14 +39,7 @@ class CustomUserDetailsService implements UserDetailsService {
 	}
 	
 	private Optional<Profile> findProfile(String anyUniqueId) {
-		Optional<Profile> profile = profileRepo.findOneByUid(anyUniqueId);
-		if (!profile.isPresent()) {
-			profile = profileRepo.findByEmail(anyUniqueId);
-			if (!profile.isPresent()) {
-				profile = profileRepo.findByPhone(anyUniqueId);
-			}
-		}
-		return profile;
+		return profileRepo.findByUidOrEmailOrPhone(anyUniqueId, anyUniqueId, anyUniqueId);
 	}
 
 }

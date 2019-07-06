@@ -5,11 +5,11 @@
  */
 /* 
  * normalize.css v3.0.3 (https://github.com/necolas/normalize.css)
- * Copyright © Nicolas Gallagher and Jonathan Neal
+ * Copyright ï¿½ Nicolas Gallagher and Jonathan Neal
  * Licensed under MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md)
  */
 /*
- *  Font Awesome 4.5.0 by @davegandy - (http://fontawesome.io) - @fontawesome
+ *  Font Awesome 4.6.1 by @davegandy - (http://fontawesome.io) - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */
 /*
@@ -25,7 +25,7 @@
  */
 /*
  * File input v4.3.2 styling for Bootstrap 3.0 (https://github.com/kartik-v/bootstrap-fileinput) 
- * Copyright © Kartik Visweswaran, Krajee.com, 2014 - 2015
+ * Copyright ï¿½ Kartik Visweswaran, Krajee.com, 2014 - 2015
  * Read more at http://plugins.krajee.com/file-input
  * 
  * Licensed under the BSD 3-Clause License (https://github.com/kartik-v/bootstrap-fileinput/blob/master/LICENSE.md)

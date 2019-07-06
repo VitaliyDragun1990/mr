@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>2.3</jsp-version>
+	<shortname>custom</shortname>
+	
+	<tag>
+		<description>
+		<![CDATA[
+			This tag is responsible for transforming hobby name into appropriate
+			css class name. It accepts two required attributes: hobbyName (name
+			of the hobby to transform into css class) and var (name of the request-scope
+			variable to bind computed css class-name to
+			)
+			]]>
+		</description>
+		<name>hobby-class</name>
+		<tag-class>com.revenat.myresume.presentation.web.tag.HobbyNameToClassTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<description>
+				Name of the particular hobby
+			</description>
+			<name>hobbyName</name>
+			<required>true</required>
+			<type>java.lang.String</type>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>
+				Name of the request-scope variable to bind computed css class name to
+			</description>
+			<name>var</name>
+			<required>true</required>
+			<type>java.lang.String</type>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<description>
+		<![CDATA[
+			This tag is responsible for transforming hobby name into appropriate
+			css class name. It accepts two required attributes: hobbyName (name
+			of the hobby to transform into css class) and var (name of the request-scope
+			variable to bind computed css class-name to
+			)
+			]]>
+		</description>
+		<name>lang-level-data</name>
+		<tag-class>com.revenat.myresume.presentation.web.tag.LanguageLevelDataTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<description>
+				String name of the languagel level
+			</description>
+			<name>level</name>
+			<required>true</required>
+			<type>java.lang.String</type>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>
+				Name of the request-scope variable to bind ordinal postion of particular language level
+				(from 'beginner'=0 to 'proficiency'=6)
+			</description>
+			<name>varOrdinal</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>
+				Name of the request-scope variable to bind caption of particular language level
+				(like 'beginner', 'upper-intermediate')
+			</description>
+			<name>varCaption</name>
+			<required>true</required>
+			<type>java.lang.String</type>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+</taglib>

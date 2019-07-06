@@ -1,6 +1,7 @@
 package com.revenat.myresume.application.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.validation.constraints.Size;
 
@@ -106,6 +107,26 @@ public class ContactsDTO implements Serializable {
 		this.stackoverflow = stackoverflow;
 	}
 	
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(facebook, github, linkedin, skype, stackoverflow, vkontakte);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ContactsDTO other = (ContactsDTO) obj;
+		return Objects.equals(facebook, other.facebook) && Objects.equals(github, other.github)
+				&& Objects.equals(linkedin, other.linkedin) && Objects.equals(skype, other.skype)
+				&& Objects.equals(stackoverflow, other.stackoverflow) && Objects.equals(vkontakte, other.vkontakte);
+	}
+
 	@Override
 	public String toString() {
 		return CommonUtils.toString(this);

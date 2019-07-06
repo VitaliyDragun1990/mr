@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "experience")
-public class Experience extends AbstractEntity<Long> implements ProfileEntity {
+public class PracticalExperience extends AbstractEntity<Long> implements ProfileEntity {
 	private static final long serialVersionUID = 5676683812478918147L;
 
 	@Id

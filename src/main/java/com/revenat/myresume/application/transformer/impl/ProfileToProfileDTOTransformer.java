@@ -10,7 +10,7 @@ import com.revenat.myresume.application.dto.CertificateDTO;
 import com.revenat.myresume.application.dto.ContactsDTO;
 import com.revenat.myresume.application.dto.CourseDTO;
 import com.revenat.myresume.application.dto.EducationDTO;
-import com.revenat.myresume.application.dto.ExperienceDTO;
+import com.revenat.myresume.application.dto.PracticalExperienceDTO;
 import com.revenat.myresume.application.dto.HobbyDTO;
 import com.revenat.myresume.application.dto.LanguageDTO;
 import com.revenat.myresume.application.dto.MainInfoDTO;
@@ -20,7 +20,7 @@ import com.revenat.myresume.domain.entity.Certificate;
 import com.revenat.myresume.domain.entity.Contacts;
 import com.revenat.myresume.domain.entity.Course;
 import com.revenat.myresume.domain.entity.Education;
-import com.revenat.myresume.domain.entity.Experience;
+import com.revenat.myresume.domain.entity.PracticalExperience;
 import com.revenat.myresume.domain.entity.Hobby;
 import com.revenat.myresume.domain.entity.Language;
 import com.revenat.myresume.domain.entity.Profile;
@@ -91,12 +91,12 @@ class ProfileToProfileDTOTransformer implements Converter<Profile, ProfileDTO> {
 		return dtoList;
 	}
 
-	private List<ExperienceDTO> getExperience(Profile profile) {
-		List<ExperienceDTO> dtoList = new ArrayList<>();
-		List<Experience> exp = profile.getExperience();
+	private List<PracticalExperienceDTO> getExperience(Profile profile) {
+		List<PracticalExperienceDTO> dtoList = new ArrayList<>();
+		List<PracticalExperience> exp = profile.getExperience();
 		if (exp != null) {
-			for (Experience experience : exp) {
-				ExperienceDTO dto = new ExperienceDTO(experience);
+			for (PracticalExperience experience : exp) {
+				PracticalExperienceDTO dto = new PracticalExperienceDTO(experience);
 				dtoList.add(dto);
 			} 
 		}

@@ -10,6 +10,7 @@ import com.revenat.myresume.application.dto.CertificateDTO;
 import com.revenat.myresume.domain.entity.Certificate;
 import com.revenat.myresume.domain.entity.Profile;
 
+@Deprecated
 @TypeConverter
 class ProfileToCertificateDTOsTransformer implements Converter<Profile, List<CertificateDTO>> {
 

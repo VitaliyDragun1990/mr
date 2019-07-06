@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +29,18 @@ class AsyncEmailNotificationSenderService implements NotificationSenderService {
 	private final EmailGateway emailGateway;
 	private final ExecutorService executorService;
 	private final int tryAttempts;
+	private final boolean production;
 
 	@Autowired
-	public AsyncEmailNotificationSenderService(EmailGateway emailGateway, ExecutorService executorService,
-			@Value("${email.sendTryAttempts}") int tryAttempts) {
+	public AsyncEmailNotificationSenderService(
+			EmailGateway emailGateway,
+			@Qualifier("defaultExecutorService") ExecutorService executorService,
+			@Value("${email.sendTryAttempts}") int tryAttempts,
+			@Value("${app.production}") boolean production) {
 		this.emailGateway = emailGateway;
 		this.executorService = executorService;
 		this.tryAttempts = tryAttempts;
+		this.production = production;
 	}
 
 	@Override
@@ -59,21 +65,34 @@ class AsyncEmailNotificationSenderService implements NotificationSenderService {
 		@Override
 		public void run() {
 			try {
-				LOGGER.debug("Sending new email message to {}", message.getDestinationAddress());
+				sendEmail();
+			} catch (EmailGatewayException e) {
+				handleException(e);
+			}
+		}
+		
+		private void sendEmail() {
+			LOGGER.debug("Sending new email message to {}", message.getDestinationAddress());
+			if (production) {
 				emailGateway.sendEmail(message.getDestinationAddress(), message.getDestinationName(),
 						message.getSubject(), message.getContent());
-				LOGGER.debug("Email message to {} has been successfully sent", message.getDestinationAddress());
-			} catch (EmailGatewayException e) {
-				LOGGER.error("Can't send email to " + message.getDestinationAddress() + ": " + e.getMessage(), e);
-				tryAttemptsCount--;
-				if (tryAttemptsCount > 0) {
-					LOGGER.debug(
-							"Decremented tryAttempts counter and trying to send email again: tryAttempts={}, recipientAddres={}",
-							tryAttemptsCount, message.getDestinationAddress());
-					executorService.submit(this);
-				} else {
-					LOGGER.error("Email has not been sent to {}", message.getDestinationAddress());
-				}
+				LOGGER.debug("Email message to {} has been successfully sent",
+						message.getDestinationAddress());
+			} else {
+				LOGGER.warn("DEMO MODE: Email to {}, {}/{}", message.getDestinationAddress(), message.getSubject(), message.getContent());
+			}
+		}
+
+		private void handleException(EmailGatewayException e) {
+			LOGGER.error("Can't send email to " + message.getDestinationAddress() + ": " + e.getMessage(), e);
+			tryAttemptsCount--;
+			if (tryAttemptsCount > 0) {
+				LOGGER.debug(
+						"Decremented tryAttempts counter and trying to send email again: tryAttempts={}, recipientAddres={}",
+						tryAttemptsCount, message.getDestinationAddress());
+				executorService.submit(this);
+			} else {
+				LOGGER.error("Email has not been sent to {}", message.getDestinationAddress());
 			}
 		}
 	}

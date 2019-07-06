@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import com.revenat.myresume.application.dto.ExperienceDTO;
+import com.revenat.myresume.application.dto.PracticalExperienceDTO;
 import com.revenat.myresume.application.validation.annotation.FirstFieldLessThanSecond;
 import com.revenat.myresume.presentation.web.form.annotation.EnableFormErrorConvertation;
 
@@ -17,20 +17,20 @@ public class ExperienceForm extends AbstractForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Valid
-	private List<ExperienceDTO> items = new ArrayList<>();
+	private List<PracticalExperienceDTO> items = new ArrayList<>();
 	
 	public ExperienceForm() {
 	}
 
-	public ExperienceForm(List<ExperienceDTO> items) {
+	public ExperienceForm(List<PracticalExperienceDTO> items) {
 		this.items = items;
 	}
 
-	public List<ExperienceDTO> getItems() {
+	public List<PracticalExperienceDTO> getItems() {
 		return items;
 	}
 
-	public void setItems(List<ExperienceDTO> items) {
+	public void setItems(List<PracticalExperienceDTO> items) {
 		this.items = items;
 	}
 }

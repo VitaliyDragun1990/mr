@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class ProfileDTO implements Serializable {
@@ -44,7 +45,7 @@ public class ProfileDTO implements Serializable {
 	private List<EducationDTO> educations = new ArrayList<>();
 	
 	@Valid
-	private List<ExperienceDTO> experience = new ArrayList<>();
+	private List<PracticalExperienceDTO> experience = new ArrayList<>();
 	
 	@Valid
 	private List<LanguageDTO> languages = new ArrayList<>();
@@ -54,7 +55,17 @@ public class ProfileDTO implements Serializable {
 	
 	@Valid
 	private List<HobbyDTO> hobbies = new ArrayList<>();
-
+	
+	public ProfileDTO() {
+	}
+	
+	public ProfileDTO(Profile profile) {
+		firstName = profile.getFirstName();
+		lastName = profile.getLastName();
+		password = profile.getPassword();
+		mainInfo = new MainInfoDTO(profile);
+	}
+	
 	public String getFullName() {
 		return firstName + " " + lastName;
 	}
@@ -171,11 +182,11 @@ public class ProfileDTO implements Serializable {
 		this.educations = educations;
 	}
 
-	public List<ExperienceDTO> getExperience() {
+	public List<PracticalExperienceDTO> getExperience() {
 		return experience;
 	}
 
-	public void setExperience(List<ExperienceDTO> experience) {
+	public void setExperience(List<PracticalExperienceDTO> experience) {
 		this.experience = experience;
 	}
 

@@ -1,4 +1,4 @@
-package com.revenat.myresume.presentation.security;
+package com.revenat.myresume.presentation.security.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +28,7 @@ import com.revenat.myresume.infrastructure.util.CommonUtils;
 import com.revenat.myresume.presentation.image.exception.ImageUploadingException;
 import com.revenat.myresume.presentation.image.model.UploadedImageResult;
 import com.revenat.myresume.presentation.image.service.ImageUploaderService;
+import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
 @Service
 class FacebookSocialSignInService implements SocialSignInService {
@@ -64,8 +65,7 @@ class FacebookSocialSignInService implements SocialSignInService {
 		if (CommonUtils.isNotBlank(socialAccount.getEmail())) {
 			Optional<AuthenticatedUser> userOptional = securityService.findByEmail(socialAccount.getEmail());
 			if (userOptional.isPresent()) { // user data already present in the application
-				AuthenticatedUser user = userOptional.get();
-				SecurityUtil.authenticate(user);
+				AuthenticatedUser user = SecurityUtil.authenticateWithRememberMe(userOptional.get());
 				LOGGER.debug("User {} signed in via Facebook", user.getUsername());
 				return user;
 			}
@@ -85,7 +85,7 @@ class FacebookSocialSignInService implements SocialSignInService {
 
 		AuthenticatedUser authenticatedUser = signUpService.signUp(newProfile);
 		sendGeneratedPasswordIfTransactionSuccess(newProfile, generatedPassword);
-		return authenticatedUser;
+		return SecurityUtil.authenticateWithRememberMe(authenticatedUser);
 	}
 
 	private void setPhoto(Profile profile, String avatarUrl) {

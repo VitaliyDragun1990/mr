@@ -10,6 +10,7 @@ import com.revenat.myresume.application.dto.EducationDTO;
 import com.revenat.myresume.domain.entity.Education;
 import com.revenat.myresume.domain.entity.Profile;
 
+@Deprecated
 @TypeConverter
 class ProfileToEducationDTOsTransformer implements Converter<Profile, List<EducationDTO>> {
 

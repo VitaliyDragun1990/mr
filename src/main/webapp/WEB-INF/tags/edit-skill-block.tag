@@ -27,6 +27,8 @@
 </div>
 <div class="row skill-delim">
 	<div class="col-xs-offset-5 col-sm-offset-4 col-md-offset-2 col xs-7 col-md-10" style="padding-left: 0px;">
-		<form:errors path="items[${index}].value" cssClass="alert alert-danger" element="div" />
+		<c:if test="${skill != null}">
+			<resume:form-error path="items[${index}].value" displayIcon="false"/>
+		</c:if>
 	</div>
 </div>

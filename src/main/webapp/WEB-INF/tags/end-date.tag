@@ -10,8 +10,8 @@
 	<c:when test="${!empty endDate }">
 		<fmt:parseDate value="${endDate}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
 		<fmt:formatDate pattern="MMM yyyy" value="${parsedDate}" var="endDate" />
-	${endDate}
-</c:when>
+		${endDate}
+	</c:when>
 	<c:otherwise>
 		<strong class="label label-danger">${msg}</strong>
 	</c:otherwise>

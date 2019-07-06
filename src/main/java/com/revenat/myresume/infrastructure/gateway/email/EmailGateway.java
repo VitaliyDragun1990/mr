@@ -1,6 +1,8 @@
 package com.revenat.myresume.infrastructure.gateway.email;
 
+import javax.annotation.Nonnull;
+
 public interface EmailGateway {
 
-	void sendEmail(String recipientAddress, String recipientName, String subject, String content);
+	void sendEmail(@Nonnull String recipientAddress, @Nonnull String recipientName, @Nonnull String subject, @Nonnull String content);
 }

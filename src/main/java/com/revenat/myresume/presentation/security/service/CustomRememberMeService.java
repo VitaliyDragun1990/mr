@@ -1,4 +1,4 @@
-package com.revenat.myresume.presentation.security;
+package com.revenat.myresume.presentation.security.service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,15 +10,23 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
 
+/**
+ * Custom implementation to allow to enable remember-me functionality
+ * programatically from code (for example for social login, etc.)
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 @Service
 public class CustomRememberMeService extends PersistentTokenBasedRememberMeServices {
 
 	@Autowired
-	public CustomRememberMeService(UserDetailsService userDetailsService,PersistentTokenRepository tokenRepository) {
+	public CustomRememberMeService(UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository) {
 		super("my-resume-online", userDetailsService, tokenRepository);
 	}
 
-	void createAutoLoginToken(HttpServletRequest request, HttpServletResponse response, Authentication successAuthentication) {
+	void createAutoLoginToken(HttpServletRequest request, HttpServletResponse response,
+			Authentication successAuthentication) {
 		super.onLoginSuccess(request, response, successAuthentication);
 	}
 }

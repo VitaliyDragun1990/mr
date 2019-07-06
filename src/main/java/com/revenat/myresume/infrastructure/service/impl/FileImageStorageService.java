@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.revenat.myresume.infrastructure.exception.ImageStorageException;
 import com.revenat.myresume.infrastructure.repository.media.ImageType;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Service
 class FileImageStorageService implements ImageStorageService {
@@ -47,7 +47,7 @@ class FileImageStorageService implements ImageStorageService {
 
 	private void removeImages(String[] imageLinks) {
 		for (String imageLink : imageLinks) {
-			if (StringUtils.isNoneBlank(imageLinks)) {
+			if (CommonUtils.isNotBlank(imageLink)) {
 				removeImageFile(getDestinationImageFile(imageLink));
 			}
 		}

@@ -10,6 +10,7 @@ import com.revenat.myresume.application.dto.HobbyDTO;
 import com.revenat.myresume.domain.entity.Hobby;
 import com.revenat.myresume.domain.entity.Profile;
 
+@Deprecated
 @TypeConverter
 class ProfileToHobbyDTOsTransfromer implements Converter<Profile, List<HobbyDTO>> {
 

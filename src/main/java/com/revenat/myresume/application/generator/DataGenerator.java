@@ -15,7 +15,7 @@ public interface DataGenerator {
 	String generateUid(@Nonnull String firstName, @Nonnull String lastName, @Nonnull ResultChecker resultChecker);
 
 	@Nonnull
-	String generateRestoreAccessLink(@Nonnull String appHost, @Nonnull String token);
+	String generateRestoreAccessLink(@Nonnull String token);
 
 	@Nullable
 	String generateCertificateName(@Nullable String fileName);

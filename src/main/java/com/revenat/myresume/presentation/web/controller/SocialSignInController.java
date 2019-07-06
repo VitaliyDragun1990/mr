@@ -5,9 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.revenat.myresume.domain.exception.ApplicationException;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
-import com.revenat.myresume.presentation.security.AuthenticatedUser;
-import com.revenat.myresume.presentation.security.SocialSignInService;
+import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
+import com.revenat.myresume.presentation.security.service.SocialSignInService;
 
 @Controller
 public class SocialSignInController {
@@ -28,9 +29,14 @@ public class SocialSignInController {
 		if (CommonUtils.isBlank(code)) {
 			return "redirect:/sign-in";
 		}
-		AuthenticatedUser authenticatedUser = signinService.signIn(code);
+		AuthenticatedUser authenticatedUser;
+		try {
+			authenticatedUser = signinService.signIn(code);
+		} catch (ApplicationException e) {
+			return "redirect:/sign-in";
+		}
 		if (authenticatedUser.isRegistrationCompleted()) {
-			return "redirect:/" + authenticatedUser.getUsername();
+			return "redirect:/profile/" + authenticatedUser.getUsername();
 		} else {
 			return "redirect:/profile/edit";
 		}

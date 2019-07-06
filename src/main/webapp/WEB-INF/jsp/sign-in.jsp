@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="resume" tagdir="/WEB-INF/tags"%>
 
 <div class="panel panel-info small-center-block">
@@ -11,7 +12,7 @@
 	</div>
 	<div class="panel-body">
 		<form action='<c:url value="/sign-in-handler" />' method="post">
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			<security:csrfInput/>
 			<c:if test="${!empty sessionScope.SPRING_SECURITY_LAST_EXCEPTION}">
 				<div class="alert alert-danger" role="alert">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -39,11 +40,11 @@
 			</div>
 			<div class="form-group text-canter col-xs-offset-7">
 				<a href='<c:url value="/fbLogin" />' class="btn btn-primary">
-					<i class="fa fa-facebook-official" aria-hidden="true"></i> Sign in with facebook
+					<i class="fa fa-facebook-official" aria-hidden="true"></i>&nbsp;&nbsp; Sign in with Facebook
 				</a>
 			</div>
 			<hr />
-			<a href="#" class="col-xs-offset-4">Restore access</a>
+			<a href='<c:url value="/restore" />' class="col-xs-offset-4">Restore access</a>
 		</form>
 	</div>
 </div>

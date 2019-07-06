@@ -6,14 +6,25 @@
 <%@ attribute name="info" required="true" type="com.revenat.myresume.application.dto.MainInfoDTO" %>
 <%@ attribute name="fullName" required="true" type="java.lang.String" %>
 <%@ attribute name="contacts" required="false" type="com.revenat.myresume.application.dto.ContactsDTO" %>
+<%@ attribute name="showEdit" required="false" type="java.lang.Boolean" %>
 
 <div class="panel panel-primary">
-	<a href='<c:url value="/profile/edit" />'>
-		<img class="img-responsive photo" src='<c:url value="${info.largePhoto}" />' alt="photo" />
-	</a>
-	<h1 class="text-center">
-		<a href='<c:url value="/profile/edit" />' style="color:black;">${fullName}</a>
-	</h1>
+	<c:choose>
+		<c:when test="${showEdit}">
+			<a href='<c:url value="/profile/edit" />'>
+				<img class="img-responsive photo" src='<c:url value="${info.largePhoto}" />' alt="photo" />
+			</a>
+			<h1 class="text-center">
+				<a href='<c:url value="/profile/edit" />' style="color:black;">${fullName}</a>
+			</h1>
+		</c:when>
+		<c:otherwise>
+			<img class="img-responsive photo" src='<c:url value="${info.largePhoto}" />' alt="photo" />
+			<h1 class="text-center">
+				${fullName}
+			</h1>
+		</c:otherwise>
+	</c:choose>
 	<h6 class="text-center">
 		<strong>${info.city}, ${info.country}</strong>
 	</h6>

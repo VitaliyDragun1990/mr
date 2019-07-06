@@ -1,10 +1,13 @@
-package com.revenat.myresume.presentation.security;
+package com.revenat.myresume.presentation.security.service;
+
+import javax.annotation.Nonnull;
 
 import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
 public interface SignUpService {
 
-	AuthenticatedUser signUp(String firstName, String lastName, String password);
+	@Nonnull AuthenticatedUser signUp(@Nonnull String firstName, @Nonnull String lastName, @Nonnull String password);
 	
-	AuthenticatedUser signUp(Profile newProfile);
+	@Nonnull AuthenticatedUser signUp(@Nonnull Profile newProfile);
 }

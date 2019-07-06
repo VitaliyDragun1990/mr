@@ -10,6 +10,7 @@ import com.revenat.myresume.application.dto.LanguageDTO;
 import com.revenat.myresume.domain.entity.Language;
 import com.revenat.myresume.domain.entity.Profile;
 
+@Deprecated
 @TypeConverter
 class ProfileToLanguageDTOsTransformer implements Converter<Profile, List<LanguageDTO>> {
 

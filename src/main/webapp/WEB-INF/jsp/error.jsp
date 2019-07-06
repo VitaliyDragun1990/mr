@@ -1,3 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 
-<h2 class="text-danger text-center">Error while processing request for URL: ${url}. Try again later!</h2>
+<div class="panel panel-danger">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<i class="fa fa-exclamation-circle"></i> Error
+		</h3>
+	</div>
+	<div class="panel-body">
+		<h4>Application can't process youe request: ${url}. Please try again later...</h4>
+	</div>
+</div>

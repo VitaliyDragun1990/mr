@@ -1,6 +1,9 @@
 package com.revenat.myresume.presentation.web.controller;
 
+import static com.revenat.myresume.presentation.config.Constants.UI.MAX_PROFILES_PER_PAGE;
+
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.revenat.myresume.application.dto.ProfileDTO;
 import com.revenat.myresume.application.service.profile.SearchProfileService;
-import com.revenat.myresume.presentation.config.Constants;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Controller
 @RequestMapping("/search")
@@ -27,20 +30,28 @@ public class SearchProfileController {
 	}
 	
 	@GetMapping
-	public String search(@RequestParam("query") String query, Model model) {
+	public String search(@RequestParam(value = "query", required = false) String query, Model model)
+			throws UnsupportedEncodingException {
+		if (CommonUtils.isBlank(query)) {
+			return "redirect:/welcome";
+		}
 		Page<ProfileDTO> page = searchService.findBySearchQuery(query,
-				new PageRequest(0, Constants.UI.MAX_PROFILES_PER_PAGE, new Sort("firstName", "lastName")));
+				new PageRequest(0, MAX_PROFILES_PER_PAGE, new Sort("firstName", "lastName")));
 		model.addAttribute("profiles", page.getContent());
 		model.addAttribute("page", page);
-		model.addAttribute("query", query);
-		return "profiles";
+		model.addAttribute("query", URLDecoder.decode(query, "UTF-8"));
+		return "search-results";
 	}
 	
 	@GetMapping("/fragment/more")
 	public String moreProfiles(@RequestParam("query") String query, Model model,
-			@PageableDefault(size = Constants.UI.MAX_PROFILES_PER_PAGE, sort = {"firstName", "lastName"}) Pageable pageable)
-	throws UnsupportedEncodingException {
-		Page<ProfileDTO> page = searchService.findBySearchQuery(query, pageable);
+			@PageableDefault(size = MAX_PROFILES_PER_PAGE, sort = {"firstName", "lastName"}) Pageable pageable) {
+		Page<ProfileDTO> page = null;
+		if (CommonUtils.isNotBlank(query)) {
+			page = searchService.findBySearchQuery(query, pageable);
+		} else {
+			page = searchService.findAll(pageable);
+		}
 		model.addAttribute("profiles", page.getContent());
 		return "fragment/profile-items";
 	}

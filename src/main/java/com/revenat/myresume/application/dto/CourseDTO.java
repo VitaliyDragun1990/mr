@@ -11,7 +11,7 @@ import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.domain.entity.Course;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
-public class CourseDTO extends AbstractEndDateDTO implements Serializable {
+public class CourseDTO extends AbstractEndDateDTO implements Serializable, Comparable<CourseDTO> {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -101,6 +101,11 @@ public class CourseDTO extends AbstractEndDateDTO implements Serializable {
 		} else if (!school.equals(other.school))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public int compareTo(CourseDTO o) {
+		return CommonUtils.compareValues(o.getEndDate(), getEndDate(), true);
 	}
 
 	@Override
