@@ -21,7 +21,7 @@
 						<label for="inputSkype" class="col-sm-4 control-label">Skype</label>
 						<div class="col-sm-8">
 							<form:input path="skype" cssClass="form-control" id="inputSkype" placeholder="Example: richard-hendriks"/>
-							<resume:form-error path="skyp"/>
+							<resume:form-error path="skype"/>
 						</div>
 					</div>
 				</div>

@@ -14,10 +14,12 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+import com.revenat.myresume.application.validation.validator.AdulthoodConstraintValidator;
+
 @Documented
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD, PARAMETER, CONSTRUCTOR, ANNOTATION_TYPE })
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = {AdulthoodConstraintValidator.class})
 public @interface Adulthood {
 
 	String message() default "Adulthood";

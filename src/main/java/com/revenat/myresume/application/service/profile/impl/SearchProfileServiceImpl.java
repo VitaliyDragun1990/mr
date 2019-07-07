@@ -16,9 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.revenat.myresume.application.dto.ProfileDTO;
-import com.revenat.myresume.application.exception.NotFoundException;
+import com.revenat.myresume.application.exception.ProfileNotFoundException;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.SearchProfileService;
 import com.revenat.myresume.application.transformer.Transformer;
@@ -27,6 +28,7 @@ import com.revenat.myresume.infrastructure.repository.search.ProfileSearchReposi
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 
 @Service
+@Transactional(readOnly = true)
 class SearchProfileServiceImpl implements SearchProfileService {
 	
 	private final ProfileRepository profileRepo;
@@ -49,7 +51,7 @@ class SearchProfileServiceImpl implements SearchProfileService {
 		if (profile.isPresent()) {
 			return transformer.transform(profile.get(), ProfileDTO.class);
 		} else {
-			throw new NotFoundException(Profile.class, "username", uid);
+			throw new ProfileNotFoundException(uid);
 		}
 	}
 	
@@ -64,7 +66,7 @@ class SearchProfileServiceImpl implements SearchProfileService {
 
 	@Override
 	public Page<ProfileDTO> findAll(Pageable pageable) {
-		Page<Profile> page = profileRepo.findAll(pageable);
+		Page<Profile> page = profileRepo.findAllByCompletedTrue(pageable);
 		List<Profile> content = page.getContent();
 		List<ProfileDTO> dtoList = transformer.transformToList(content, Profile.class, ProfileDTO.class);
 		return new PageImpl<>(dtoList, pageable, page.getTotalElements());

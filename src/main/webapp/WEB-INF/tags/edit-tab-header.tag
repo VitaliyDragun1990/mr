@@ -13,5 +13,5 @@
 	<li role="presentation" ${selected == 'education' ? 'class="active"' : ''}><a href='<c:url value="/profile/edit/education" />'>Education</a></li>
 	<li role="presentation" ${selected == 'languages' ? 'class="active"' : ''}><a href='<c:url value="/profile/edit/languages" />'>Languages</a></li>
 	<li role="presentation" ${selected == 'hobbies' ? 'class="active"' : ''}><a href='<c:url value="/profile/edit/hobbies" />'>Hobbies</a></li>
-	<li role="presentation" ${selected == 'info' ? 'class="active"' : ''}><a href='<c:url value="/profile/edit/info" />'>Additional</a></li>
+	<li role="presentation" ${selected == 'info' ? 'class="active"' : ''}><a href='<c:url value="/profile/edit/info" />'>Extra</a></li>
 </ul>

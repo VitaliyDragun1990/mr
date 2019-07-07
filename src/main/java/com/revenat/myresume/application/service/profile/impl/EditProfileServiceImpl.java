@@ -116,7 +116,6 @@ class EditProfileServiceImpl implements EditProfileService {
 			}
 		});
 		
-		
 		return savedProfile.getId();
 	}
 	
@@ -413,11 +412,10 @@ class EditProfileServiceImpl implements EditProfileService {
 
 	private void removeProfileImagesIfTransactionSuccess(final List<String> imageLinksToRemove) {
 		executeIfTransactionSuccess(() -> imageStorageService.remove(imageLinksToRemove.toArray(EMPTY_ARRAY)));
-		
 	}
 
 	private void removeProfileIndexIfTransactionSuccess(final Profile profile) {
-		executeIfTransactionSuccess(() -> searchIndexingService.removeIndexProfile(profile));
+		executeIfTransactionSuccess(() -> searchIndexingService.removeProfileIndex(profile));
 	}
 
 	private List<String> getImageLinksToRemove(Profile profile) {

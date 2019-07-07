@@ -91,7 +91,7 @@ class ElasticSearchIndexingService implements SearchIndexingService {
 	}
 	
 	@Override
-	public void removeIndexProfile(Profile profile) {
+	public void removeProfileIndex(Profile profile) {
 		searchRepo.delete(profile);
 		LOGGER.info("Profile index deleted: {}", profile.getUid());
 	}

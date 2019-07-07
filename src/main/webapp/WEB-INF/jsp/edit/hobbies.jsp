@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="resume" tagdir="/WEB-INF/tags" %>
-<%@ taglib prefix="custom" tagdir="/WEB-INF/tld/custom.tld" %>
+<%@ taglib prefix="custom" uri="/WEB-INF/tld/custom.tld" %>
 
 <spring:eval expression="@properties.getProperty('profile.hobbies.max')" var="maxHobbies"/>
 <resume:edit-tab-header selected="hobbies"/>
@@ -14,7 +14,7 @@
 		<hr />
 		<div id="ui-block-container" class="row" data-max-hobbies="${maxHobbies}">
 			<c:forEach var="hobby" items="${hobbies}">
-				<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+				<div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
 					<custom:hobby-class hobbyName="${hobby.name}" var="hobbyCssClassName"/>
 					<button type="button" class="btn btn-block btn-default hobby-btn ${hobby.selected ? 'active' : ''}"
 						data-hobby="${hobby.name}" data-toggle="button" aria-pressed="false">

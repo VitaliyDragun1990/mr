@@ -115,7 +115,6 @@ public class ServiceConfig {
 	
 	private Iterable<Resource> getResourceCandidates(String resourcePath) {
 		List<Resource> resourceCandidates = new ArrayList<>();
-//		resourceCandidates.add(new ServletContextResource(servletContext, resourcePath));
 		resourceCandidates.add(new PathResource(resourcePath));
 		resourceCandidates.add(new ClassPathResource(resourcePath));
 		try {

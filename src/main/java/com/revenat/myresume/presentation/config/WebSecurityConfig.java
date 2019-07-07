@@ -3,6 +3,7 @@ package com.revenat.myresume.presentation.config;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
+	@Qualifier("applicationAccessDeniedHandler")
 	private AccessDeniedHandler accessDeniedHandler;
 	@Autowired
 	private CustomRememberMeService persistentTokenRememberMeService;

@@ -16,7 +16,7 @@ public interface SearchIndexingService {
 
 	void createNewProfileIndex(Profile profile);
 
-	void removeIndexProfile(Profile profile);
+	void removeProfileIndex(Profile profile);
 
 	<T extends Annotation> void updateProfileIndex(Profile profile, Class<T> annotationClass);
 

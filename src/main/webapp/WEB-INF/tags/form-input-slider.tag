@@ -1,6 +1,6 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="custom" tagdir="/WEB-INF/tld/custom.tld" %>
+<%@ taglib prefix="custom" uri="/WEB-INF/tld/custom.tld" %>
 
 <%@ attribute name="index" required="true" type="java.lang.Object" %>
 <%@ attribute name="value" required="true" type="java.lang.Object" %>
@@ -11,8 +11,8 @@
 	<c:set var="languageLevelValues" value="[" scope="request"/>
 	<c:forEach var="level" items="${languageLevels}" varStatus="status">
 		<custom:lang-level-data varOrdinal="sliderIntValue" varCaption="caption" level="${level}"/>
-		<c:set value="languageLevelKeys" value='${languageLevelKeys}${sliderIntValue}${status.last ? "]" : ","}' scope="request"/>
-		<c:set value="languageLevelValues" value='${languageLevelValues}${caption}${status.last ? "]" : ","}' scope="request"/>
+		<c:set var="languageLevelKeys" value='${languageLevelKeys}${sliderIntValue}${status.last ? "]" : ","}' scope="request"/>
+		<c:set var="languageLevelValues" value='${languageLevelValues}"${caption}"${status.last ? "]" : ","}' scope="request"/>
 	</c:forEach>
 </c:if>
 

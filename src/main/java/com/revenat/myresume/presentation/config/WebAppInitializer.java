@@ -16,6 +16,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.RequestContextFilter;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.FrameworkServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.revenat.myresume.application.config.ApplicationConfig;
@@ -111,6 +113,13 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 		this.rootWebAppContext = (AnnotationConfigWebApplicationContext) super.createRootApplicationContext();
 		rootWebAppContext.refresh();
 		return rootWebAppContext;
+	}
+	
+	@Override
+	protected FrameworkServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
+		DispatcherServlet dispatcherServlet =  (DispatcherServlet) super.createDispatcherServlet(servletAppContext);
+		dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
+		return dispatcherServlet;
 	}
 
 }

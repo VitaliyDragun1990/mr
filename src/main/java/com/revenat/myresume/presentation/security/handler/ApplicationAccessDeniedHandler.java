@@ -15,7 +15,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 /**
- * Handles {@link AccessDeniedException}
+ * Handles {@link AccessDeniedException} in a way different from servlet
+ * container default 403 page.
  * 
  * @author Vitaliy Dragun
  *

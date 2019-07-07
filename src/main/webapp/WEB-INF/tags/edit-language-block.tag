@@ -3,7 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="resume" tagdir="/WEB-INF/tags" %>
-<%@ taglib prefix="custom" tagdir="/WEB-INF/tld/custom.tld" %>
+<%@ taglib prefix="custom" uri="/WEB-INF/tld/custom.tld" %>
 
 <%@ attribute name="index" required="true" type="java.lang.Object" %>
 <%@ attribute name="language" required="false" type="com.revenat.myresume.application.dto.LanguageDTO" %>

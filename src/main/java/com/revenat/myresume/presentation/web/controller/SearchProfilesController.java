@@ -22,10 +22,10 @@ import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Controller
 @RequestMapping("/search")
-public class SearchProfileController {
+public class SearchProfilesController {
 	private final SearchProfileService searchService;
 
-	public SearchProfileController(SearchProfileService searchService) {
+	public SearchProfilesController(SearchProfileService searchService) {
 		this.searchService = searchService;
 	}
 	

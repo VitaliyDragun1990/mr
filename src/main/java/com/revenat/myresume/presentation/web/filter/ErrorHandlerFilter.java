@@ -45,7 +45,7 @@ public class ErrorHandlerFilter extends AbstractFilter {
 			if (requestUrl.contains("/fragment") || "/error".equals(requestUrl)) {
 				sendErrorStatus(resp);
 			} else {
-				resp.sendRedirect("/error?url=" + requestUrl);
+				resp.sendRedirect("/error");
 			}
 		} else {
 			throw new ServletException(th);

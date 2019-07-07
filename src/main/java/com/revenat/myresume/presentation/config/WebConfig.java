@@ -38,8 +38,12 @@ import org.springframework.web.servlet.view.JstlView;
 public class WebConfig extends WebMvcConfigurerAdapter {
 	
 	@Autowired
-	@Qualifier("applicationHandlerExceptionResolver")
-	private HandlerExceptionResolver handlerExceptionResolver;
+	@Qualifier("globalHandlerExceptionResolver")
+	private HandlerExceptionResolver globalHandlerExceptionResolver;
+	
+	@Autowired
+	@Qualifier("customExceptionHandlerExceptionResolver")
+	private HandlerExceptionResolver exceptionHandlerExceptionResolver;
 
 	@Bean
 	public ViewResolver viewResolver() {
@@ -49,6 +53,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
 	}
+	
+//	@Override
+//	public void configurePathMatch(PathMatchConfigurer configurer) {
+//		configurer.setUseSuffixPatternMatch(false);
+//		configurer.setUseTrailingSlashMatch(false);
+//	}
 	
 	/**
 	 * Uses a locale attribute in the user's session in case of a custom setting,
@@ -110,6 +120,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-		exceptionResolvers.add(handlerExceptionResolver);
+		exceptionResolvers.add(exceptionHandlerExceptionResolver);
+		exceptionResolvers.add(globalHandlerExceptionResolver);
 	}
 }

@@ -177,20 +177,20 @@ class StaticDataServiceImpl implements StaticDataService {
 
 	@Override
 	public Collection<String> getLanguageLevels() {
-		List<String> languageTypes = new ArrayList<>();
-		for (LanguageType type : LanguageType.values()) {
-			languageTypes.add(type.getType());
-		}
-		return languageTypes;
-	}
-
-	@Override
-	public Collection<String> getLanguageTypes() {
 		List<String> languageLevels = new ArrayList<>();
 		for (LanguageLevel level : LanguageLevel.values()) {
 			languageLevels.add(level.getLevel());
 		}
 		return languageLevels;
+	}
+
+	@Override
+	public Collection<String> getLanguageTypes() {
+		List<String> languageTypes = new ArrayList<>();
+		for (LanguageType type : LanguageType.values()) {
+			languageTypes.add(type.getType());
+		}
+		return languageTypes;
 	}
 
 }

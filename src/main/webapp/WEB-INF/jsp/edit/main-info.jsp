@@ -10,7 +10,7 @@
 <div class="panel panel-default edit-profile">
 	<div class="panel-body">
 		<h1 class="text-center">${fullName}</h1>
-		<c:if test="${mainInfo.isCompleted}">
+		<c:if test="${!mainInfo.completed}">
 			<hr />
 			<h4 class="data-header">In order to complete registration, fill in next form fields!</h4>
 		</c:if>

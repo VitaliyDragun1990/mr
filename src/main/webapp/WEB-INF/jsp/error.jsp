@@ -7,6 +7,6 @@
 		</h3>
 	</div>
 	<div class="panel-body">
-		<h4>Application can't process youe request: ${url}. Please try again later...</h4>
+		<h4>Application can't process youe request. Please try again later...</h4>
 	</div>
 </div>

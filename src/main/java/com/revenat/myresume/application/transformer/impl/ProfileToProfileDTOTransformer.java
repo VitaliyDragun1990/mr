@@ -1,6 +1,7 @@
 package com.revenat.myresume.application.transformer.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
@@ -76,6 +77,7 @@ class ProfileToProfileDTOTransformer implements Converter<Profile, ProfileDTO> {
 				dtoList.add(dto);
 			}
 		}
+		Collections.sort(dtoList);
 		return dtoList;
 	}
 
