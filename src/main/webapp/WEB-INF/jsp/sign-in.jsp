@@ -38,7 +38,7 @@
 			<div class="form-group">
 				<button type="submit" class="btn btn-success pull-left">Login</button>
 			</div>
-			<div class="form-group text-canter col-xs-offset-7">
+			<div class="form-group text-canter col-xs-offset-6">
 				<a href='<c:url value="/fbLogin" />' class="btn btn-primary">
 					<i class="fa fa-facebook-official" aria-hidden="true"></i>&nbsp;&nbsp; Sign in with Facebook
 				</a>

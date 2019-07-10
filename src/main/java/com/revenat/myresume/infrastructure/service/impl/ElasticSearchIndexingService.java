@@ -66,6 +66,8 @@ class ElasticSearchIndexingService implements SearchIndexingService {
 		map.put(Course.class, (id, courses) -> updateIndexProfileCourses(id, (List<Course>) courses));
 		map.put(PracticalExperience.class, (id, experience) -> updateIndexProfileExperience(id, (List<PracticalExperience>) experience));
 		map.put(Language.class, (id, languages) -> updateIndexProfileLanguages(id, (List<Language>) languages));
+		
+		updaterRegistry = CommonUtils.getSafeMap(map);
 	}
 
 	@Override
@@ -116,7 +118,10 @@ class ElasticSearchIndexingService implements SearchIndexingService {
 	@Override
 	public <E extends ProfileEntity> void updateProfileEntitiesIndex(long profileId, List<E> updatedData,
 			Class<E> profileEntityClass) {
-		updaterRegistry.get(profileEntityClass).updateProfileEntitiesIndex(profileId, updatedData);
+		ProfileEntitiesIndexUpdater indexUpdater = updaterRegistry.get(profileEntityClass);
+		if (indexUpdater != null) {
+			indexUpdater.updateProfileEntitiesIndex(profileId, updatedData);
+		}
 	}
 
 	void updateIndexProfileSkills(long profileId, List<Skill> updatedData) {

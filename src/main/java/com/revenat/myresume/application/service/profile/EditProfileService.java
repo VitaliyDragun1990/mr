@@ -9,18 +9,13 @@ import com.revenat.myresume.application.dto.CertificateDTO;
 import com.revenat.myresume.application.dto.ContactsDTO;
 import com.revenat.myresume.application.dto.CourseDTO;
 import com.revenat.myresume.application.dto.EducationDTO;
-import com.revenat.myresume.application.dto.PracticalExperienceDTO;
 import com.revenat.myresume.application.dto.HobbyDTO;
 import com.revenat.myresume.application.dto.LanguageDTO;
 import com.revenat.myresume.application.dto.MainInfoDTO;
-import com.revenat.myresume.application.dto.ProfileDTO;
+import com.revenat.myresume.application.dto.PracticalExperienceDTO;
 import com.revenat.myresume.application.dto.SkillDTO;
 
 public interface EditProfileService {
-
-	long createProfile(@Nonnull ProfileDTO newProfileData);
-	
-	void removeProfile(long profileId);
 
 	@Nonnull MainInfoDTO getMainInfoFor(long profileId);
 	

@@ -12,7 +12,7 @@
 	</div>
 	<div class="panel-body">
 		<p>After the sign up has been completed you can access your profile via link: <a href='<c:url value="/profile/${CURRENT_USER.username}" />'>
-			${applicationHost}/profile/${AUTH_USER.username}
+			${applicationHost}/profile/${CURRENT_USER.username}
 		</a></p>
 		<p>Your UID: <strong>${CURRENT_USER.username}</strong>. Use this UID to enter Your personal area</p>
 		<hr />

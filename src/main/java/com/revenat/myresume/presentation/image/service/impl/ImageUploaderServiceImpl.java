@@ -48,7 +48,7 @@ class ImageUploaderServiceImpl implements ImageUploaderService {
 	@EnableTemporaryImageStorage
 	public UploadedImageResult uploadNewProfilePhoto(MultipartFile uploadedPhoto) {
 		try {
-			return processUpload(uploadedPhoto, ImageType.AVATARS);
+			return processUpload(uploadedPhoto, ImageType.AVATAR);
 		} catch (IOException | ApplicationException e) {
 			throw new ImageUploadingException("Can't save uploaded profile photo: " + e.getMessage(), e);
 		}

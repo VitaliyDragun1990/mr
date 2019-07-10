@@ -29,9 +29,9 @@
 		<strong>${info.city}, ${info.country}</strong>
 	</h6>
 	<h6 class="text-center">
-		<fmt:parseDate value="${info.birthDate}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
-		<fmt:formatDate pattern="EEE MMM d, yyyy" value="${parsedDate}" var="birthDate" />
-		<strong>Age:</strong> ${info.age}, <strong>Birthday: </strong> ${birthDate }
+		<fmt:parseDate value="${info.birthDay}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+		<fmt:formatDate pattern="EEE MMM d, yyyy" value="${parsedDate}" var="birthDay" />
+		<strong>Age:</strong> ${info.age}, <strong>Birthday: </strong> ${birthDay }
 	</h6>
 	<div class="list-group contacts">
 		<a class="list-group-item" href="tel:${info.phone}"><i class="fa fa-phone"></i> ${info.phone}</a> 

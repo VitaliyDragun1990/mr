@@ -22,7 +22,7 @@ public class SchedulingConfig implements SchedulingConfigurer {
 	 * 
 	 * By default, beans defined using Java config that have a public close or shutdown method are automatically enlisted with a destruction callback.
 	 */
-	@Bean(/*destroyMethod = "shutdown"*/)
+	@Bean(destroyMethod = "shutdown")
 	public ScheduledExecutorService applicationScheduler() {
 		return Executors.newScheduledThreadPool(1);
 	}

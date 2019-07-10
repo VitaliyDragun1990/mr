@@ -84,6 +84,7 @@ class FacebookSocialSignInService implements SocialSignInService {
 		setPhoto(newProfile, account.getAvatarUrl());
 
 		AuthenticatedUser authenticatedUser = signUpService.signUp(newProfile);
+		newProfile.setUid(authenticatedUser.getUsername());
 		sendGeneratedPasswordIfTransactionSuccess(newProfile, generatedPassword);
 		return SecurityUtil.authenticateWithRememberMe(authenticatedUser);
 	}

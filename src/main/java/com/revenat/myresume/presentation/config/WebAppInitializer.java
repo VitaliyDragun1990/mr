@@ -14,7 +14,6 @@ import org.sitemesh.content.tagrules.html.Sm2TagRuleBundle;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.FrameworkServlet;
@@ -102,8 +101,6 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	protected Filter[] getServletFilters() {
 		return new Filter[] {
 				new ErrorHandlerFilter(),
-				new CharacterEncodingFilter("UTF-8", true),
-				//new OpenEntityManagerInViewFilter(), // TODO: remove this filter
 				new RequestContextFilter()
 				};
 	}

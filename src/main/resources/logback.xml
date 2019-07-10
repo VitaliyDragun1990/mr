@@ -28,7 +28,7 @@
 
 	<logger name="com.revenat.myresume.presentation.web.controller" level="debug" />
 	
-	<logger name="com.revenat.myresume.infrastructure.media.optimizer.impl.JpegTranImageOptimizator" level="debug" />
+	<logger name="com.revenat.myresume.infrastructure.media.optimizer.impl.JpegTranImageOptimizer" level="debug" />
 	
 	<logger name="com.revenat.myresume.presentation.image.service.impl.TemporaryImageStorageManagerAspect" level="debug" />
 

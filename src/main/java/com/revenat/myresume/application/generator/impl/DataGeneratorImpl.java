@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.revenat.myresume.application.exception.CantCompleteClientRequestException;
+import com.revenat.myresume.application.exception.DataGenerationException;
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.util.DataUtil;
 
@@ -37,14 +37,22 @@ class DataGeneratorImpl implements DataGenerator {
 	public String generateUid(String firstName, String lastName, ResultChecker uidChecker) {
 		String baseUid = DataUtil.generateProfileUid(firstName, lastName);
 		String uid = baseUid;
-		for (int i = 0; uidChecker.isAcceptable(uid); i++) {
+		for (int i = 0; attemptFailed(uidChecker, uid); i++) {
 			uid = DataUtil.generateUidWithRandomSuffix(baseUid, generateUidAlphabet, generateUidSuffixLength);
-			if (i >= maxTryCountToGenerateUid) {
-				throw new CantCompleteClientRequestException("Can't generate unique uid for profile: "
+			if (isExceededTryCount(i)) {
+				throw new DataGenerationException("Can't generate unique uid for profile: "
 						+ baseUid + ": maxTrycountToGenerateUid detected");
 			}
 		}
 		return uid;
+	}
+
+	private boolean attemptFailed(ResultChecker uidChecker, String uid) {
+		return !uidChecker.isAcceptable(uid);
+	}
+
+	private boolean isExceededTryCount(int i) {
+		return i >= maxTryCountToGenerateUid;
 	}
 	
 	@Override
@@ -57,13 +65,18 @@ class DataGeneratorImpl implements DataGenerator {
 		if (fileName == null) {
 			return null;
 		}
-		int point = fileName.lastIndexOf('.');
-		if (point != -1) {
-			fileName = fileName.substring(0, point);
-		}
+		fileName = getRidOfFileExtension(fileName);
 		return DataUtil.capitalizeName(fileName);
 	}
 	
+	private String getRidOfFileExtension(String fileName) {
+		int point = fileName.lastIndexOf('.');
+		if (point != -1) {
+			return fileName.substring(0, point);
+		}
+		return fileName;
+	}
+
 	@Override
 	public String generateRandomPassword() {
 		return DataUtil.generateRandomString(generatedPasswordAlphabet, generatedPasswordLength);

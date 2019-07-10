@@ -13,4 +13,4 @@
 		</c:if>
 	</spring:bind>
 </c:if>
-<form:errors path="${path}" cssClass="alert.alert-danger" element="div"/>
+<form:errors path="${path}" cssClass="alert alert-danger" element="div"/>

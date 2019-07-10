@@ -33,22 +33,22 @@ class EmailGatewayImpl implements EmailGateway {
 	}
 
 	@Override
-	public void sendEmail(String recipientAddress, String recipientName, String subject, String content) {
+	public void sendEmail(String recipientAddress, String recipientName, String subject, String content, boolean isHtml) {
 		try {
-			MimeMessage message = buildMessage(recipientAddress, recipientName, subject, content);
+			MimeMessage message = buildMessage(recipientAddress, recipientName, subject, content, isHtml);
 			mailSender.send(message);
 		} catch (Exception e) {
 			throw new EmailGatewayException(e);
 		}
 	}
 
-	private MimeMessage buildMessage(String recipientAddress, String recipientName, String subject, String content)
+	private MimeMessage buildMessage(String recipientAddress, String recipientName, String subject, String content, boolean isHtml)
 			throws MessagingException, UnsupportedEncodingException {
 		MimeMessageHelper messageHelper = new MimeMessageHelper(mailSender.createMimeMessage(), false);
 		messageHelper.setSubject(subject);
 		messageHelper.setTo(new InternetAddress(recipientAddress, recipientName));
 		messageHelper.setFrom(fromEmail, fromName);
-		messageHelper.setText(content);
+		messageHelper.setText(content, isHtml);
 		return new MimeMailMessage(messageHelper).getMimeMessage();
 	}
 

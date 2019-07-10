@@ -88,7 +88,7 @@
 			<div class="col-xs-12 col-md-6 form-group ${hasError ? 'has-error has-feedback' : ''}">
 				<label for="items${index}responsibilities" class="control-label">Responsibilities/Achievements</label>
 				<textarea class="form-control" name="items[${index}].responsibilities" id="items${index}responsibilities"
-					style="margin-bottom: 10px;" rows="2" required="required" >${experience.responsibilities}</textarea>
+					style="margin-bottom: 10px;" rows="4" required="required" >${experience.responsibilities}</textarea>
 				<c:if test="${experience != null}">
 					<resume:form-error path="items[${index}].responsibilities"/>
 				</c:if>

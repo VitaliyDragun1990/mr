@@ -3,13 +3,7 @@
 	<bean id="restoreAccessNotification" class="com.revenat.myresume.application.model.NotificationMessage">
 		<property name="subject" value="Restore access" />
 		<property name="content">
-			<value>
-			<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    			<head>
-       				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        			<title>Restore acces to MyResume</title>
-    			</head>
-    			<body>
+			<value><![CDATA[<div>
        				<p>
             			Hello, <span>${profile.firstName} ${profile.lastName}</span>
        				</p>
@@ -21,9 +15,7 @@
             			Regards, <br/>
             			<em>The MyResume Team</em>
         			</p>
-    			</body>
-			</html>
-			</value>
+    			</div>]]></value>
 		</property>
 	</bean>
 	

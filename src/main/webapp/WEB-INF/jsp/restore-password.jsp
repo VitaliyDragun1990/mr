@@ -12,8 +12,8 @@
 	</div>
 	<div class="panel-body edit-password">
 		<resume:form-display-error-if-invalid formName="passwordForm"/>
-		<form:form action="/edit/password/restore" commandName="passwordForm" method="post" >
-
+		<form:form action="/profile/edit/password/restore" commandName="passwordForm" method="post" >
+			<form:hidden path="token" value="${token}"/>
 			<div class="help-block">Enter new password and confirm it</div>
 			<resume:form-has-error path="password"/>
 			<div class="form-group ${hasError ? 'has-error has-feedback' : ''}">

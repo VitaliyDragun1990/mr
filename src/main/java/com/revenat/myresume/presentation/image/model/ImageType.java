@@ -1,7 +1,7 @@
 package com.revenat.myresume.presentation.image.model;
 
 public enum ImageType {
-	AVATARS(110, 110, 400, 400),
+	AVATAR(110, 110, 400, 400),
 
 	CERTIFICATES(142, 100, 900, 400);
 

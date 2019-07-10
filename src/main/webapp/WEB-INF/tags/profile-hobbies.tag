@@ -11,7 +11,7 @@
 		<h3 class="panel-title">
 			<i class="fa fa-heart"></i> Hobby
 			<c:if test="${showEdit}">
-				<a href='<c:url value="/profile/edit/hobby" />' class="edit-block">Edit</a>
+				<a href='<c:url value="/profile/edit/hobbies" />' class="edit-block">Edit</a>
 			</c:if>
 		</h3>
 	</div>

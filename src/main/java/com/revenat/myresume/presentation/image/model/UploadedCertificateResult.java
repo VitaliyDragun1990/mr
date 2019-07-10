@@ -13,7 +13,7 @@ public class UploadedCertificateResult extends UploadedImageResult implements Se
 
 	private String name;
 
-	public UploadedCertificateResult(String largeUrl, String smallUrl, String name) {
+	public UploadedCertificateResult(String name, String largeUrl, String smallUrl) {
 		super(largeUrl, smallUrl);
 		this.name = name;
 	}

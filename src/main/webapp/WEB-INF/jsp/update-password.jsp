@@ -12,7 +12,7 @@
 	</div>
 	<div class="panel-body edit-password">
 		<resume:form-display-error-if-invalid formName="passwordForm"/>
-		<form:form action="/edit/password/update" commandName="passwordForm" method="post" >
+		<form:form action="/profile/edit/password/update" commandName="passwordForm" method="post" >
 		
 			<div class="help-block">Enter current password</div>
 			<resume:form-has-error path="oldPassword"/>

@@ -174,7 +174,7 @@ public class Profile extends AbstractEntity<Long> {
 	
 	@PrePersist
 	public void prePersist() {
-		if (getId() == 0) {
+		if (getId() == null) {
 			setCreated(LocalDateTime.now());
 		}
 	}

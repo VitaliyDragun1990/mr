@@ -75,7 +75,7 @@ class AsyncEmailNotificationSenderService implements NotificationSenderService {
 			LOGGER.debug("Sending new email message to {}", message.getDestinationAddress());
 			if (production) {
 				emailGateway.sendEmail(message.getDestinationAddress(), message.getDestinationName(),
-						message.getSubject(), message.getContent());
+						message.getSubject(), message.getContent(), true);
 				LOGGER.debug("Email message to {} has been successfully sent",
 						message.getDestinationAddress());
 			} else {

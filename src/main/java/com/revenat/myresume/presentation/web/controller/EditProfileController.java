@@ -1,5 +1,6 @@
 package com.revenat.myresume.presentation.web.controller;
 
+import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import com.revenat.myresume.application.dto.HobbyDTO;
 import com.revenat.myresume.application.dto.MainInfoDTO;
 import com.revenat.myresume.application.exception.DTOValidationException;
 import com.revenat.myresume.application.service.profile.EditProfileService;
+import com.revenat.myresume.domain.entity.LanguageLevel;
 import com.revenat.myresume.presentation.image.model.UploadedCertificateResult;
 import com.revenat.myresume.presentation.image.model.UploadedImageResult;
 import com.revenat.myresume.presentation.image.service.ImageUploaderService;
@@ -63,9 +65,20 @@ public class EditProfileController {
 	}
 	
 	@InitBinder
-	public void initBinder(WebDataBinder binder) {
+	public void initBinderGeneral(WebDataBinder binder) {
 		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
 		binder.registerCustomEditor(LocalDate.class, new CustomLocalDateEditor("yyyy-MM-dd"));
+	}
+	
+	@InitBinder("languageForm")
+	public void initBinderLanguage(WebDataBinder binder) {
+		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+		binder.registerCustomEditor(String.class, "items.level", new PropertyEditorSupport() {
+			@Override
+			public void setAsText(String sliderIntValue) throws IllegalArgumentException {
+				setValue(LanguageLevel.values()[Integer.parseInt(sliderIntValue)].getLevel());
+			}
+		});
 	}
 
 	@GetMapping

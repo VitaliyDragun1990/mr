@@ -38,13 +38,13 @@
 				</div>
 			</div>
 			
-			<resume:form-has-error path="birthDate"/>
+			<resume:form-has-error path="birthDay"/>
 			<div class="form-group ${hasError ? 'has-error' : ''}">
-				<label for="inputBirthDate" class="col-sm-2 control-label">Birthday*</label>
+				<label for="inputBirthDay" class="col-sm-2 control-label">Birthday*</label>
 				<div class="col-sm-5">
-					<form:input path="birthDate" class="form-control datepicker" data-date-format="yyyy-mm-dd" id="inputBirthDate"
+					<form:input path="birthDay" class="form-control datepicker" data-date-format="yyyy-mm-dd" id="inputBirthDay"
 						placeholder="Example: 1990-12-31" required="required"/>
-					<resume:form-error path="birthDate"/>
+					<resume:form-error path="birthDay"/>
 				</div>
 				<div class="col-sm-5 help-block">
 					<blockquote>Date format: yyyy-mm-dd (four-digit year - month code - birthday)</blockquote>

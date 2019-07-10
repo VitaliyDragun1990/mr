@@ -14,12 +14,12 @@
 		<div class="row">
 			<div class="col-xs-12 text-center">
 				<h4>Account removal: <strong>CAN'T BE CANCELED</strong>. Please, confirm removal: <strong>${CURRENT_USER.username}</strong>!</h4>
-			</div>
 			<hr />
 			<form action='<c:url value="/profile/remove" />' method="post">
 				<security:csrfInput/>
 				<input type="submit" value="Confirm removal" class="btn btn-danger" />
 			</form>
+			</div>
 		</div>
 	</div>
 </div>

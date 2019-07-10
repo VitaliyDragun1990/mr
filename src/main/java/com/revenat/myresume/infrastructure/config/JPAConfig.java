@@ -50,7 +50,7 @@ public class JPAConfig {
 		Properties props = new Properties();
 		props.put("hibernate.dialect", env.getRequiredProperty("hibernate.dialect"));
 		props.put("javax.persistence.validation.mode", "none");
-		props.put("org.hibernate.flushMode", "COMMIT"); // TODO: ????
+		props.put("org.hibernate.flushMode", "COMMIT");
 		props.put("show_sql", "true");
 		props.put("format_sql", "true");
 		props.put("use_sql_comments", "true");

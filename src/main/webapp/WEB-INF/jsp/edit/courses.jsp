@@ -14,7 +14,7 @@
 		<resume:form-display-error-if-invalid formName="courseForm"/>
 		<form:form action="/profile/edit/courses" method="post" commandName="courseForm">
 			<security:csrfInput/>
-			<div class="ui-block-container">
+			<div id="ui-block-container">
 				<c:forEach var="course" items="${courseForm.items}" varStatus="status">
 					<resume:edit-course-block index="${status.index}" course="${course}"/>
 				</c:forEach>

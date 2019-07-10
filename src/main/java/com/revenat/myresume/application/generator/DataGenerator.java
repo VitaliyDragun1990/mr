@@ -25,6 +25,6 @@ public interface DataGenerator {
 
 	@FunctionalInterface
 	interface ResultChecker {
-		boolean isAcceptable(String resule);
+		boolean isAcceptable(String result);
 	}
 }

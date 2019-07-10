@@ -1,49 +1,39 @@
 package com.revenat.myresume.application.service.profile.impl;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.google.common.base.Objects;
 import com.revenat.myresume.application.dto.CertificateDTO;
 import com.revenat.myresume.application.dto.ContactsDTO;
 import com.revenat.myresume.application.dto.CourseDTO;
 import com.revenat.myresume.application.dto.EducationDTO;
-import com.revenat.myresume.application.dto.PracticalExperienceDTO;
 import com.revenat.myresume.application.dto.HobbyDTO;
 import com.revenat.myresume.application.dto.LanguageDTO;
 import com.revenat.myresume.application.dto.MainInfoDTO;
-import com.revenat.myresume.application.dto.ProfileDTO;
+import com.revenat.myresume.application.dto.PracticalExperienceDTO;
 import com.revenat.myresume.application.dto.SkillDTO;
-import com.revenat.myresume.application.exception.DTOValidationException;
-import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.EditProfileService;
 import com.revenat.myresume.application.transformer.Transformer;
-import com.revenat.myresume.application.util.DataUtil;
-import com.revenat.myresume.application.util.ReflectionUtil;
 import com.revenat.myresume.domain.annotation.OptionalInfoField;
 import com.revenat.myresume.domain.annotation.RequiredInfoField;
 import com.revenat.myresume.domain.entity.Certificate;
 import com.revenat.myresume.domain.entity.Contacts;
 import com.revenat.myresume.domain.entity.Course;
 import com.revenat.myresume.domain.entity.Education;
-import com.revenat.myresume.domain.entity.PracticalExperience;
 import com.revenat.myresume.domain.entity.Hobby;
 import com.revenat.myresume.domain.entity.Language;
+import com.revenat.myresume.domain.entity.PracticalExperience;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.domain.entity.ProfileEntity;
 import com.revenat.myresume.domain.entity.Skill;
@@ -53,95 +43,19 @@ import com.revenat.myresume.infrastructure.service.SearchIndexingService;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Service
-class EditProfileServiceImpl implements EditProfileService {
+class EditProfileServiceImpl extends AbstractModifyProfileService implements EditProfileService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EditProfileServiceImpl.class);
-	private static final String[] EMPTY_ARRAY = new String[0];
 
-	private final ProfileRepository profileRepo;
-	private final ImageStorageService imageStorageService;
-	private final SearchIndexingService searchIndexingService;
 	private final Transformer transformer;
-	private final DataGenerator dataGenerator;
-	private final PasswordEncoder passwordEncoder;
-	private final CacheService cacheService;
 	private final ProfileEntitiesService profileEntitiesService;
 
 	@Autowired
 	public EditProfileServiceImpl(ProfileRepository profileRepo, ImageStorageService imageStorageService,
-			SearchIndexingService searchIndexingService, Transformer transformer, DataGenerator dataGenerator,
-			PasswordEncoder passwordEncoder, CacheService cacheService, ProfileEntitiesService updateProfileService) {
-		this.profileRepo = profileRepo;
-		this.imageStorageService = imageStorageService;
-		this.searchIndexingService = searchIndexingService;
+			SearchIndexingService searchIndexingService, Transformer transformer,
+			CacheService cacheService, ProfileEntitiesService updateProfileService) {
+		super(profileRepo, imageStorageService, searchIndexingService, cacheService);
 		this.transformer = transformer;
-		this.dataGenerator = dataGenerator;
-		this.passwordEncoder = passwordEncoder;
-		this.cacheService = cacheService;
 		this.profileEntitiesService = updateProfileService;
-	}
-	
-	@Override
-	@Transactional
-	public long createProfile(ProfileDTO newProfileData) {
-		MainInfoDTO mainProfileData = newProfileData.getMainInfo();
-		
-		Profile profile = new Profile();
-		profile.setUid(dataGenerator.generateUid(
-				newProfileData.getFirstName(),
-				newProfileData.getLastName(),
-				uid -> profileRepo.countByUid(uid) == 0));
-		profile.setFirstName(DataUtil.capitalizeName(newProfileData.getFirstName()));
-		profile.setLastName(DataUtil.capitalizeName(newProfileData.getLastName()));
-		profile.setPassword(passwordEncoder.encode(newProfileData.getPassword()));
-		
-		boolean isProfilePhotosUploaded = mainProfileData.getLargePhoto() != null && mainProfileData.getSmallPhoto() != null;
-		setProfileMainInfo(profile, mainProfileData, isProfilePhotosUploaded);
-		if (isProfilePhotosUploaded) {
-			deleteUploadedPhotosIfTransactionFailed(mainProfileData.getLargePhoto(), mainProfileData.getSmallPhoto());
-		}
-		
-		return saveNewProfileData(profile);
-	}
-
-	private long saveNewProfileData(Profile profile) {
-		boolean isCompleted = isProfileCompleted(profile);
-		profile.setCompleted(isCompleted);
-		
-		Profile savedProfile = validateAndSave(profile);
-		
-		executeIfTransactionSuccess(() -> {
-			LOGGER.info("New profile created: {}", profile.getUid());
-			if (isCompleted) {
-				searchIndexingService.createNewProfileIndex(savedProfile);
-			}
-		});
-		
-		return savedProfile.getId();
-	}
-	
-	/**
-	 * Synchronized in case several users try to register profiles with equal email/phone simultaneously
-	 * @param profile profile to save
-	 * @return saved profile with id
-	 */
-	private synchronized Profile validateAndSave(Profile profile) {
-		validateEmailAndPhoneUniqueness(profile);
-		return profileRepo.saveAndFlush(profile);
-	}
-	
-	@Override
-	@Transactional
-	public void removeProfile(long profileId) {
-		Optional<Profile> optional = profileRepo.findOneById(profileId);
-		if (optional.isPresent()) {
-			Profile profile = optional.get();
-			List<String> imageLinksToRemove = getImageLinksToRemove(profile);
-			profileRepo.delete(profile);
-			
-			removeProfileIndexIfTransactionSuccess(profile);
-			removeProfileImagesIfTransactionSuccess(imageLinksToRemove);
-			evilcProfileCacheIfTransactionSuccess(profile.getUid());
-		}
 	}
 
 	@Override
@@ -157,8 +71,11 @@ class EditProfileServiceImpl implements EditProfileService {
 		
 		boolean isProfilePhotosUpdated = checkIfProfilePhotosUpdated(loadedProfile, updatedMainInfo);
 		if (isProfilePhotosUpdated) {
-			deleteUploadedPhotosIfTransactionFailed(updatedMainInfo.getLargePhoto(), updatedMainInfo.getSmallPhoto());
 			oldProfilePhotos = Arrays.asList(loadedProfile.getLargePhoto(), loadedProfile.getSmallPhoto());
+			executeIfTransactionFailed(
+					() -> removeProfileImages(
+							Arrays.asList(updatedMainInfo.getLargePhoto(), updatedMainInfo.getSmallPhoto())
+							));
 		}
 		int updatedFieldsCount = setProfileMainInfo(loadedProfile, updatedMainInfo, isProfilePhotosUpdated);
 		
@@ -175,16 +92,19 @@ class EditProfileServiceImpl implements EditProfileService {
 		
 		validateAndSave(loadedProfile);
 		
-		removeProfileImagesIfTransactionSuccess(oldProfilePhotos);
-		evilcProfileCacheIfTransactionSuccess(loadedProfile.getUid());
-		if (isProfileCompleted) {
-			updateIndexProfileDataIfTransactionSuccess(loadedProfile, RequiredInfoField.class);
-		}
+		executeIfTransactionSuccess(
+				() -> {
+					removeProfileImages(oldProfilePhotos);
+					evilcProfileCache(loadedProfile.getUid());
+					if (isProfileCompleted) {
+						updateProfileIndexData(loadedProfile, RequiredInfoField.class);
+					}
+				});
 	}
-
-	private void updateIndexProfileDataIfTransactionSuccess(final Profile loadedProfile,
-			final Class<RequiredInfoField> annotationClass) {
-		executeIfTransactionSuccess(() -> searchIndexingService.updateProfileIndex(loadedProfile, annotationClass));
+	
+	private void updateProfileIndexData(final Profile loadedProfile,
+			final Class<? extends Annotation> annotationClass) {
+		searchIndexingService.updateProfileIndex(loadedProfile, annotationClass);
 	}
 
 	private boolean checkIfProfilePhotosUpdated(Profile loadedProfile, MainInfoDTO updatedMainInfo) {
@@ -211,7 +131,7 @@ class EditProfileServiceImpl implements EditProfileService {
 			executeIfTransactionSuccess(
 					() -> {
 						LOGGER.info("Info for profile with id: {} has been updated", profileId);
-						searchIndexingService.updateProfileIndex(updatedProfile, OptionalInfoField.class);
+						updateProfileIndexData(updatedProfile, OptionalInfoField.class);
 					});
 		}
 	}
@@ -231,7 +151,7 @@ class EditProfileServiceImpl implements EditProfileService {
 		} else {
 			profile.setContacts(transformer.transform(updatedContacts, Contacts.class));
 			profileRepo.save(profile);
-			evilcProfileCacheIfTransactionSuccess(profile.getUid());
+			executeIfTransactionSuccess(() -> evilcProfileCache(profile.getUid()));
 		}
 	}
 	
@@ -257,15 +177,18 @@ class EditProfileServiceImpl implements EditProfileService {
 		List<String> certificateImagesToRemove = findCertificateImagesToRemove(profileId, updatedCertificates);
 		updateProfile(profileId, updatedCertificates, CertificateDTO.class, Certificate.class);
 		
-		removeProfileImagesIfTransactionSuccess(certificateImagesToRemove);
-		if (successCallback != null) {
-			executeIfTransactionSuccess(successCallback::onSuccess);
-		}
+		executeIfTransactionSuccess(
+				() -> {
+					removeProfileImages(certificateImagesToRemove);
+					if (successCallback != null) {
+						successCallback.onSuccess();
+					}
+				});
 	}
 	
 	private List<String> findCertificateImagesToRemove(long profileId, List<CertificateDTO> updatedCertificates) {
 		List<String> loadedCertificateImages = getCertificateImagesUrls(profileId);
-		// Removing actual certificates, only old non-actual are left
+		// Removing actual certificates, only old and non-actual are left
 		for (CertificateDTO c : updatedCertificates) {
 			loadedCertificateImages.remove(c.getLargeUrl());
 			loadedCertificateImages.remove(c.getSmallUrl());
@@ -348,20 +271,6 @@ class EditProfileServiceImpl implements EditProfileService {
 		return transformer.transformToList(profileEntities, entityClass, dtoClass);
 	}
 	
-//	private <T,E> void updateProfile(long profileId, List<T> updatedDTOList, Class<T> dtoClass, Class<E> entityClass,
-//			ProfileUpdate<List<E>> profileUpdate) {
-//		CommonUtils.removeEmptyElements(updatedDTOList);
-//		Profile profile = profileRepo.findOne(profileId);
-//		List<T> profileDTOList = transformer.transformToList(profile, dtoClass);
-//		if (CollectionUtils.isEqualCollection(updatedDTOList, profileDTOList)) {
-//			LOGGER.debug("{} for profile with id:{} - nothing to update", entityClass.getSimpleName(), profileId);
-//		} else {
-//			List<E> updatedEntityList = transformer.transformToList(updatedDTOList, dtoClass, entityClass);
-//			profileUpdate.update(profile, updatedEntityList);
-//			profileRepo.save(profile);
-//		}
-//	}
-	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private <T,E extends ProfileEntity> void updateProfile(long profileId, List<T> updatedDTOList, Class<T> dtoClass,
 			Class<E> entityClass) {
@@ -373,27 +282,27 @@ class EditProfileServiceImpl implements EditProfileService {
 		
 		if (isComparable(dtoClass)) {
 			Collections.sort((List<? extends Comparable>) updatedDTOList);
+			Collections.sort((List<? extends Comparable>) profileDataAsDTO);
 		}
 		
-		if (CollectionUtils.isEqualCollection(updatedDTOList, profileDataAsDTO)) {
+		if (CommonUtils.isEqualList(updatedDTOList, profileDataAsDTO)) {
 			LOGGER.debug("{} for profile with id:{} - nothing to update", collectionName, profileId);
 		} else {
 			List<E> updatedEntityList = transformer.transformToList(updatedDTOList, dtoClass, entityClass);
 			profileEntitiesService.updateProfile(profile, updatedEntityList, entityClass);
-			evilcProfileCacheIfTransactionSuccess(profile.getUid());
-			updateProfileEntitiesIndexIfTransactionSuccess(profile.getId(), updatedEntityList, entityClass);
+			
+			executeIfTransactionSuccess(
+					() -> {
+						evilcProfileCache(profile.getUid());
+						updateProfileEntitiesIndex(profile.getId(), updatedEntityList, entityClass);
+					});
 		}
 	}
-	
-	private <E extends ProfileEntity> void updateProfileEntitiesIndexIfTransactionSuccess(
-			final Long profileId, final List<E> updatedEntityList, final Class<E> entityClass) {
-		executeIfTransactionSuccess(
-				() -> searchIndexingService.updateProfileEntitiesIndex(profileId, updatedEntityList, entityClass));
-		
-	}
 
-	private void evilcProfileCacheIfTransactionSuccess(final String profileUid) {
-		executeIfTransactionSuccess(() -> cacheService.deleteProfileByUid(profileUid));
+	private <E extends ProfileEntity> void updateProfileEntitiesIndex(
+			final Long profileId, final List<E> updatedEntityList, final Class<E> entityClass) {
+		searchIndexingService.updateProfileEntitiesIndex(profileId, updatedEntityList, entityClass);
+		
 	}
 
 	private boolean isComparable(Class<?> dtoClass) {
@@ -407,97 +316,7 @@ class EditProfileServiceImpl implements EditProfileService {
 		} else if (name.endsWith("y")) {
 			name = name.substring(0, name.length()-1)+"ie";
 		}
-		return name;
+		return name + "s";
 	}
 
-	private void removeProfileImagesIfTransactionSuccess(final List<String> imageLinksToRemove) {
-		executeIfTransactionSuccess(() -> imageStorageService.remove(imageLinksToRemove.toArray(EMPTY_ARRAY)));
-	}
-
-	private void removeProfileIndexIfTransactionSuccess(final Profile profile) {
-		executeIfTransactionSuccess(() -> searchIndexingService.removeProfileIndex(profile));
-	}
-
-	private List<String> getImageLinksToRemove(Profile profile) {
-		List<String> imageLinksToRemove = new ArrayList<>();
-		imageLinksToRemove.add(profile.getLargePhoto());
-		imageLinksToRemove.add(profile.getSmallPhoto());
-		if (profile.getCertificates() != null) {
-			for (Certificate certificate : profile.getCertificates()) {
-				imageLinksToRemove.add(certificate.getLargeUrl());
-				imageLinksToRemove.add(certificate.getSmallUrl());
-			}
-		}
-		return imageLinksToRemove;
-	}
-
-	private void executeIfTransactionSuccess(Runnable action) {
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-			@Override
-			public void afterCommit() {
-				action.run();
-			}
-		});
-	}
-	
-	private void deleteUploadedPhotosIfTransactionFailed(String ...photos) {
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-			@Override
-			public void afterCompletion(int status) {
-				if (status == TransactionSynchronization.STATUS_ROLLED_BACK) {
-					imageStorageService.remove(photos);
-				}
-			}
-		});
-	}
-
-	private int setProfileMainInfo(Profile profile, MainInfoDTO mainInfo, boolean isProfilePhotosUpdated) {
-		if (isProfilePhotosUpdated) {
-			profile.setLargePhoto(mainInfo.getLargePhoto());
-			profile.setSmallPhoto(mainInfo.getSmallPhoto());
-		}
-		return ReflectionUtil.copyFields(mainInfo, profile, RequiredInfoField.class);
-	}
-
-	private void validateEmailAndPhoneUniqueness(Profile profile) {
-		try {
-			validateEmailUniqueness(profile);
-			validatePhoneUniqueness(profile);
-		} catch (DTOValidationException e) {
-			removeUploadedPhotos(profile);
-			throw e;
-		}
-	}
-
-	private void removeUploadedPhotos(Profile profile) {
-		imageStorageService.remove(profile.getLargePhoto(), profile.getSmallPhoto());
-	}
-
-	private void validatePhoneUniqueness(Profile profile) {
-		Optional<Profile> byPhone = profileRepo.findByPhone(profile.getPhone());
-		if (byPhone.isPresent() && !byPhone.get().equals(profile)) {
-			throw new DTOValidationException("phone", profile.getPhone());
-		}
-	}
-
-	private void validateEmailUniqueness(Profile profile) {
-		Optional<Profile> byEmail = profileRepo.findByEmail(profile.getEmail());
-		if (byEmail.isPresent() && !byEmail.get().equals(profile)) {
-			throw new DTOValidationException("email", profile.getEmail());
-		}
-	}
-
-	private boolean isProfileCompleted(Profile profile) {
-		boolean hasPhoto = CommonUtils.isNotBlank(profile.getLargePhoto()) && CommonUtils.isNotBlank(profile.getSmallPhoto());
-		boolean hasAddress = CommonUtils.isNotBlank(profile.getCountry()) && CommonUtils.isNotBlank(profile.getCity());
-		boolean hasBirthday = profile.getBirthDay() != null;
-		boolean hasPhoneAndEmail = CommonUtils.isNotBlank(profile.getPhone()) && CommonUtils.isNotBlank(profile.getEmail());
-		boolean hasInfo = CommonUtils.isNotBlank(profile.getObjective()) && CommonUtils.isNotBlank(profile.getSummary());
-		return hasPhoto && hasAddress && hasBirthday && hasPhoneAndEmail && hasInfo;
-	}
-	
-//	@FunctionalInterface
-//	private interface ProfileUpdate<V> {
-//		void update(Profile p, V value);
-//	}
 }

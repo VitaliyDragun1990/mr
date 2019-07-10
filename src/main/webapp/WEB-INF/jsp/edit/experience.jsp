@@ -27,7 +27,7 @@
 			<hr />
 			<div class="row">
 				<div class="col-xs-12 text-center">
-					<input type="search" class="btn btn-primary" value="Save" />
+					<input type="submit" class="btn btn-primary" value="Save" />
 				</div>
 			</div>
 		</form:form>

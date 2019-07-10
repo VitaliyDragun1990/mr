@@ -3,18 +3,18 @@ package com.revenat.myresume.application.service.notification.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revenat.myresume.application.model.NotificationMessage;
+import com.revenat.myresume.application.service.notification.NotificationBuilderService;
 import com.revenat.myresume.application.service.notification.NotificationManagerService;
 import com.revenat.myresume.application.service.notification.NotificationSenderService;
 import com.revenat.myresume.application.service.notification.NotificationType;
-import com.revenat.myresume.application.service.notification.NotificationBuilderService;
 import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Service
 class NotificationManagerServiceImpl implements NotificationManagerService {
@@ -58,7 +58,7 @@ class NotificationManagerServiceImpl implements NotificationManagerService {
 	
 	private void processNotification(Profile profile, NotificationType notificationType, Map<String, Object> model) {
 		String destinationAddress = notificationSenderService.getDestinationAddress(profile);
-		if (StringUtils.isNotBlank(destinationAddress)) {
+		if (CommonUtils.isNotBlank(destinationAddress)) {
 			NotificationMessage notificationMessage = notificationBuilderService.createNotificationMessage(notificationType, model);
 			notificationMessage.setDestinationAddress(destinationAddress);
 			notificationMessage.setDestinationName(getFullName(profile));

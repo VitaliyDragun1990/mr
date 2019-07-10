@@ -14,7 +14,7 @@
 		<resume:form-display-error-if-invalid formName="educationForm"/>
 		<form:form action="/profile/edit/education" method="post" commandName="educationForm">
 			<security:csrfInput/>
-			<div class="ui-block-container">
+			<div id="ui-block-container">
 				<c:forEach var="education" items="${educationForm.items}" varStatus="status">
 					<resume:edit-education-block index="${status.index}" education="${education}"/>
 				</c:forEach>

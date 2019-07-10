@@ -73,7 +73,7 @@ class StaticDataServiceImpl implements StaticDataService {
 				new HobbyDTO("Photo"),
 				new HobbyDTO("Shopping"),
 				new HobbyDTO("Cooking"),
-				new HobbyDTO("Coding"),
+				new HobbyDTO("Codding"),
 				new HobbyDTO("Animals"),
 				new HobbyDTO("Traveling"),
 				new HobbyDTO("Movie"),
@@ -94,7 +94,7 @@ class StaticDataServiceImpl implements StaticDataService {
 				new HobbyDTO("Pubs"),
 				new HobbyDTO("Music"),
 				new HobbyDTO("Computer games"),
-				new HobbyDTO("Autorship"),
+				new HobbyDTO("Authorship"),
 				new HobbyDTO("Singing"),
 				new HobbyDTO("Foreign lang"),
 				new HobbyDTO("Billiards"),
@@ -105,8 +105,7 @@ class StaticDataServiceImpl implements StaticDataService {
 				));
 	}
 
-	@Override // TODO: make it private
-	public Set<HobbyDTO> listAllHobbies() {
+	private Set<HobbyDTO> listAllHobbies() {
 		return allHobbies;
 	}
 	

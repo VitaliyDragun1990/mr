@@ -44,11 +44,11 @@ var resume = {
 			maxFileCount : 1,
 			showPreview : false
 		});
-		$('#certificateFile').on('fileupload', function(event, data, previewId, index) {
+		$('#certificateFile').on('fileuploaded', function(event, data, previewId, index) {
 			var response = data.response;
-			if (response.certificateName != null) {
-				if ($('certificateName').val().trim() == '') {
-					$('certificateName').val(response.certificateName);
+			if (response.name != null) {
+				if ($('#certificateName').val().trim() == '') {
+					$('#certificateName').val(response.name);
 				}
 			}
 			$('#certificateUploader').attr('data-small-url', response.smallUrl);
@@ -161,6 +161,8 @@ var resume = {
 			$('#certificateUploader').modal('hide');
 			$('#certificateName').val('');
 			$('#certificateFile').fileinput('clear');
+			
+			resume.initCertificateViewer();
 		}
 	},
 	

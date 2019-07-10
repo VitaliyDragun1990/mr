@@ -83,7 +83,7 @@ class FormErrorConverterImpl implements FormErrorConverter {
 			BindingResult bindingResult) {
 		String fieldName = metaAnnotation.fieldReference();
 		String formName = metaAnnotation.formName();
-		Object value = ReflectionUtil.readProperty(fieldError.getRejectedValue(), formName);
+		Object value = ReflectionUtil.readProperty(fieldError.getRejectedValue(), fieldName);
 		bindingResult.addError(
 				new FieldError(formName, fieldError.getField() + "." + fieldName, value, false, fieldError.getCodes(),
 						fieldError.getArguments(), fieldError.getDefaultMessage()));

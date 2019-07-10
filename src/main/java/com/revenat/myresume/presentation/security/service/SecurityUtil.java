@@ -42,22 +42,20 @@ public class SecurityUtil {
 	}
 	
 	static void logout(FilterChainProxy securityFilterChain) {
-		List<LogoutHandler> logoutHandlers = getLogoutHandlers(securityFilterChain);
+		LogoutHandler logoutHandler = getLogoutHandlers(securityFilterChain);
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		logout(logoutHandlers, auth, requestAttributes.getRequest(), requestAttributes.getResponse());
+		logout(logoutHandler, auth, requestAttributes.getRequest(), requestAttributes.getResponse());
 	}
 	
-	private static void logout(List<LogoutHandler> logoutHandlers, Authentication auth, HttpServletRequest request,
+	private static void logout(LogoutHandler logoutHandler, Authentication auth, HttpServletRequest request,
 			HttpServletResponse response) {
-		for (LogoutHandler logoutHandler : logoutHandlers) {
-			logoutHandler.logout(request, response, auth);
-		}
+		logoutHandler.logout(request, response, auth);
 	}
 
-	private static List<LogoutHandler> getLogoutHandlers(FilterChainProxy securityFilterChain) {
+	private static LogoutHandler getLogoutHandlers(FilterChainProxy securityFilterChain) {
 		LogoutFilter logoutFilter = findLogoutFilter(securityFilterChain);
-		return ReflectionUtil.getFieldValue(logoutFilter, "handlers");
+		return ReflectionUtil.getFieldValue(logoutFilter, "handler");
 	}
 
 	private static LogoutFilter findLogoutFilter(FilterChainProxy securityFilterChain) {

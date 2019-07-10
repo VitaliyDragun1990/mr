@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.revenat.myresume.application.provider.DateTimeProvider;
-import com.revenat.myresume.application.service.profile.EditProfileService;
+import com.revenat.myresume.application.service.profile.RemoveProfileService;
 import com.revenat.myresume.application.service.task.TaskPerformer;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 
@@ -21,14 +21,14 @@ class ScheduledTaskPerformer implements TaskPerformer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledTaskPerformer.class);
 	
 	private final ProfileRepository profileRepo;
-	private final EditProfileService profileService;
+	private final RemoveProfileService profileService;
 	private final DateTimeProvider dateTimeProvider;
 	private final int removeNotCompletedProfilesInterval;
 	
 	@Autowired
 	public ScheduledTaskPerformer(
 			ProfileRepository profileRepo,
-			EditProfileService profileService,
+			RemoveProfileService profileService,
 			DateTimeProvider dateTimeProvider,
 			@Value("${remove.not.completed.profiles.interval}") int removeNotCompletedProfilesInterval) {
 		this.profileRepo = profileRepo;

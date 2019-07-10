@@ -2,7 +2,6 @@ package com.revenat.myresume.application.dto;
 
 import java.io.Serializable;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
@@ -15,12 +14,10 @@ public class SkillDTO implements Serializable, Comparable<SkillDTO> {
 
 	private Long id;
 	
-	@NotBlank
 	@SafeHtml
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
 	private String category;
 	
-	@NotBlank
 	@SafeHtml
 	@EnglishLanguage
 	private String value;

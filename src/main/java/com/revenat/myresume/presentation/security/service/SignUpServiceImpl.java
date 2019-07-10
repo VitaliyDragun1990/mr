@@ -5,19 +5,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.revenat.myresume.application.dto.ProfileDTO;
-import com.revenat.myresume.application.service.profile.EditProfileService;
+import com.revenat.myresume.application.service.profile.CreateProfileService;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
 @Service
 class SignUpServiceImpl implements SignUpService {
-	private final EditProfileService profileService;
+	private final CreateProfileService profileService;
 	private final ProfileRepository profileRepo;
 
 
 	@Autowired
-	public SignUpServiceImpl(ProfileRepository profileRepo, EditProfileService profileService) {
+	public SignUpServiceImpl(ProfileRepository profileRepo, CreateProfileService profileService) {
 		this.profileRepo = profileRepo;
 		this.profileService = profileService;
 	}

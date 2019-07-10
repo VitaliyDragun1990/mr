@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.RemoveProfileService;
@@ -28,6 +29,7 @@ class RemoveProfileServiceImpl extends AbstractModifyProfileService implements R
 	}
 
 	@Override
+	@Transactional
 	public void removeProfile(long profileId) {
 		Optional<Profile> optional = profileRepo.findOneById(profileId);
 		if (optional.isPresent()) {

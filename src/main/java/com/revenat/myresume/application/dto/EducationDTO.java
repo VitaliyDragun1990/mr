@@ -2,10 +2,8 @@ package com.revenat.myresume.application.dto;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
@@ -19,22 +17,18 @@ public class EducationDTO implements Serializable, Comparable<EducationDTO> {
 
 	private Long id;
 	
-	@NotBlank
 	@EnglishLanguage
 	@SafeHtml
 	private String summary;
 	
-	@NotNull
 	private Integer startYear;
 	private Integer endYear;
 	
-	@NotBlank
 	@Size(max = 100)
 	@EnglishLanguage
 	@SafeHtml
 	private String university;
 	
-	@NotBlank
 	@Size(max = 255)
 	@EnglishLanguage
 	@SafeHtml

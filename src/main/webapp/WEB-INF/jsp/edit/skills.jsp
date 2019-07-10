@@ -17,7 +17,7 @@
 		<c:url value="/profile/edit/skills" var="action" />
 		<form:form action="${action}" method="post" commandName="skillForm">
 			<security:csrfInput/>
-			<div class="ui-block-container">
+			<div id="ui-block-container">
 				<c:forEach var="skill" items="${skillForm.items}" varStatus="status">
 					<resume:edit-skill-block index="${status.index}" skill="${skill}" />
 				</c:forEach>

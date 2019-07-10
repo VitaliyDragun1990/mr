@@ -30,7 +30,7 @@ public class MainInfoDTO implements Serializable {
 	@NotNull
 	@Adulthood
 	@RequiredInfoField
-	private LocalDate birthDate;
+	private LocalDate birthDay;
 	
 	@NotBlank
 	@Size(max = 60)
@@ -75,7 +75,7 @@ public class MainInfoDTO implements Serializable {
 	
 	public MainInfoDTO(Profile profile) {
 		if (profile != null) {
-			setBirthDate(profile.getBirthDay());
+			setBirthDay(profile.getBirthDay());
 			setCity(profile.getCity());
 			setCountry(profile.getCountry());
 			setEmail(profile.getEmail());
@@ -90,14 +90,14 @@ public class MainInfoDTO implements Serializable {
 	public boolean isCompleted() {
 		boolean hasPhoto = CommonUtils.isNotBlank(getLargePhoto()) && CommonUtils.isNotBlank(getSmallPhoto());
 		boolean hasAddress = CommonUtils.isNotBlank(getCountry()) && CommonUtils.isNotBlank(getCity());
-		boolean hasBirthday = getBirthDate() != null;
+		boolean hasBirthday = getBirthDay() != null;
 		boolean hasPhoneAndEmail = CommonUtils.isNotBlank(getPhone()) && CommonUtils.isNotBlank(getEmail());
 		boolean hasInfo = CommonUtils.isNotBlank(getObjective()) && CommonUtils.isNotBlank(getSummary());
 		return hasPhoto && hasAddress && hasBirthday && hasPhoneAndEmail && hasInfo;
 	}
 	
 	public int getAge() {
-		return (int) ChronoUnit.YEARS.between(getBirthDate(), LocalDate.now());
+		return (int) ChronoUnit.YEARS.between(getBirthDay(), LocalDate.now());
 	}
 	
 	public String getProfilePhoto() {
@@ -131,12 +131,12 @@ public class MainInfoDTO implements Serializable {
 		this.smallPhoto = smallPhoto;
 	}
 
-	public LocalDate getBirthDate() {
-		return birthDate;
+	public LocalDate getBirthDay() {
+		return birthDay;
 	}
 
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
+	public void setBirthDay(LocalDate birthDate) {
+		this.birthDay = birthDate;
 	}
 
 	public String getCountry() {

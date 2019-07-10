@@ -18,7 +18,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import com.google.common.base.Objects;
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.service.notification.NotificationManagerService;
-import com.revenat.myresume.application.service.profile.EditProfileService;
+import com.revenat.myresume.application.service.profile.RemoveProfileService;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.domain.entity.ProfileRestore;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
@@ -31,7 +31,7 @@ class SecurityServiceImpl implements SecurityService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityServiceImpl.class);
 	
 	private final ProfileRepository profileRepo;
-	private final EditProfileService profileService;
+	private final RemoveProfileService profileService;
 	private final ProfileRestoreRepository profileRestoreRepo;
 	private final DataGenerator dataGenerator;
 	private final PasswordEncoder passwordEncoder;
@@ -39,7 +39,7 @@ class SecurityServiceImpl implements SecurityService {
 	private FilterChainProxy securityFilterChain;
 
 	@Autowired
-	public SecurityServiceImpl(ProfileRepository profileRepo, EditProfileService profileService,
+	public SecurityServiceImpl(ProfileRepository profileRepo, RemoveProfileService profileService,
 			ProfileRestoreRepository profileRestoreRepo,
 			DataGenerator dataGenerator, PasswordEncoder passwordEncoder,
 			NotificationManagerService notificationManagerService) {
@@ -84,9 +84,10 @@ class SecurityServiceImpl implements SecurityService {
 			ProfileRestore restore = profileRestoreRepo.findOne(p.getId());
 			if (restore == null) {
 				restore = new ProfileRestore();
-				restore.setId(p.getId());
+				restore.setProfile(p);
 			}
 			restore.setToken(SecurityUtil.generateNewRestoreAccessToken());
+			profileRestoreRepo.save(restore);
 			sendRestoreLinkNotificationIfTransactionSuccess(p, restore);
 		} else {
 			LOGGER.error("Profile not found by anyUniqueId: {}", anyUniqueId);

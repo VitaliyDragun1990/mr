@@ -3,7 +3,6 @@ package com.revenat.myresume.presentation.web.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -16,9 +15,6 @@ import com.revenat.myresume.application.dto.HobbyDTO;
  *
  */
 public interface StaticDataService {
-
-	@Nonnull
-	Set<HobbyDTO> listAllHobbies();
 	
 	@Nonnull
 	List<HobbyDTO> listAllHobbiesWithSelectedMarked(@Nonnull Collection<HobbyDTO> selectedHobbies);

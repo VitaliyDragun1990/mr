@@ -60,7 +60,7 @@ abstract class AbstractModifyProfileService {
 		return profileRepo.saveAndFlush(profile);
 	}
 	
-	protected boolean isProfileCompleted(Profile profile) {
+	protected static boolean isProfileCompleted(Profile profile) {
 		boolean hasPhoto = CommonUtils.isNotBlank(profile.getLargePhoto()) && CommonUtils.isNotBlank(profile.getSmallPhoto());
 		boolean hasAddress = CommonUtils.isNotBlank(profile.getCountry()) && CommonUtils.isNotBlank(profile.getCity());
 		boolean hasBirthday = profile.getBirthDay() != null;

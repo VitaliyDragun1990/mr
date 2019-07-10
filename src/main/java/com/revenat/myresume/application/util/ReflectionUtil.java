@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
@@ -17,8 +18,7 @@ public class ReflectionUtil {
 		ReflectionUtils.doWithFields(to.getClass(), new FieldCallback() {
 			@Override
 			public void doWith(Field field) throws IllegalAccessException {
-				ReflectionUtils.makeAccessible(field);
-				copyAccessibleField(field, from, to, copiedFieldsCounter);
+				copyAccessibleField(field.getName(), from, to, copiedFieldsCounter);
 				
 			}
 		}, createFieldFilter(annotation));
@@ -37,21 +37,47 @@ public class ReflectionUtil {
 		}
 	}
 
-	private static void copyAccessibleField(Field field, Object from, Object to, CopiedFieldsCounter copiedFieldsCounter)
+	private static void copyAccessibleField(String fieldName, Object from, Object to, CopiedFieldsCounter copiedFieldsCounter)
 			throws IllegalAccessException {
-		Object fromValue = field.get(from);
-		Object toValue = field.get(to);
-		if (fromValue == null) {
-			if (toValue != null) {
-				field.set(to, null);
-				copiedFieldsCounter.counter++;
-			}
-		} else {
-			if (!fromValue.equals(toValue)) {
-				field.set(to, toValue);
-				copiedFieldsCounter.counter++;
+		Optional<Field> fromFieldOptional = getField(from.getClass(), fieldName);
+		// Skip unknown fields
+		if (fromFieldOptional.isPresent()) {
+			Field fromField = fromFieldOptional.get();
+			ReflectionUtils.makeAccessible(fromField);
+			Object fromValue = fromField.get(from);
+			
+			Optional<Field> toFieldOptional = getField(to.getClass(), fieldName);
+			if (toFieldOptional.isPresent()) {
+				Field toField = toFieldOptional.get();
+				ReflectionUtils.makeAccessible(toField);
+				Object toValue = toField.get(to);
+				
+				if (fromValue == null) {
+					if (toValue != null) {
+						toField.set(to, null);
+						copiedFieldsCounter.counter++;
+					}
+				} else {
+					if (!fromValue.equals(toValue)) {
+						toField.set(to, fromValue);
+						copiedFieldsCounter.counter++;
+					}
+				}
 			}
 		}
+	}
+
+	private static Optional<Field> getField(Class<?> clz, String fieldName) {
+		Class<?> current = clz;
+		while (current != null) {
+			try {
+				Field declaredField = current.getDeclaredField(fieldName);
+				return Optional.of(declaredField);
+			} catch (NoSuchFieldException | SecurityException e) {
+				current = current.getSuperclass();
+			}
+		}
+		return Optional.empty();
 	}
 
 	public static Object readProperty(Object obj, String propertyName) {
@@ -80,28 +106,6 @@ public class ReflectionUtil {
 		}
 		return true;
 	}
-
-//	public static Object getFieldValue(final Object obj, final String fieldName) {
-//		Class<?> current = obj.getClass();
-//		while (current != null) {
-//			try {
-//				Field f =  current.getDeclaredField(fieldName);
-//				f.setAccessible(true);
-//				return getValue(obj, f);
-//			} catch (NoSuchFieldException | SecurityException e) {
-//				current = current.getSuperclass();
-//			}
-//		}
-//		throw new ApplicationException("No field " + fieldName + " in the class " + obj.getClass());
-//	}
-//
-//	private static Object getValue(final Object obj, Field f) {
-//		try {
-//			return f.get(obj);
-//		} catch (IllegalArgumentException | IllegalAccessException e) {
-//			throw new ApplicationException(e);
-//		}
-//	}
 
 	private ReflectionUtil() {
 	}
