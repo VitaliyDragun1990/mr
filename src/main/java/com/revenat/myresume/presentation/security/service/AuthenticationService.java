@@ -15,10 +15,16 @@ import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
+/**
+ * Responsible for authenticating users by some sort of unique identifier.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 @Service
 class AuthenticationService implements UserDetailsService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
-	
+
 	private final ProfileRepository profileRepo;
 
 	@Autowired
@@ -37,7 +43,7 @@ class AuthenticationService implements UserDetailsService {
 			throw new UsernameNotFoundException("Profile not found by " + username);
 		}
 	}
-	
+
 	private Optional<Profile> findProfile(String anyUniqueId) {
 		return profileRepo.findByUidOrEmailOrPhone(anyUniqueId, anyUniqueId, anyUniqueId);
 	}

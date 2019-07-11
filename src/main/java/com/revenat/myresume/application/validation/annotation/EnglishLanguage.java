@@ -16,24 +16,31 @@ import javax.validation.Payload;
 
 import com.revenat.myresume.application.validation.validator.EnglishLanguageConstraintValidator;
 
+/**
+ * Validation annotation to check whether some text value written in Enlish
+ * language with some specified constrains.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 @Documented
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD, PARAMETER, CONSTRUCTOR, ANNOTATION_TYPE })
-@Constraint(validatedBy = {EnglishLanguageConstraintValidator.class})
+@Constraint(validatedBy = { EnglishLanguageConstraintValidator.class })
 public @interface EnglishLanguage {
-	
+
 	String message() default "EnglishLanguage";
-	
+
 	// 0123456789
 	boolean withNumbers() default true;
-	
-	//.,?!-:()'"[]{}; \t\n
+
+	// .,?!-:()'"[]{}; \t\n
 	boolean withPunctuations() default true;
-	
-	//~#$%^&*-+=_\\|/@`!'\";:><,.?{}
+
+	// ~#$%^&*-+=_\\|/@`!'\";:><,.?{}
 	boolean withSpecSymbols() default true;
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
+
 	Class<?>[] groups() default {};
 }

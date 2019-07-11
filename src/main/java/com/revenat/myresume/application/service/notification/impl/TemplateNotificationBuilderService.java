@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revenat.myresume.application.exception.NotificationException;
-import com.revenat.myresume.application.model.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationBuilderService;
+import com.revenat.myresume.application.service.notification.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationType;
 import com.revenat.myresume.application.template.TemplateContentResolver;
 

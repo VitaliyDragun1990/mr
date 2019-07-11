@@ -17,12 +17,12 @@ import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.presentation.image.model.UploadedImageResult;
 
 /**
- * Manages image links uploaded by user during his session. If user session ends
+ * Manages image links uploaded by user during his session. If user's session ends
  * and some image links are still left mnanaged by this component, that means
- * user does not save them and they must be removed. After user saves uploaded
+ * user did not save them and they must be removed. After user saved uploaded
  * images he must explicitelly call {@link #clearImageLinks()} to remove links
- * to those images, otherwise all image links left managed by this component
- * will be removed after user session ends.
+ * to those images, otherwise all image links that left managed by this component
+ * will be removed after user's session ends.
  * 
  * @author Vitaliy Dragun
  *

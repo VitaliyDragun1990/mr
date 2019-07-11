@@ -55,25 +55,6 @@ class SecurityServiceImpl implements SecurityService {
 	public void setSpringSecurityFilterChain(Filter springSecurityFilterChain) {
 		this.securityFilterChain = (FilterChainProxy) springSecurityFilterChain;
 	}
-	
-	@Override
-	@Transactional
-	public void completeRegistration(AuthenticatedUser authenticatedUser) {
-		Profile profile = profileRepo.findOne(authenticatedUser.getId());
-		profile.setCompleted(true);
-		profileRepo.save(profile);
-		SecurityUtil.authenticate(profile);
-	}
-
-	@Override
-	public Optional<AuthenticatedUser> findByEmail(String email) {
-		Optional<Profile> optional = profileRepo.findByEmail(email);
-		if (optional.isPresent()) {
-			AuthenticatedUser foundUser = (AuthenticatedUser) SecurityUtil.authenticate(optional.get()).getPrincipal();
-			return Optional.of(foundUser);
-		}
-		return Optional.empty();
-	}
 
 	@Override
 	@Transactional

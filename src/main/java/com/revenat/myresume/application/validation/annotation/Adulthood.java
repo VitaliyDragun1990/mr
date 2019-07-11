@@ -16,17 +16,24 @@ import javax.validation.Payload;
 
 import com.revenat.myresume.application.validation.validator.AdulthoodConstraintValidator;
 
+/**
+ * Validation annotation to check whether specified value represents valid
+ * adulthood value
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 @Documented
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD, PARAMETER, CONSTRUCTOR, ANNOTATION_TYPE })
-@Constraint(validatedBy = {AdulthoodConstraintValidator.class})
+@Constraint(validatedBy = { AdulthoodConstraintValidator.class })
 public @interface Adulthood {
 
 	String message() default "Adulthood";
-	
+
 	int adulthoodAge() default 18;
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
+
 	Class<?>[] groups() default {};
 }

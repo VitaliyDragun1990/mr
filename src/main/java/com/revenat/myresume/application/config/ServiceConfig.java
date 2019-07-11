@@ -25,7 +25,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.revenat.myresume.application.model.NotificationMessage;
+import com.revenat.myresume.application.service.notification.NotificationMessage;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Configuration
@@ -37,7 +37,7 @@ import com.revenat.myresume.infrastructure.util.CommonUtils;
 	"com.revenat.myresume.application.service.profile.impl",
 	"com.revenat.myresume.application.service.notification.impl",
 	"com.revenat.myresume.application.service.task.impl",
-	"com.revenat.myresume.application.transformer.impl",
+	"com.revenat.myresume.application.transformer",
 	"com.revenat.myresume.application.provider.impl",
 	"com.revenat.myresume.application.template.impl",
 	"com.revenat.myresume.application.generator.impl"

@@ -3,7 +3,7 @@ package com.revenat.myresume.presentation.image.service;
 import javax.annotation.Nonnull;
 
 import com.revenat.myresume.presentation.image.model.ImageType;
-import com.revenat.myresume.presentation.image.model.TemporaryImageStorage;
+import com.revenat.myresume.presentation.image.storage.TemporaryImageStorage;
 
 /**
  * Processes provided image using conversion, resizing and optimization

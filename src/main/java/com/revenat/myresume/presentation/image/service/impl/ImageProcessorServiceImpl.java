@@ -12,8 +12,8 @@ import com.revenat.myresume.infrastructure.media.optimizer.ImageOptimizer;
 import com.revenat.myresume.infrastructure.media.resizer.ImageResizer;
 import com.revenat.myresume.presentation.image.exception.ImageProcessingException;
 import com.revenat.myresume.presentation.image.model.ImageType;
-import com.revenat.myresume.presentation.image.model.TemporaryImageStorage;
 import com.revenat.myresume.presentation.image.service.ImageProcessorService;
+import com.revenat.myresume.presentation.image.storage.TemporaryImageStorage;
 
 @Service
 class ImageProcessorServiceImpl implements ImageProcessorService {

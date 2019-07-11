@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.revenat.myresume.application.model.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationBuilderService;
 import com.revenat.myresume.application.service.notification.NotificationManagerService;
+import com.revenat.myresume.application.service.notification.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationSenderService;
 import com.revenat.myresume.application.service.notification.NotificationType;
 import com.revenat.myresume.domain.entity.Profile;

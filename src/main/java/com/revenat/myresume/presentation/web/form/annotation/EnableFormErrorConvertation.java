@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Takes part into converting ordinal class(field) related exceptions into
+ * Takes part in converting ordinal class(field) related exceptions into
  * form's field errors.
  * 
  * @author Vitaliy Dragun

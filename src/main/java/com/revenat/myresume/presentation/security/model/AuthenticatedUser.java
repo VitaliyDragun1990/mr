@@ -9,13 +9,19 @@ import org.springframework.security.core.userdetails.User;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.presentation.config.Constants;
 
+/**
+ * Represents authenticated user in the application.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 public final class AuthenticatedUser extends User {
 	private static final long serialVersionUID = 1L;
 
 	private final Long id;
 	private final String fullName;
 	private final boolean isRegistrationCompleted;
-	
+
 	public AuthenticatedUser(Profile profile) {
 		super(profile.getUid(), profile.getPassword(), true, true, true, true,
 				Collections.singleton(new SimpleGrantedAuthority(Constants.USER)));
@@ -31,7 +37,7 @@ public final class AuthenticatedUser extends User {
 	public String getFullName() {
 		return fullName;
 	}
-	
+
 	public boolean isRegistrationCompleted() {
 		return isRegistrationCompleted;
 	}

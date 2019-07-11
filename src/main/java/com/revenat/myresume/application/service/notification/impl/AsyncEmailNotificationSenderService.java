@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.revenat.myresume.application.model.NotificationMessage;
+import com.revenat.myresume.application.service.notification.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationSenderService;
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.exception.EmailGatewayException;

@@ -16,6 +16,13 @@ import javax.validation.Payload;
 
 import com.revenat.myresume.application.validation.validator.MinUpperCharCountConstraintValidator;
 
+/**
+ * Validation annotation to check whether some value contains minimum number of
+ * upper case chracters in it.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 @Documented
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD, PARAMETER, CONSTRUCTOR, ANNOTATION_TYPE })

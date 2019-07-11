@@ -4,8 +4,6 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import com.revenat.myresume.application.model.NotificationMessage;
-
 /**
  * Builds {@link NotificationMessage}.
  * 

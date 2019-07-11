@@ -1,7 +1,7 @@
 package com.revenat.myresume.presentation.image.exception;
 
 import com.revenat.myresume.domain.exception.ApplicationException;
-import com.revenat.myresume.presentation.image.model.TemporaryImageStorage;
+import com.revenat.myresume.presentation.image.storage.TemporaryImageStorage;
 
 /**
  * Signals about error with {@link TemporaryImageStorage}

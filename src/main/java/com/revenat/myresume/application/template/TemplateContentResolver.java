@@ -3,7 +3,7 @@ package com.revenat.myresume.application.template;
 import javax.annotation.Nonnull;
 
 /**
- * Resolves content from a some kind of template.
+ * Resolves content of some kind of template.
  * 
  * @author Vitaliy Dragun
  *

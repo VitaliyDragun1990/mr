@@ -24,6 +24,7 @@ import com.revenat.myresume.application.service.notification.NotificationManager
 import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkAccount;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkGateway;
+import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 import com.revenat.myresume.presentation.image.exception.ImageUploadingException;
 import com.revenat.myresume.presentation.image.model.UploadedImageResult;
@@ -35,18 +36,18 @@ class FacebookSocialSignInService implements SocialSignInService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FacebookSocialSignInService.class);
 	
 	private final SocialNetworkGateway socialGateway;
-	private final SecurityService securityService;
+	private final ProfileRepository profileRepo;
 	private final SignUpService signUpService;
 	private final ImageUploaderService imageUploadService;
 	private final DataGenerator dataGenerator;
 	private final NotificationManagerService notificationManagerService;
 
 	@Autowired
-	public FacebookSocialSignInService(SocialNetworkGateway socialGateway, SecurityService securityService,
+	public FacebookSocialSignInService(SocialNetworkGateway socialGateway, ProfileRepository profileRepo,
 			SignUpService signUpService, ImageUploaderService imageUploadService, DataGenerator dataGenerator,
 			NotificationManagerService notificationManagerService) {
 		this.socialGateway = socialGateway;
-		this.securityService = securityService;
+		this.profileRepo = profileRepo;
 		this.signUpService = signUpService;
 		this.imageUploadService = imageUploadService;
 		this.dataGenerator = dataGenerator;
@@ -63,7 +64,7 @@ class FacebookSocialSignInService implements SocialSignInService {
 	public AuthenticatedUser signIn(String verificationCode) {
 		SocialNetworkAccount socialAccount = socialGateway.getSocialAccount(verificationCode);
 		if (CommonUtils.isNotBlank(socialAccount.getEmail())) {
-			Optional<AuthenticatedUser> userOptional = securityService.findByEmail(socialAccount.getEmail());
+			Optional<Profile> userOptional = profileRepo.findByEmail(socialAccount.getEmail());
 			if (userOptional.isPresent()) { // user data already present in the application
 				AuthenticatedUser user = SecurityUtil.authenticateWithRememberMe(userOptional.get());
 				LOGGER.debug("User {} signed in via Facebook", user.getUsername());

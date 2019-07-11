@@ -7,7 +7,7 @@ import com.revenat.myresume.domain.entity.Profile;
 import com.revenat.myresume.domain.entity.ProfileEntity;
 
 /**
- * Manages search indexing functionality
+ * Provides search indexing facilities
  * 
  * @author Vitaliy Dragun
  *

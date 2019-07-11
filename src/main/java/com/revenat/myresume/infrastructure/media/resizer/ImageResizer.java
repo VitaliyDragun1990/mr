@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import javax.annotation.Nonnull;
 
 /**
- * Resizes image.
+ * Resizes images.
  * 
  * @author Vitaliy Dragun
  *

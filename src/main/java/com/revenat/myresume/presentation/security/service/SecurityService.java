@@ -1,30 +1,17 @@
 package com.revenat.myresume.presentation.security.service;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 
 import com.revenat.myresume.presentation.security.exception.InvalidRestoreAccessTokenException;
 import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
+/**
+ * Manages security-related functionality.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 public interface SecurityService {
-
-	/**
-	 * Sets registration as completed for particular {@link AuthenticatedUser}
-	 * 
-	 * @param authenticatedUser
-	 */
-	void completeRegistration(@Nonnull AuthenticatedUser authenticatedUser);
-
-	/**
-	 * Retrieves a {@link AuthenticatedUser} instance using the given email.
-	 * 
-	 * @param email the unique string identifier to look for a particular
-	 *              {@link AuthenticatedUser}
-	 * @return the {@link Optional} with {@link AuthenticatedUser} instance with the
-	 *         given email, or empty optional if nothing was found.
-	 */
-	@Nonnull Optional<AuthenticatedUser> findByEmail(@Nonnull String email);
 
 	/**
 	 * Restores access for user with specified {@code anyUniqueId} identifier

@@ -16,15 +16,22 @@ import javax.validation.Payload;
 
 import com.revenat.myresume.application.validation.validator.PhoneConstraintValidator;
 
+/**
+ * Validation annotation to check whether some value represents valid phone
+ * number.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 @Documented
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD, PARAMETER, CONSTRUCTOR, ANNOTATION_TYPE })
-@Constraint(validatedBy = {PhoneConstraintValidator.class})
+@Constraint(validatedBy = { PhoneConstraintValidator.class })
 public @interface Phone {
-	
+
 	String message() default "Phone";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
+
 	Class<?>[] groups() default {};
 }

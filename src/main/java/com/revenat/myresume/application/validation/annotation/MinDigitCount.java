@@ -16,17 +16,24 @@ import javax.validation.Payload;
 
 import com.revenat.myresume.application.validation.validator.MinDigitCountConstraintValidator;
 
+/**
+ * Validation annotation to check whether some value contains minimum number of
+ * digits in it.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 @Documented
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD, PARAMETER, CONSTRUCTOR, ANNOTATION_TYPE })
-@Constraint(validatedBy = {MinDigitCountConstraintValidator.class})
+@Constraint(validatedBy = { MinDigitCountConstraintValidator.class })
 public @interface MinDigitCount {
 
 	int value() default 1;
-	
+
 	String message() default "minDigitCount";
-	
+
 	Class<? extends Payload>[] payload() default {};
-	
+
 	Class<?>[] groups() default {};
 }

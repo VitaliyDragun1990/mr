@@ -9,6 +9,13 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import com.revenat.myresume.application.util.DataUtil;
 import com.revenat.myresume.domain.entity.LanguageLevel;
 
+/**
+ * For each valid {@link LanguageLevel#getLevel()} provide appropriate
+ * {@code ordinal} and {@code caption} representation.
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 public class LanguageLevelDataTag extends SimpleTagSupport {
 
 	private String level;
@@ -44,7 +51,7 @@ public class LanguageLevelDataTag extends SimpleTagSupport {
 		LanguageLevel languageLevel = LanguageLevel.getLevel(level);
 		String caption = DataUtil.capitalizeName(languageLevel.getLevel()).replace("_", "-");
 		Integer ordinal = languageLevel.ordinal();
-		
+
 		getJspContext().setAttribute(varCaption, caption, PageContext.REQUEST_SCOPE);
 		getJspContext().setAttribute(varOrdinal, ordinal, PageContext.REQUEST_SCOPE);
 	}
