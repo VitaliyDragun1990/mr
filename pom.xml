@@ -30,6 +30,8 @@
 		<sitemash.version>3.0.1</sitemash.version>
 		<spring.version>4.3.24.RELEASE</spring.version>
 		<spring-data-jpa.version>1.11.22.RELEASE</spring-data-jpa.version>
+		<mongo-java-driver.version>3.10.2</mongo-java-driver.version>
+		<spring-data-mongodb.version>1.10.22.RELEASE</spring-data-mongodb.version>
 		<spring-data-elasticsearch.version>2.1.22.RELEASE</spring-data-elasticsearch.version>
 		<spring-security.version>4.2.12.RELEASE</spring-security.version>
 		<jna.version>4.5.2</jna.version>
@@ -149,6 +151,22 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
 			<version>${spring-data-jpa.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>${spring-data-mongodb.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.mongodb</groupId>
+					<artifactId>mongo-java-driver</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>${mongo-java-driver.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
@@ -414,10 +432,14 @@
 						<configuration>
 							<tasks>
 								<delete dir="${basedir}/src/main/webapp/WEB-INF/lib" />
-								<delete dir="${basedir}/src/main/webapp/static/css/resume-common.min.css" />
-								<delete dir="${basedir}/src/main/webapp/static/css/resume-ex.min.css" />
-								<delete dir="${basedir}/src/main/webapp/static/js/resume-common.min.js" />
-								<delete dir="${basedir}/src/main/webapp/static/js/resume-ex.min.js" />
+								<delete
+									dir="${basedir}/src/main/webapp/static/css/resume-common.min.css" />
+								<delete
+									dir="${basedir}/src/main/webapp/static/css/resume-ex.min.css" />
+								<delete
+									dir="${basedir}/src/main/webapp/static/js/resume-common.min.js" />
+								<delete
+									dir="${basedir}/src/main/webapp/static/js/resume-ex.min.js" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -435,10 +457,18 @@
 									<fileset
 										dir="${basedir}/target/${project.build.finalName}/WEB-INF/lib" />
 								</copy>
-								<copy file="${basedir}/target/${project.build.finalName}/static/css/resume-common.min.css" tofile="${basedir}/src/main/webapp/static/css/resume-common.min.css" />
-								<copy file="${basedir}/target/${project.build.finalName}/static/css/resume-ex.min.css" tofile="${basedir}/src/main/webapp/static/css/resume-ex.min.css" />
-								<copy file="${basedir}/target/${project.build.finalName}/static/js/resume-common.min.js" tofile="${basedir}/src/main/webapp/static/js/resume-common.min.js" />
-								<copy file="${basedir}/target/${project.build.finalName}/static/js/resume-ex.min.js" tofile="${basedir}/src/main/webapp/static/js/resume-ex.min.js" />
+								<copy
+									file="${basedir}/target/${project.build.finalName}/static/css/resume-common.min.css"
+									tofile="${basedir}/src/main/webapp/static/css/resume-common.min.css" />
+								<copy
+									file="${basedir}/target/${project.build.finalName}/static/css/resume-ex.min.css"
+									tofile="${basedir}/src/main/webapp/static/css/resume-ex.min.css" />
+								<copy
+									file="${basedir}/target/${project.build.finalName}/static/js/resume-common.min.js"
+									tofile="${basedir}/src/main/webapp/static/js/resume-common.min.js" />
+								<copy
+									file="${basedir}/target/${project.build.finalName}/static/js/resume-ex.min.js"
+									tofile="${basedir}/src/main/webapp/static/js/resume-ex.min.js" />
 							</tasks>
 						</configuration>
 						<goals>

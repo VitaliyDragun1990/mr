@@ -9,13 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -35,7 +29,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.Document;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.IndexOptions;
 import com.revenat.myresume.domain.entity.LanguageLevel;
 import com.revenat.myresume.domain.entity.LanguageType;
 import com.revenat.myresume.domain.entity.SkillCategory;
@@ -48,35 +48,39 @@ import net.coobird.thumbnailator.Thumbnails;
  * @author Vitaliy Dragun
  *
  */
-public class TestDataGenerator {
+public class TestDataGeneratorMongo {
 
-	// JDBC settings for database
-	private static final String JDBC_URL = "jdbc:postgresql://192.168.99.100:5433/";
-	private static final String JDBC_USERNAME = "myresume";
-	private static final String JDBC_PASSWORD = "myresume";
-	
+	private static final String COLLECTION_PROFILE_RESTORE = "profileRestore";
+	private static final String COLLECTION_REMEMBER_ME_TOKEN = "rememberMeToken";
+	private static final String COLLECTION_PROFILE = "profile";
+	// Settings for MongoDB
+	private static final String MONGO_URL = "192.168.99.100";
+	private static final int MONGO_PORT = 27017;
+	private static final String MONGO_DB = "resume";
+
 	private static final String PHOTO_PATH = "external/test-data/photos/";
 	private static final String CERTIFICATE_PATH = "external/test-data/certificates/";
 	private static final String MEDIA_DIR = "E:/java/eclipse_workspace_02/my-resume/src/main/webapp/media";
 	private static final String COUNTRY = "Ukraine";
-	private static final String[] CITIES = {"Kharkiv", "Kiyv", "Odessa"};
-	private static final String[] FOREIGN_LANGUAGES = {"Spanish", "French", "German", "Italian"};
+	private static final String[] CITIES = { "Kharkiv", "Kiyv", "Odessa" };
+	private static final String[] FOREIGN_LANGUAGES = { "Spanish", "French", "German", "Italian" };
 	// password
 	private static final String PASSWORD_HASH = "$2a$10$q7732w6Rj3kZGhfDYSIXI.wFp.uwTSi2inB2rYHvm1iDIAf1J1eVq";
-	
-	private static final String[] HOBBIES = { "Cycling", "Handball", "Football", "Basketball", "Bowling", "Boxing", "Volleyball", "Baseball", "Skating", "Skiing", "Table tennis", "Tennis",
-			"Weightlifting", "Automobiles", "Book reading", "Cricket", "Photo", "Shopping", "Cooking", "Codding", "Animals", "Traveling", "Movie", "Painting", "Darts", "Fishing", "Kayak slalom",
-			"Games of chance", "Ice hockey", "Roller skating", "Swimming", "Diving", "Golf", "Shooting", "Rowing", "Camping", "Archery", "Pubs", "Music", "Computer games", "Authorship", "Singing",
-			"Foreign lang", "Billiards", "Skateboarding", "Collecting", "Badminton", "Disco" };
-	
+
+	private static final String[] HOBBIES = { "Cycling", "Handball", "Football", "Basketball", "Bowling", "Boxing",
+			"Volleyball", "Baseball", "Skating", "Skiing", "Table tennis", "Tennis", "Weightlifting", "Automobiles",
+			"Book reading", "Cricket", "Photo", "Shopping", "Cooking", "Codding", "Animals", "Traveling", "Movie",
+			"Painting", "Darts", "Fishing", "Kayak slalom", "Games of chance", "Ice hockey", "Roller skating",
+			"Swimming", "Diving", "Golf", "Shooting", "Rowing", "Camping", "Archery", "Pubs", "Music", "Computer games",
+			"Authorship", "Singing", "Foreign lang", "Billiards", "Skateboarding", "Collecting", "Badminton", "Disco" };
+
 	private static final Map<Short, LanguageType> LANGUAGE_TYPES = getLanguageTypes();
-	private static final Map<Short,LanguageLevel> LANGUAGE_LEVELS = getLanguageLevels();
-	private static final Map<Short, SkillCategory> SKILL_CATEGORIES = getSkillCategories();
-	
+	private static final Map<Short, LanguageLevel> LANGUAGE_LEVELS = getLanguageLevels();
+
 	private static final String DUMMY_CONTENT_PATH = "external/test-data/dummy-content.txt";
 	private static final String DUMMY_CONTENT = readDummyText();
 	private static final List<String> SENTENCES;
-	
+
 	static {
 		String[] sentences = DUMMY_CONTENT.split("\\.");
 		List<String> sentencesList = new ArrayList<>(sentences.length);
@@ -88,30 +92,63 @@ public class TestDataGenerator {
 		}
 		SENTENCES = Collections.unmodifiableList(sentencesList);
 	}
-	
+
 	private static final ThreadLocalRandom r = ThreadLocalRandom.current();
-	private static int profileId = 0;
 	private static LocalDate birthDay = null;
-	
+
 	public static void main(String[] args) throws Exception {
 		clearMedia();
 		List<Certificate> certificates = loadCertificates();
 		List<Profile> profiles = loadProfiles();
 		List<ProfileConfig> profileConfigs = getProfileConfigs();
-		try (Connection c = DriverManager.getConnection(JDBC_URL, JDBC_USERNAME, JDBC_PASSWORD)) {
-			c.setAutoCommit(false);
-			clearDb(c);
-			insertSkillCategories(c);
-			insertLanguageTypes(c);
-			insertLanguageLevels(c);
+		
+		MongoClient mongo = null;
+		try {
+			mongo = new MongoClient(MONGO_URL, MONGO_PORT);
+			clearDb(mongo);
+			
 			for (Profile p : profiles) {
 				ProfileConfig profileConfig = profileConfigs.get(r.nextInt(profileConfigs.size()));
-				createProfile(c, p, profileConfig, certificates);
+				createProfile(mongo, p, profileConfig, certificates);
 				System.out.println("Created profile for " + p.firstName + " " + p.lastName);
 			}
-			c.commit();
+			createProfileIndexes(mongo);
+			createRememberMeTokenIndexes(mongo);
 			System.out.println("Data generated successfully");
+		} finally {
+			if (mongo != null) {
+				mongo.close();
+			}
 		}
+	}
+
+	private static void createRememberMeTokenIndexes(MongoClient mongo) {
+		getDb(mongo)
+			.getCollection(COLLECTION_REMEMBER_ME_TOKEN)
+			.createIndex(new BasicDBObject("series", 1), new IndexOptions().unique(true).name("series_idx"));
+		getDb(mongo)
+			.getCollection(COLLECTION_REMEMBER_ME_TOKEN)
+			.createIndex(new BasicDBObject("username", 1), new IndexOptions().unique(false).name("username_idx"));
+		
+		System.out.println("Created indexes for rememberMeToken collection");
+	}
+
+	private static void createProfileIndexes(MongoClient mongo) {
+		getDb(mongo).getCollection(COLLECTION_PROFILE)
+			.createIndex(new BasicDBObject("email", 1), new IndexOptions().unique(true).name("email_idx"));
+		getDb(mongo).getCollection(COLLECTION_PROFILE)
+			.createIndex(new BasicDBObject("phone", 1), new IndexOptions().unique(true).name("phone_idx"));
+		getDb(mongo).getCollection(COLLECTION_PROFILE)
+			.createIndex(new BasicDBObject("uid", 1), new IndexOptions().unique(true).name("uid_idx"));
+		getDb(mongo).getCollection(COLLECTION_PROFILE)
+			.createIndex(new BasicDBObject("completed", 1), new IndexOptions().unique(false).name("completed_idx"));
+		getDb(mongo).getCollection(COLLECTION_PROFILE)
+			.createIndex(new BasicDBObject("created", 1), new IndexOptions().unique(false).name("created_idx"));
+		
+		getDb(mongo).getCollection(COLLECTION_PROFILE_RESTORE)
+			.createIndex(new BasicDBObject("token", 1), new IndexOptions().unique(true).name("token_idx"));
+		
+		System.out.println("Created indexes for profile collection");
 	}
 
 	private static void clearMedia() throws IOException {
@@ -132,7 +169,7 @@ public class TestDataGenerator {
 		}
 		System.out.println("Media dir cleared");
 	}
-	
+
 	private static List<Certificate> loadCertificates() {
 		File[] files = new File(CERTIFICATE_PATH).listFiles();
 		List<Certificate> list = new ArrayList<>(files.length);
@@ -143,7 +180,7 @@ public class TestDataGenerator {
 		}
 		return list;
 	}
-	
+
 	private static List<Profile> loadProfiles() {
 		File[] photos = new File(PHOTO_PATH).listFiles();
 		List<Profile> list = new ArrayList<>(photos.length);
@@ -161,198 +198,153 @@ public class TestDataGenerator {
 		});
 		return list;
 	}
-	
+
 	private static List<ProfileConfig> getProfileConfigs() {
 		List<ProfileConfig> res = new ArrayList<>();
 		res.add(new ProfileConfig("Junior java trainee position",
 				"Java core course with developing one simple console application",
-				new Course[] {Course.createCoreCourse()}, 0));
+				new Course[] { Course.createCoreCourse() }, 0));
 		res.add(new ProfileConfig("Junior java trainee position",
 				"One Java professional course with developing web application blog (Link to demo is provided)",
-				new Course[] {Course.createBaseCourse()}, 0));
+				new Course[] { Course.createBaseCourse() }, 0));
 		res.add(new ProfileConfig("Junior java developer position",
 				"One Java professional course with developing web application resume (Link to demo is provided)",
-				new Course[] {Course.createAdvancedCourse()}, 0));
+				new Course[] { Course.createAdvancedCourse() }, 0));
 		res.add(new ProfileConfig("Junior java developer position",
 				"One Java professional course with developing web application resume (Link to demo is provided)",
-				new Course[] {Course.createAdvancedCourse()}, 1));
+				new Course[] { Course.createAdvancedCourse() }, 1));
 		res.add(new ProfileConfig("Junior java developer position",
 				"Two Java professional courses with developing two web applications: blog and resume (Links to demo are provided)",
-				new Course[] {Course.createAdvancedCourse(), Course.createBaseCourse() }, 1));
+				new Course[] { Course.createAdvancedCourse(), Course.createBaseCourse() }, 1));
 		res.add(new ProfileConfig("Junior java developer position",
 				"Two Java professional courses with developing two web applications: blog and resume (Links to demo are provided)",
-				new Course[] {Course.createAdvancedCourse(), Course.createBaseCourse() }, 1));
+				new Course[] { Course.createAdvancedCourse(), Course.createBaseCourse() }, 1));
 		res.add(new ProfileConfig("Junior java developer position",
 				"Two Java professional courses with developing two web applications: blog and resume (Links to demo are provided)",
-				new Course[] {Course.createAdvancedCourse(), Course.createBaseCourse() }, 1));
+				new Course[] { Course.createAdvancedCourse(), Course.createBaseCourse() }, 1));
 		res.add(new ProfileConfig("Junior java developer position",
 				"Two Java professional courses with developing two web applications: blog and resume (Links to demo are provided)",
-				new Course[] {Course.createAdvancedCourse(), Course.createBaseCourse() }, 2));
+				new Course[] { Course.createAdvancedCourse(), Course.createBaseCourse() }, 2));
 		res.add(new ProfileConfig("Junior java developer position",
 				"Three Java professional courses with developing one console application and two web applications: blog and resume (Links to demo are provided)",
-				new Course[] { Course.createAdvancedCourse(), Course.createBaseCourse(), Course.createCoreCourse()  }, 2));
-		
+				new Course[] { Course.createAdvancedCourse(), Course.createBaseCourse(), Course.createCoreCourse() },
+				2));
+
 		return res;
 	}
-	
-	private static void clearDb(Connection c) throws SQLException {
-		Statement st = c.createStatement();
-		st.executeUpdate("DELETE FROM certificate");
-		st.executeUpdate("DELETE FROM course");
-		st.executeUpdate("DELETE FROM education");
-		st.executeUpdate("DELETE FROM experience");
-		st.executeUpdate("DELETE FROM f_language");
-		st.executeUpdate("DELETE FROM f_skill");
-		st.executeUpdate("DELETE FROM f_language_level");
-		st.executeUpdate("DELETE FROM f_language_type");
-		st.executeUpdate("DELETE FROM f_skill_category");
-		st.executeUpdate("DELETE FROM hobby");
-		st.executeUpdate("DELETE FROM profile");
-		st.execute("SELECT setval('certificate_seq', 1, false)");
-		st.execute("SELECT setval('course_seq', 1, false)");
-		st.execute("SELECT setval('education_seq', 1, false)");
-		st.execute("SELECT setval('experience_seq', 1, false)");
-		st.execute("SELECT setval('hobby_seq', 1, false)");
-		st.execute("SELECT setval('language_seq', 1, false)");
-		st.execute("SELECT setval('profile_seq', 1, false)");
-		st.execute("SELECT setval('skill_seq', 1, false)");
-		
-		System.out.println("Db cleared");
-		
+
+	private static MongoDatabase getDb(MongoClient mongo) {
+		return mongo.getDatabase(MONGO_DB);
 	}
 
-	private static void insertSkillCategories(Connection c) throws SQLException {
-		PreparedStatement ps = c.prepareStatement("INSERT INTO f_skill_category VALUES (?,?)");
-		for (Map.Entry<Short, SkillCategory> entry : SKILL_CATEGORIES.entrySet()) {
-			ps.setShort(1, entry.getKey());
-			ps.setString(2, entry.getValue().getCategory());
-			ps.addBatch();
-		}
-		ps.executeBatch();
-		ps.close();
-		
+	private static void clearDb(MongoClient mongo) {
+		getDb(mongo).getCollection(COLLECTION_PROFILE).drop();
+		getDb(mongo).getCollection(COLLECTION_REMEMBER_ME_TOKEN).drop();
+		getDb(mongo).getCollection(COLLECTION_PROFILE_RESTORE).drop();
+		System.out.println("Db cleared");
 	}
-	
-	private static void insertLanguageTypes(Connection c) throws SQLException {
-		PreparedStatement ps = c.prepareStatement("INSERT INTO f_language_type VALUES (?,?)");
-		for (Map.Entry<Short, LanguageType> entry : LANGUAGE_TYPES.entrySet()) {
-			ps.setShort(1, entry.getKey());
-			ps.setString(2, entry.getValue().getType());
-			ps.addBatch();
-		}
-		ps.executeBatch();
-		ps.close();
-	}
-	
-	private static void insertLanguageLevels(Connection c) throws SQLException {
-		PreparedStatement ps = c.prepareStatement("INSERT INTO f_language_level VALUES (?,?)");
-		for (Map.Entry<Short, LanguageLevel> entry : LANGUAGE_LEVELS.entrySet()) {
-			ps.setShort(1, entry.getKey());
-			ps.setString(2, entry.getValue().getLevel());
-			ps.addBatch();
-		}
-		ps.executeBatch();
-		ps.close();
-	}
-	
-	private static void createProfile(Connection c, Profile profile, ProfileConfig profileConfig, List<Certificate> certificates)
-		throws SQLException, IOException {
-		insertProfileData(c, profile, profileConfig);
+
+	private static void createProfile(MongoClient mongo, Profile profile, ProfileConfig profileConfig,
+			List<Certificate> certificates) throws IOException {
+		Document newProfile = insertProfileData(mongo, profile, profileConfig);
 		if (profileConfig.certificates > 0) {
-			insertCertificates(c, profileConfig.certificates, certificates);
+			putList(newProfile, "certificates",
+					insertCertificates(mongo, profileConfig.certificates, certificates));
 		}
-		insertEducation(c);
-		insertHobbies(c);
-		insertLanguages(c);
-		insertExperience(c, profileConfig);
-		insertSkills(c, profileConfig);
-		insertCourses(c);
-	}
-	
-	private static void insertProfileData(Connection c, Profile profile, ProfileConfig profileConfig)
-		throws SQLException, IOException {
-		PreparedStatement ps = 
-				c.prepareStatement("INSERT INTO profile VALUES (nextval('profile_seq'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,true,?,?,?,?,?,?,?)");
-		ps.setString(1, (profile.firstName + "-" + profile.lastName).toLowerCase());
-		ps.setString(2, profile.firstName);
-		ps.setString(3, profile.lastName);
-		birthDay = randomBirthDate();
-		ps.setObject(4, birthDay);
-		ps.setString(5, generatePhone());
-		ps.setString(6, (profile.firstName + "-" + profile.lastName).toLowerCase() + "@gmail.com");
-		ps.setString(7, COUNTRY);
-		ps.setString(8, CITIES[r.nextInt(CITIES.length)]);
-		ps.setString(9, profileConfig.objective);
-		ps.setString(10, profileConfig.summary);
+		putList(newProfile, "education", insertEducation(mongo));
+		putList(newProfile, "hobbies", insertHobbies(mongo));
+		putList(newProfile, "languages", insertLanguages(mongo));
+		putList(newProfile, "experience", insertExperience(mongo, profileConfig));
+		putList(newProfile, "skills", insertSkills(mongo, profileConfig));
+		putList(newProfile, "courses", insertCourses(mongo));
 		
+		getDb(mongo).getCollection(COLLECTION_PROFILE).insertOne(newProfile);
+	}
+
+	private static void putList(Document insertedProfile, String propertyName, BasicDBList list) {
+		if (list != null && !list.isEmpty()) {
+			insertedProfile.put(propertyName, list);
+		}
+	}
+
+	private static Document insertProfileData(MongoClient mongo, Profile profile, ProfileConfig profileConfig)
+			throws IOException {
+		Document insertedProfile = new Document();
+
+		insertedProfile.put("uid", (profile.firstName + "-" + profile.lastName).toLowerCase());
+		insertedProfile.put("firstName", profile.firstName);
+		insertedProfile.put("lastName", profile.lastName);
+		birthDay = randomBirthDate();
+		insertedProfile.put("birthDay", birthDay);
+		insertedProfile.put("phone", generatePhone());
+		insertedProfile.put("email", (profile.firstName + "-" + profile.lastName).toLowerCase() + "@gmail.com");
+		insertedProfile.put("country", COUNTRY);
+		insertedProfile.put("city", CITIES[r.nextInt(CITIES.length)]);
+		insertedProfile.put("objective", profileConfig.objective);
+		insertedProfile.put("summary", profileConfig.summary);
+
 		String uid = UUID.randomUUID().toString() + ".jpg";
+
 		File photo = new File(MEDIA_DIR + "/avatar/" + uid);
 		if (!photo.getParentFile().exists()) {
 			photo.getParentFile().mkdirs();
 		}
 		Files.copy(Paths.get(profile.photo), Paths.get(photo.getAbsolutePath()));
-		
-		ps.setString(11, "/media/avatar/" + uid);
-		
+
+		insertedProfile.put("largePhoto", "/media/avatar/" + uid);
+
 		String smallUid = uid.replace(".jpg", "-sm.jpg");
 		Thumbnails.of(photo).size(110, 110).toFile(new File(MEDIA_DIR + "/avatar/" + smallUid));
-		
-		ps.setString(12, "/media/avatar/" + smallUid);
+
+		insertedProfile.put("smallPhoto", "/media/avatar/" + smallUid);
+
 		if (r.nextBoolean()) {
-			ps.setString(13, getInfo());
-		} else {
-			ps.setNull(13, Types.VARCHAR);
+			insertedProfile.put("info", getInfo());
 		}
-		
-		ps.setString(14, PASSWORD_HASH);
-		
-		ps.setObject(15, LocalDateTime.now());
-		
+
+		insertedProfile.put("password", PASSWORD_HASH);
+		insertedProfile.put("created", LocalDateTime.now());
+
+		BasicDBObject contacts = new BasicDBObject();
+		insertedProfile.put("contacts", contacts);
+
 		if (r.nextBoolean()) {
-			ps.setString(16, (profile.firstName + "-" + profile.lastName).toLowerCase());
-		} else {
-			ps.setNull(16, Types.VARCHAR);
-		}
-		if (r.nextBoolean()) {
-			ps.setString(17, "https://vk.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
-		} else {
-			ps.setNull(17, Types.VARCHAR);
+			contacts.put("skype", (profile.firstName + "-" + profile.lastName).toLowerCase());
 		}
 		if (r.nextBoolean()) {
-			ps.setString(18, "https://facebook.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
-		} else {
-			ps.setNull(18, Types.VARCHAR);
+			contacts.put("vkontakte", "https://vk.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
 		}
 		if (r.nextBoolean()) {
-			ps.setString(19, "https://linkedin.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
-		} else {
-			ps.setNull(19, Types.VARCHAR);
+			contacts.put("facebook",
+					"https://facebook.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
 		}
 		if (r.nextBoolean()) {
-			ps.setString(20, "https://github.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
-		} else {
-			ps.setNull(20, Types.VARCHAR);
+			contacts.put("linkedin",
+					"https://linkedin.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
 		}
-		
 		if (r.nextBoolean()) {
-			ps.setString(21, "https://stackoverflow.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
-		} else {
-			ps.setNull(21, Types.VARCHAR);
+			contacts.put("github", "https://github.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
 		}
-		
-		ps.executeUpdate();
-		ps.close();
-		profileId++;
+
+		if (r.nextBoolean()) {
+			contacts.put("stackoverflow",
+					"https://stackoverflow.com/" + (profile.firstName + "-" + profile.lastName).toLowerCase());
+		}
+
+		insertedProfile.put("completed", Boolean.TRUE);
+		return insertedProfile;
 	}
-	
-	private static void insertCertificates(Connection c, int certificatesCount, List<Certificate> certificates)
-				throws SQLException, IOException {
+
+	private static BasicDBList insertCertificates(MongoClient mongo, int certificatesCount,
+			List<Certificate> certificates) throws IOException {
 		Collections.shuffle(certificates);
-		PreparedStatement ps = c.prepareStatement("INSERT INTO certificate VALUES (nextval('certificate_seq'),?,?,?,?)");
+		BasicDBList list = new BasicDBList();
+
 		for (int i = 0; i < certificatesCount && i < certificates.size(); i++) {
 			Certificate certificate = certificates.get(i);
-			ps.setLong(1, profileId);
-			ps.setString(2, certificate.name);
+			BasicDBObject insertedCertificate = new BasicDBObject();
+			insertedCertificate.put("name", certificate.name);
+
 			String uid = UUID.randomUUID().toString() + ".jpg";
 			File photo = new File(MEDIA_DIR + "/certificates/" + uid);
 			if (!photo.getParentFile().exists()) {
@@ -360,48 +352,47 @@ public class TestDataGenerator {
 			}
 			String smallUid = uid.replace(".jpg", "-sm.jpg");
 			Files.copy(Paths.get(certificate.largeImg), Paths.get(photo.getAbsolutePath()));
-			ps.setString(3, "/media/certificates/" + uid);
-			Thumbnails.of(photo).size(100, 100).toFile(Paths.get(photo.getAbsolutePath().replace(".jpg", "-sm.jpg")).toFile());
-			ps.setString(4, "/media/certificates/" + smallUid);
-			
-			ps.addBatch();
+
+			insertedCertificate.put("largeUrl", "/media/certificates/" + uid);
+			Thumbnails.of(photo).size(100, 100)
+					.toFile(Paths.get(photo.getAbsolutePath().replace(".jpg", "-sm.jpg")).toFile());
+			insertedCertificate.put("smallUrl", "/media/certificates/" + smallUid);
+
+			list.add(insertedCertificate);
 		}
-		ps.executeBatch();
-		ps.close();
+		return list;
 	}
-	
-	private static void insertEducation(Connection c) throws SQLException {
-		PreparedStatement ps = c.prepareStatement("INSERT INTO education values (nextval('education_seq'),?,?,?,?,?,?)");
-		ps.setLong(1, profileId);
-		ps.setString(2, "The specialist degree in Electronic Engineering");
+
+	private static BasicDBList insertEducation(MongoClient mongo) {
+		BasicDBList list = new BasicDBList();
+		BasicDBObject education = new BasicDBObject();
+		education.put("summary", "The specialist degree in Electronic Engineering");
 		Date finish = randomFinishEducation();
 		Date begin = addField(finish, Calendar.YEAR, -5, true);
-		ps.setInt(3, new java.util.Date(begin.getTime()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear());
-		if (finish.getTime() > System.currentTimeMillis()) {
-			ps.setNull(4, Types.INTEGER);
-		} else {
-			ps.setInt(4, new java.util.Date(finish.getTime()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear());
+		education.put("startYear",
+				new java.util.Date(begin.getTime()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear());
+		if (finish.getTime() <= System.currentTimeMillis()) {
+			education.put("endYear", new java.util.Date(finish.getTime()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+					.getYear());
 		}
-		ps.setString(5, "Kharkiv National Technical University, Ukraine");
-		ps.setString(6, "Computer Science");
-		ps.executeUpdate();
-		ps.close();
+		education.put("university", "Kharkiv National Technical University, Ukraine");
+		education.put("faculty", "Computer Science");
+		
+		list.add(education);
+		return list;
 	}
-	
-	private static void insertHobbies(Connection c) throws SQLException {
-		PreparedStatement ps = c.prepareStatement("INSERT INTO hobby VALUES (nextval('hobby_seq'),?,?)");
+
+	private static BasicDBList insertHobbies(MongoClient mongo) {
+		BasicDBList list = new BasicDBList();
 		List<String> hobbies = new ArrayList<>(Arrays.asList(HOBBIES));
 		Collections.shuffle(hobbies);
 		for (int i = 0; i < 5; i++) {
-			ps.setLong(1, profileId);
-			ps.setString(2, hobbies.remove(0));
-			ps.addBatch();
+			list.add(new BasicDBObject("name", hobbies.remove(0)));
 		}
-		ps.executeBatch();
-		ps.close();
+		return list;
 	}
-	
-	private static void insertLanguages(Connection c) throws SQLException {
+
+	private static BasicDBList insertLanguages(MongoClient mongo) {
 		List<String> languages = new ArrayList<>();
 		languages.add("English");
 		if (r.nextBoolean()) {
@@ -412,119 +403,103 @@ public class TestDataGenerator {
 				languages.add(otherLng.remove(0));
 			}
 		}
+
+		BasicDBList list = new BasicDBList();
 		
-		PreparedStatement ps = c.prepareStatement("INSERT INTO f_language VALUES (nextval('language_seq'),?,?,?,?)");
 		for (String language : languages) {
 			Map.Entry<Short, LanguageType> languageType = getRandomLanguageType();
 			Map.Entry<Short, LanguageLevel> languageLevel = getRandomLanguageLevel();
-			ps.setLong(1, profileId);
-			ps.setString(2, language);
-			ps.setShort(3, languageType.getKey());
-			ps.setShort(4, languageLevel.getKey());
+			BasicDBObject lang = new BasicDBObject();
 			
-			ps.addBatch();
+			lang.put("name", language);
+			lang.put("type", languageType.getValue().name());
+			lang.put("level", languageLevel.getValue().name());
+			
+			list.add(lang);
+
 			if (languageType.getValue() != LanguageType.ALL) {
-				ps.setLong(1, profileId);
-				ps.setString(2, language);
+				lang = new BasicDBObject();
+				lang.put("name", language);
 				Map.Entry<Short, LanguageLevel> newLanguageLevel = getRandomLanguageLevel();
 				while (newLanguageLevel.getValue() == languageLevel.getValue()) {
 					newLanguageLevel = getRandomLanguageLevel();
 				}
-				ps.setShort(3, getReverseType(languageType));
-				ps.setShort(4, newLanguageLevel.getKey());
-				ps.addBatch();
+				lang.put("type", getReverseType(languageType).name());
+				lang.put("level", newLanguageLevel.getValue().name());
+				list.add(lang);
 			}
 		}
-		ps.executeBatch();
-		ps.close();
+		return list;
 	}
-	
-	private static void insertExperience(Connection c, ProfileConfig profileConfig) throws SQLException {
-		PreparedStatement ps =
-				c.prepareStatement("INSERT INTO experience VALUES (nextval('experience_seq'),?,?,?,?,?,?,?,?)");
+
+	private static BasicDBList insertExperience(MongoClient mongo, ProfileConfig profileConfig) {
+		BasicDBList list = new BasicDBList();
 		boolean currentCourse = r.nextBoolean();
 		Date finish = addField(new Date(System.currentTimeMillis()), Calendar.MONTH, -(r.nextInt(3) + 1), false);
+		
 		for (Course course : profileConfig.courses) {
-			ps.setLong(1, profileId);
-			ps.setString(2, course.name);
-			ps.setString(3, course.company);
+			BasicDBObject experience = new BasicDBObject();
+			experience.put("position", course.name);
+			experience.put("company", course.company);
 			if (currentCourse) {
-				ps.setDate(4, addField(new Date(System.currentTimeMillis()), Calendar.MONTH, -1, false));
-				ps.setNull(5, Types.DATE);
+				experience.put("startDate", addField(new Date(System.currentTimeMillis()), Calendar.MONTH, -1, false).toLocalDate());
 			} else {
-				ps.setDate(4, addField(finish, Calendar.MONTH, -1, false));
-				ps.setDate(5, finish);
+				experience.put("startDate", addField(finish, Calendar.MONTH, -1, false).toLocalDate());
+				experience.put("endDate", finish.toLocalDate());
 				finish = addField(finish, Calendar.MONTH, -(r.nextInt(3) + 1), false);
 			}
-			ps.setString(6, course.responsibilities);
-			if (course.demo == null) {
-				ps.setNull(7, Types.VARCHAR);
-			} else {
-				ps.setString(7, course.demo);
-			}
-			if (course.github == null) {
-				ps.setNull(8, Types.VARCHAR);
-			} else {
-				ps.setString(8, course.github);
-			}
-			ps.addBatch();
+			experience.put("responsibilities", course.responsibilities);
+			experience.put("demo", course.demo);
+			experience.put("sourceCode", course.github);
+			
+			list.add(experience);
 		}
-		ps.executeBatch();
-		ps.close();
+		return list;
 	}
-	
-	private static void insertSkills(Connection c, ProfileConfig profileConfig) throws SQLException {
-		PreparedStatement ps = c.prepareStatement("INSERT INTO f_skill VALUES (nextval('skill_seq'),?,?,?)");
+
+	private static BasicDBList insertSkills(MongoClient mongo, ProfileConfig profileConfig) {
+		BasicDBList list = new BasicDBList();
 		Map<SkillCategory, Set<String>> skillMap = createSkillMap();
+		
 		for (Course course : profileConfig.courses) {
 			for (SkillCategory category : skillMap.keySet()) {
 				skillMap.get(category).addAll(course.skills.get(category));
 			}
 		}
+		
 		for (Map.Entry<SkillCategory, Set<String>> entry : skillMap.entrySet()) {
 			if (!entry.getValue().isEmpty()) {
-				ps.setLong(1, profileId);
-				ps.setShort(2, getCategory(entry.getKey()));
-				ps.setString(3, StringUtils.join(entry.getValue().toArray(), ", "));
-				
-				ps.addBatch();
+				BasicDBObject skill = new BasicDBObject();
+				skill.put("category", entry.getKey().name());
+				skill.put("value", StringUtils.join(entry.getValue().toArray(), ", "));
+
+				list.add(skill);
 			}
 		}
-		ps.executeBatch();
-		ps.close();
+		return list;
 	}
-	
-	private static void insertCourses(Connection c) throws SQLException {
+
+	private static BasicDBList insertCourses(MongoClient mongo) {
 		if (r.nextBoolean()) {
-			PreparedStatement ps = c.prepareStatement("INSERT INTO course VALUES (nextval('course_seq'),?,?,?,?)");
-			ps.setLong(1, profileId);
-			ps.setString(2, "Java Advanced Course");
-			ps.setString(3, "SourceIt");
+			BasicDBList list = new BasicDBList();
+			BasicDBObject course = new BasicDBObject();
+			course.put("name", "Java Advanced Course");
+			course.put("school", "SourceIt");
 			Date finish = randomFinishEducation();
-			if (finish.getTime() > System.currentTimeMillis()) {
-				ps.setNull(4, Types.DATE);
-			} else {
-				ps.setDate(4, finish);
+			if (finish.getTime() <= System.currentTimeMillis()) {
+				course.put("endDate", finish.toLocalDate());
 			}
-			ps.executeUpdate();
-			ps.close();
+			list.add(course);
+			return list;
 		}
+		return null;
 	}
 
-	private static short getCategory(SkillCategory key) {
-		for (Map.Entry<Short, SkillCategory> entry : SKILL_CATEGORIES.entrySet()) {
-			if (entry.getValue() == key) {
-				return entry.getKey();
-			}
-		}
-		throw new IllegalStateException("Can not category id for category: " + key);
-	}
-
-	private static short getReverseType(Entry<Short, LanguageType> languageType) {
+	private static LanguageType getReverseType(Entry<Short, LanguageType> languageType) {
 		if (languageType.getValue() == LanguageType.SPOKEN) {
-			return 2;
+			return LanguageType.WRITTEN;
 		}
-		return 1;
+		return LanguageType.SPOKEN;
 	}
 
 	private static Entry<Short, LanguageLevel> getRandomLanguageLevel() {
@@ -560,7 +535,7 @@ public class TestDataGenerator {
 		cl.set(Calendar.YEAR, year + r.nextInt(3));
 		return new Date(cl.getTimeInMillis());
 	}
-	
+
 	private static Date addField(Date finish, int field, int value, boolean isBeginEducation) {
 		Calendar cl = Calendar.getInstance();
 		cl.setTimeInMillis(finish.getTime());
@@ -585,7 +560,7 @@ public class TestDataGenerator {
 		StringBuilder phone = new StringBuilder("+38050");
 		for (int i = 0; i < 7; i++) {
 			int code = '1' + r.nextInt(9);
-			phone.append((char)code);
+			phone.append((char) code);
 		}
 		return phone.toString();
 	}
@@ -606,7 +581,7 @@ public class TestDataGenerator {
 		types.put((short) 2, LanguageType.WRITTEN);
 		return types;
 	}
-	
+
 	private static Map<Short, LanguageLevel> getLanguageLevels() {
 		Map<Short, LanguageLevel> levels = new LinkedHashMap<>();
 		levels.put((short) 0, LanguageLevel.BEGINNER);
@@ -616,25 +591,10 @@ public class TestDataGenerator {
 		levels.put((short) 4, LanguageLevel.UPPER_INTERMEDIATE);
 		levels.put((short) 5, LanguageLevel.ADVANCED);
 		levels.put((short) 6, LanguageLevel.PROFICIENCY);
-		
+
 		return levels;
 	}
-	
-	private static Map<Short, SkillCategory> getSkillCategories() {
-		Map<Short, SkillCategory> categories = new LinkedHashMap<>();
-		categories.put((short) 0, SkillCategory.LANGUAGES);
-		categories.put((short) 1, SkillCategory.DBMS);
-		categories.put((short) 2, SkillCategory.FRONTEND);
-		categories.put((short) 3, SkillCategory.BACKEND);
-		categories.put((short) 4, SkillCategory.IDE);
-		categories.put((short) 5, SkillCategory.CVS);
-		categories.put((short) 6, SkillCategory.WEB_SERVERS);
-		categories.put((short) 7, SkillCategory.BUILD_SYSTEMS);
-		categories.put((short) 8, SkillCategory.CLOUD);
-		
-		return categories;
-	}
-	
+
 	private static Map<SkillCategory, Set<String>> createSkillMap() {
 		Map<SkillCategory, Set<String>> skills = new LinkedHashMap<>();
 		skills.put(SkillCategory.LANGUAGES, new LinkedHashSet<>());
@@ -646,7 +606,7 @@ public class TestDataGenerator {
 		skills.put(SkillCategory.WEB_SERVERS, new LinkedHashSet<>());
 		skills.put(SkillCategory.BUILD_SYSTEMS, new LinkedHashSet<>());
 		skills.put(SkillCategory.CLOUD, new LinkedHashSet<>());
-		
+
 		return skills;
 	}
 
@@ -657,7 +617,7 @@ public class TestDataGenerator {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private static final class Certificate {
 		private final String name;
 		private final String largeImg;
@@ -667,30 +627,30 @@ public class TestDataGenerator {
 			this.largeImg = largeImg;
 		}
 	}
-	
+
 	private static final class Profile {
 		private final String firstName;
 		private final String lastName;
 		private final String photo;
-		
+
 		private Profile(String firstName, String lastName, String photo) {
 			this.firstName = firstName;
 			this.lastName = lastName;
 			this.photo = photo;
 		}
-		
+
 		@Override
 		public String toString() {
 			return String.format("Profile [firstName=%s, lastName=%s]", firstName, lastName);
 		}
 	}
-	
+
 	private static final class ProfileConfig {
 		private final String objective;
 		private final String summary;
 		private final Course[] courses;
 		private final int certificates;
-		
+
 		private ProfileConfig(String objective, String summary, Course[] courses, int certificates) {
 			this.objective = objective;
 			this.summary = summary;
@@ -698,7 +658,7 @@ public class TestDataGenerator {
 			this.certificates = certificates;
 		}
 	}
-	
+
 	private static final class Course {
 		private final String name;
 		private final String company;
@@ -706,7 +666,7 @@ public class TestDataGenerator {
 		private final String responsibilities;
 		private final String demo;
 		private final Map<SkillCategory, Set<String>> skills;
-		
+
 		private Course(String name, String company, String github, String responsibilities, String demo,
 				Map<SkillCategory, Set<String>> skills) {
 			this.name = name;
@@ -716,84 +676,81 @@ public class TestDataGenerator {
 			this.demo = demo;
 			this.skills = skills;
 		}
-		
+
 		static Course createCoreCourse() {
 			Map<SkillCategory, Set<String>> skills = createSkillMap();
 			skills.get(SkillCategory.LANGUAGES).add("Java");
-			
+
 			skills.get(SkillCategory.DBMS).add("Mysql");
-			
+
 			skills.get(SkillCategory.BACKEND).add("Java Threads");
 			skills.get(SkillCategory.BACKEND).add("IO");
 			skills.get(SkillCategory.BACKEND).add("JAXB");
 			skills.get(SkillCategory.BACKEND).add("GSON");
-			
+
 			skills.get(SkillCategory.IDE).add("Eclipse for JEE Developer");
-			
+
 			skills.get(SkillCategory.CVS).add("Git");
 			skills.get(SkillCategory.CVS).add("GitHub");
-			
+
 			skills.get(SkillCategory.BUILD_SYSTEMS).add("Maven");
-			
+
 			return new Course("Java Core Course", "DevStude.net", null,
 					"Developing the java console application which imports XML, JSON, Properties, CVS to Db via JDBC",
 					null, skills);
 		}
-		
+
 		static Course createBaseCourse() {
 			Map<SkillCategory, Set<String>> skills = createSkillMap();
 			skills.get(SkillCategory.LANGUAGES).add("Java");
 			skills.get(SkillCategory.LANGUAGES).add("SQL");
-			
+
 			skills.get(SkillCategory.DBMS).add("Postgresql");
-			
+
 			skills.get(SkillCategory.FRONTEND).add("HTML");
 			skills.get(SkillCategory.FRONTEND).add("CSS");
 			skills.get(SkillCategory.FRONTEND).add("JS");
 			skills.get(SkillCategory.FRONTEND).add("Boostrap");
 			skills.get(SkillCategory.FRONTEND).add("JQuery");
-			
+
 			skills.get(SkillCategory.BACKEND).add("Java Servlets");
 			skills.get(SkillCategory.BACKEND).add("Logback");
 			skills.get(SkillCategory.BACKEND).add("JSTL");
 			skills.get(SkillCategory.BACKEND).add("JDBC");
 			skills.get(SkillCategory.BACKEND).add("Apache Commons");
 			skills.get(SkillCategory.BACKEND).add("Google+ Social API");
-			
+
 			skills.get(SkillCategory.IDE).add("Eclipse for JEE Developer");
-			
+
 			skills.get(SkillCategory.CVS).add("Git");
 			skills.get(SkillCategory.CVS).add("GitHub");
-			
+
 			skills.get(SkillCategory.WEB_SERVERS).add("Tomcat");
-			
+
 			skills.get(SkillCategory.BUILD_SYSTEMS).add("Maven");
-			
+
 			skills.get(SkillCategory.CLOUD).add("OpenShift");
-			
-			return new Course("Java Base Course",
-					"DevStude.net",
-					"https://github.com/TODO",
+
+			return new Course("Java Base Course", "DevStude.net", "https://github.com/TODO",
 					"Developing the web application 'blog' using free HTML template, downloaded from intenet."
-					+ " Populating database by test data and uploading web project to OpenShift free hosting",
-					"http://LINK_TO_DEMO_SITE",
-					skills);
+							+ " Populating database by test data and uploading web project to OpenShift free hosting",
+					"http://LINK_TO_DEMO_SITE", skills);
 		}
-		
+
 		static Course createAdvancedCourse() {
 			Map<SkillCategory, Set<String>> skills = createSkillMap();
 			skills.get(SkillCategory.LANGUAGES).add("Java");
 			skills.get(SkillCategory.LANGUAGES).add("SQL");
 			skills.get(SkillCategory.LANGUAGES).add("PLSQL");
-			
+
 			skills.get(SkillCategory.DBMS).add("Postgresql");
-			
+
 			skills.get(SkillCategory.FRONTEND).add("HTML");
 			skills.get(SkillCategory.FRONTEND).add("CSS");
 			skills.get(SkillCategory.FRONTEND).add("JS");
 			skills.get(SkillCategory.FRONTEND).add("Boostrap");
 			skills.get(SkillCategory.FRONTEND).add("JQuery");
-			
+
 			skills.get(SkillCategory.BACKEND).add("Spring MVC");
 			skills.get(SkillCategory.BACKEND).add("Logback");
 			skills.get(SkillCategory.BACKEND).add("JSP");
@@ -803,26 +760,23 @@ public class TestDataGenerator {
 			skills.get(SkillCategory.BACKEND).add("Spring Security");
 			skills.get(SkillCategory.BACKEND).add("Hibernate JPA");
 			skills.get(SkillCategory.BACKEND).add("Facebook Social API");
-			
+
 			skills.get(SkillCategory.IDE).add("Eclipse for JEE Developer");
-			
+
 			skills.get(SkillCategory.CVS).add("Git");
 			skills.get(SkillCategory.CVS).add("GitHub");
-			
+
 			skills.get(SkillCategory.WEB_SERVERS).add("Tomcat");
 			skills.get(SkillCategory.WEB_SERVERS).add("Nginx");
-			
+
 			skills.get(SkillCategory.BUILD_SYSTEMS).add("Maven");
-			
+
 			skills.get(SkillCategory.CLOUD).add("AWS");
-			
-			return new Course("Java Advanced Course",
-					"DevStude.net",
-					"https://github.com/TODO",
+
+			return new Course("Java Advanced Course", "DevStude.net", "https://github.com/TODO",
 					"Developing the web application 'online-resume' using bootstrap HTML template, downloaded from intenet."
-					+ " Populating database by test data and uploading web project to AWS EC2 instance",
-					"http://LINK_TO_DEMO_SITE",
-					skills);
+							+ " Populating database by test data and uploading web project to AWS EC2 instance",
+					"http://LINK_TO_DEMO_SITE", skills);
 		}
 	}
 }
