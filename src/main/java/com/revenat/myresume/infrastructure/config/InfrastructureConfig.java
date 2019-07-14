@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 @Import({
 	ElasticSearchConfig.class,
 	GatewayConfig.class,
-	JPAConfig.class,
+	MongoConfig.class,
 	MediaConfig.class
 })
 public class InfrastructureConfig {

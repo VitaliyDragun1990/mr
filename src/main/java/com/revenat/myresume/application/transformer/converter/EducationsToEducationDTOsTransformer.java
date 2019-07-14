@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.revenat.myresume.application.config.annotation.TypeConverter;
 import com.revenat.myresume.application.dto.EducationDTO;
-import com.revenat.myresume.domain.entity.Education;
+import com.revenat.myresume.application.transformer.TypeConverter;
+import com.revenat.myresume.domain.document.Education;
 
 @TypeConverter
 class EducationsToEducationDTOsTransformer implements Converter<List<Education>, List<EducationDTO>> {

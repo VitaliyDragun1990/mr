@@ -2,8 +2,6 @@ package com.revenat.myresume.presentation.security.service;
 
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
@@ -33,7 +31,6 @@ class AuthenticationService implements UserDetailsService {
 	}
 
 	@Override
-	@Transactional
 	public AuthenticatedUser loadUserByUsername(String username) throws UsernameNotFoundException {
 		Optional<Profile> profile = findProfile(username);
 		if (profile.isPresent()) {

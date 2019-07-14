@@ -7,6 +7,16 @@ import ch.qos.logback.classic.Logger;
 
 public class DebugUtil {
 	
+	public static void turnOnShowMongoQuery() {
+		Logger mongoLogger = (Logger) LoggerFactory.getLogger("org.springframework.data.mongodb.core.MongoTemplate");
+		mongoLogger.setLevel(Level.DEBUG);
+	}
+	
+	public static void turnOffShowMongoQuery() {
+		Logger mongoLogger = (Logger) LoggerFactory.getLogger("org.springframework.data.mongodb.core.MongoTemplate");
+		mongoLogger.setLevel(Level.INFO);
+	}
+	
 	public static void turnOnShowSQL() {
 		Logger sqlLogger = (Logger) LoggerFactory.getLogger("org.hibernate.SQL");
 		sqlLogger.setLevel(Level.DEBUG);

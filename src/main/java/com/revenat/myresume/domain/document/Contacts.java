@@ -1,33 +1,22 @@
-package com.revenat.myresume.domain.entity;
+package com.revenat.myresume.domain.document;
 
 import java.io.Serializable;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
-@Embeddable
-@Access(AccessType.FIELD)
 public class Contacts implements Serializable {
 	private static final long serialVersionUID = -3005497793791050865L;
 
-	@Column(length = 80)
 	private String skype;
 	
-	@Column
 	private String vkontakte;
 	
-	@Column
 	private String facebook;
 	
-	@Column
 	private String linkedin;
 	
-	@Column
 	private String github;
 	
-	@Column
 	private String stackoverflow;
 
 	public String getSkype() {
@@ -76,6 +65,11 @@ public class Contacts implements Serializable {
 
 	public void setStackoverflow(String stackoverflow) {
 		this.stackoverflow = stackoverflow;
+	}
+	
+	@Override
+	public String toString() {
+		return CommonUtils.toString(this);
 	}
 	
 }

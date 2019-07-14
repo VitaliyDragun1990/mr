@@ -48,11 +48,11 @@ public class UploadedImageManager implements Serializable {
 		return imageLinks;
 	}
 
-	public final void addImageLinks(UploadedImageResult imageLinks) {
+	public void addImageLinks(UploadedImageResult imageLinks) {
 		getImageLinks().add(imageLinks);
 	}
 
-	public final void clearImageLinks() {
+	public void clearImageLinks() {
 		getImageLinks().clear();
 	}
 

@@ -6,7 +6,7 @@ import java.util.Objects;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.presentation.config.Constants;
 
 /**
@@ -18,7 +18,7 @@ import com.revenat.myresume.presentation.config.Constants;
 public final class AuthenticatedUser extends User {
 	private static final long serialVersionUID = 1L;
 
-	private final Long id;
+	private final String id;
 	private final String fullName;
 	private final boolean isRegistrationCompleted;
 
@@ -30,7 +30,7 @@ public final class AuthenticatedUser extends User {
 		this.isRegistrationCompleted = profile.isCompleted();
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 

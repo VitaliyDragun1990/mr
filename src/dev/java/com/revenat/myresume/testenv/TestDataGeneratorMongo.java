@@ -36,9 +36,9 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.IndexOptions;
-import com.revenat.myresume.domain.entity.LanguageLevel;
-import com.revenat.myresume.domain.entity.LanguageType;
-import com.revenat.myresume.domain.entity.SkillCategory;
+import com.revenat.myresume.domain.document.LanguageLevel;
+import com.revenat.myresume.domain.document.LanguageType;
+import com.revenat.myresume.domain.document.SkillCategory;
 
 import net.coobird.thumbnailator.Thumbnails;
 

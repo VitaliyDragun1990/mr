@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 
 /**
  * Cache service for {@link Profile} entities.

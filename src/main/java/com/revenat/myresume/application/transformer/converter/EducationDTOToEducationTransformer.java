@@ -2,9 +2,9 @@ package com.revenat.myresume.application.transformer.converter;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.revenat.myresume.application.config.annotation.TypeConverter;
 import com.revenat.myresume.application.dto.EducationDTO;
-import com.revenat.myresume.domain.entity.Education;
+import com.revenat.myresume.application.transformer.TypeConverter;
+import com.revenat.myresume.domain.document.Education;
 
 @TypeConverter
 class EducationDTOToEducationTransformer implements Converter<EducationDTO, Education> {
@@ -14,7 +14,6 @@ class EducationDTOToEducationTransformer implements Converter<EducationDTO, Educ
 		Education e = new Education();
 		e.setEndYear(dto.getEndYear());
 		e.setFaculty(dto.getFaculty());
-		e.setId(dto.getId());
 		e.setStartYear(dto.getStartYear());
 		e.setSummary(dto.getSummary());
 		e.setUniversity(dto.getUniversity());

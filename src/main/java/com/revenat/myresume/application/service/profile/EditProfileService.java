@@ -17,45 +17,45 @@ import com.revenat.myresume.application.dto.SkillDTO;
 
 public interface EditProfileService {
 
-	@Nonnull MainInfoDTO getMainInfoFor(long profileId);
+	@Nonnull MainInfoDTO getMainInfoFor(@Nonnull String profileId);
 	
-	void updateMainInfo(long profileId, @Nonnull MainInfoDTO updatedMainInfo);
+	void updateMainInfo(@Nonnull String profileId, @Nonnull MainInfoDTO updatedMainInfo);
 
-	@Nonnull List<SkillDTO> getSkillsFor(long profileId);
+	@Nonnull List<SkillDTO> getSkillsFor(@Nonnull String profileId);
 
-	void updateSkills(long profileId, @Nonnull List<SkillDTO> updatedSkills);
+	void updateSkills(@Nonnull String profileId, @Nonnull List<SkillDTO> updatedSkills);
 	
-	@Nonnull ContactsDTO getContactsFor(long profileId);
+	@Nonnull ContactsDTO getContactsFor(@Nonnull String profileId);
 	
-	void updateContacts(long profileId, @Nonnull ContactsDTO updatedContacts);
+	void updateContacts(@Nonnull String profileId, @Nonnull ContactsDTO updatedContacts);
 	
-	@Nonnull List<PracticalExperienceDTO> getExperienceFor(long profileId);
+	@Nonnull List<PracticalExperienceDTO> getExperienceFor(@Nonnull String profileId);
 	
-	void updateExperience(long profileId, @Nonnull List<PracticalExperienceDTO> updatedExperience);
+	void updateExperience(@Nonnull String profileId, @Nonnull List<PracticalExperienceDTO> updatedExperience);
 	
-	@Nonnull List<CertificateDTO> getCertificatesFor(long profileId);
+	@Nonnull List<CertificateDTO> getCertificatesFor(@Nonnull String profileId);
 	
-	void updateCertificates(long profileId, @Nonnull List<CertificateDTO> updatedCertificates, @Nullable SuccessCallback successCallback);
+	void updateCertificates(@Nonnull String profileId, @Nonnull List<CertificateDTO> updatedCertificates, @Nullable SuccessCallback successCallback);
 	
-	@Nonnull List<CourseDTO> getCoursesFor(long profileId);
+	@Nonnull List<CourseDTO> getCoursesFor(@Nonnull String profileId);
 	
-	void updateCourses(long profileId, @Nonnull List<CourseDTO> updatedCourses);
+	void updateCourses(@Nonnull String profileId, @Nonnull List<CourseDTO> updatedCourses);
 	
-	@Nonnull List<EducationDTO> getEducationFor(long profileId);
+	@Nonnull List<EducationDTO> getEducationFor(@Nonnull String profileId);
 	
-	void updateEducation(long profileId, @Nonnull List<EducationDTO> updatedEducation);
+	void updateEducation(@Nonnull String profileId, @Nonnull List<EducationDTO> updatedEducation);
 	
-	@Nonnull List<LanguageDTO> getLanguagesFor(long profileId);
+	@Nonnull List<LanguageDTO> getLanguagesFor(@Nonnull String profileId);
 	
-	void updateLanguages(long profileId, @Nonnull List<LanguageDTO> updatedLanguages);
+	void updateLanguages(@Nonnull String profileId, @Nonnull List<LanguageDTO> updatedLanguages);
 	
-	@Nonnull List<HobbyDTO> getHobbiesFor(long profileId);
+	@Nonnull List<HobbyDTO> getHobbiesFor(@Nonnull String profileId);
 	
-	void updateHobbies(long profileId, @Nonnull List<HobbyDTO> updatedHobbies);
+	void updateHobbies(@Nonnull String profileId, @Nonnull List<HobbyDTO> updatedHobbies);
 	
-	@Nonnull String getInfoFor(long profileId);
+	@Nonnull String getInfoFor(@Nonnull String profileId);
 	
-	void updateInfoFor(long profileId, @Nonnull String info);
+	void updateInfoFor(@Nonnull String profileId, @Nonnull String info);
 	
 	@FunctionalInterface
 	interface SuccessCallback {

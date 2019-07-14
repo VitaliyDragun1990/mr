@@ -31,7 +31,7 @@ class TemporaryImageStorageManagerAspect implements TemporaryImageStorageManager
 		return temporaryImageStorage;
 	}
 	
-	@Around("@annotation (com.revenat.myresume.presentation.image.annotation.EnableTemporaryImageStorage)")
+	@Around("@annotation (com.revenat.myresume.presentation.image.storage.EnableTemporaryImageStorage)")
 	public Object manageCurrentTemporaryImageStorage(ProceedingJoinPoint joinPoint) throws Throwable {
 		TemporaryImageStorage imageStorage = null;
 		try {

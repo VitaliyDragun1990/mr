@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Objects;
+import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
 import com.revenat.myresume.application.dto.CertificateDTO;
 import com.revenat.myresume.application.dto.ContactsDTO;
 import com.revenat.myresume.application.dto.CourseDTO;
@@ -25,18 +25,19 @@ import com.revenat.myresume.application.dto.SkillDTO;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.EditProfileService;
 import com.revenat.myresume.application.transformer.Transformer;
+import com.revenat.myresume.application.util.ReflectionUtil;
 import com.revenat.myresume.domain.annotation.OptionalInfoField;
 import com.revenat.myresume.domain.annotation.RequiredInfoField;
-import com.revenat.myresume.domain.entity.Certificate;
-import com.revenat.myresume.domain.entity.Contacts;
-import com.revenat.myresume.domain.entity.Course;
-import com.revenat.myresume.domain.entity.Education;
-import com.revenat.myresume.domain.entity.Hobby;
-import com.revenat.myresume.domain.entity.Language;
-import com.revenat.myresume.domain.entity.PracticalExperience;
-import com.revenat.myresume.domain.entity.Profile;
-import com.revenat.myresume.domain.entity.ProfileEntity;
-import com.revenat.myresume.domain.entity.Skill;
+import com.revenat.myresume.domain.document.Certificate;
+import com.revenat.myresume.domain.document.Contacts;
+import com.revenat.myresume.domain.document.Course;
+import com.revenat.myresume.domain.document.Education;
+import com.revenat.myresume.domain.document.Hobby;
+import com.revenat.myresume.domain.document.Language;
+import com.revenat.myresume.domain.document.PracticalExperience;
+import com.revenat.myresume.domain.document.Profile;
+import com.revenat.myresume.domain.document.ProfileDocument;
+import com.revenat.myresume.domain.document.Skill;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.infrastructure.service.SearchIndexingService;
@@ -47,25 +48,23 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	private static final Logger LOGGER = LoggerFactory.getLogger(EditProfileServiceImpl.class);
 
 	private final Transformer transformer;
-	private final ProfileEntitiesService profileEntitiesService;
 
 	@Autowired
 	public EditProfileServiceImpl(ProfileRepository profileRepo, ImageStorageService imageStorageService,
 			SearchIndexingService searchIndexingService, Transformer transformer,
-			CacheService cacheService, ProfileEntitiesService updateProfileService) {
+			CacheService cacheService) {
 		super(profileRepo, imageStorageService, searchIndexingService, cacheService);
 		this.transformer = transformer;
-		this.profileEntitiesService = updateProfileService;
 	}
 
 	@Override
-	public MainInfoDTO getMainInfoFor(long profileId) {
+	public MainInfoDTO getMainInfoFor(String profileId) {
 		return getDTO(profileId, MainInfoDTO.class);
 	}
 	
 	@Override
-	@Transactional
-	public void updateMainInfo(long profileId, MainInfoDTO updatedMainInfo) {
+	@EmulatedTransactional
+	public void updateMainInfo(String profileId, MainInfoDTO updatedMainInfo) {
 		Profile loadedProfile = profileRepo.findOne(profileId);
 		List<String> oldProfilePhotos = Collections.emptyList();
 		
@@ -112,21 +111,20 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 
 	@Override
-	public String getInfoFor(long profileId) {
+	public String getInfoFor(String profileId) {
 		Profile profile = profileRepo.findOne(profileId);
 		return profile.getInfo();
 	}
 	
 	@Override
-	@Transactional
-	public void updateInfoFor(long profileId, String info) {
+	@EmulatedTransactional
+	public void updateInfoFor(String profileId, String info) {
 		Profile profile = profileRepo.findOne(profileId);
 		if (Objects.equal(info, profile.getInfo())) {
 			LOGGER.debug("Info for profile with id: {} - nothing to update", profileId);
 		} else {
 			profile.setInfo(info);
 			Profile updatedProfile = profileRepo.save(profile);
-			profileRepo.flush();
 
 			executeIfTransactionSuccess(
 					() -> {
@@ -137,13 +135,13 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	public ContactsDTO getContactsFor(long profileId) {
+	public ContactsDTO getContactsFor(String profileId) {
 		return getDTO(profileId, ContactsDTO.class);
 	}
 	
 	@Override
-	@Transactional
-	public void updateContacts(long profileId, ContactsDTO updatedContacts) {
+	@EmulatedTransactional
+	public void updateContacts(String profileId, ContactsDTO updatedContacts) {
 		Profile profile = profileRepo.findOne(profileId);
 		ContactsDTO profileContacts = getDTO(profileId, ContactsDTO.class);
 		if (profileContacts.equals(updatedContacts)) {
@@ -156,24 +154,24 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	public List<PracticalExperienceDTO> getExperienceFor(long profileId) {
-		return getDTOList(profileId, PracticalExperienceDTO.class, PracticalExperience.class);
+	public List<PracticalExperienceDTO> getExperienceFor(String profileId) {
+		return getDTOList(profileId, PracticalExperienceDTO.class);
 	}
 	
 	@Override
-	@Transactional
-	public void updateExperience(long profileId, List<PracticalExperienceDTO> updatedExperience) {
+	@EmulatedTransactional
+	public void updateExperience(String profileId, List<PracticalExperienceDTO> updatedExperience) {
 		updateProfile(profileId, updatedExperience, PracticalExperienceDTO.class, PracticalExperience.class);
 	}
 	
 	@Override
-	public List<CertificateDTO> getCertificatesFor(long profileId) {
-		return getDTOList(profileId, CertificateDTO.class, Certificate.class);
+	public List<CertificateDTO> getCertificatesFor(String profileId) {
+		return getDTOList(profileId, CertificateDTO.class);
 	}
 	
 	@Override
-	@Transactional
-	public void updateCertificates(long profileId, List<CertificateDTO> updatedCertificates, SuccessCallback successCallback) {
+	@EmulatedTransactional
+	public void updateCertificates(String profileId, List<CertificateDTO> updatedCertificates, SuccessCallback successCallback) {
 		List<String> certificateImagesToRemove = findCertificateImagesToRemove(profileId, updatedCertificates);
 		updateProfile(profileId, updatedCertificates, CertificateDTO.class, Certificate.class);
 		
@@ -186,7 +184,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 				});
 	}
 	
-	private List<String> findCertificateImagesToRemove(long profileId, List<CertificateDTO> updatedCertificates) {
+	private List<String> findCertificateImagesToRemove(String profileId, List<CertificateDTO> updatedCertificates) {
 		List<String> loadedCertificateImages = getCertificateImagesUrls(profileId);
 		// Removing actual certificates, only old and non-actual are left
 		for (CertificateDTO c : updatedCertificates) {
@@ -196,7 +194,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 		return loadedCertificateImages;
 	}
 	
-	private List<String> getCertificateImagesUrls(long profileId) {
+	private List<String> getCertificateImagesUrls(String profileId) {
 		List<CertificateDTO> loadedCertificates = getCertificatesFor(profileId);
 		List<String> result = new ArrayList<>(loadedCertificates.size() * 2);
 		for (CertificateDTO c : loadedCertificates) {
@@ -207,76 +205,77 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 
 	@Override
-	public List<CourseDTO> getCoursesFor(long profileId) {
-		return getDTOList(profileId, CourseDTO.class, Course.class);
+	public List<CourseDTO> getCoursesFor(String profileId) {
+		return getDTOList(profileId, CourseDTO.class);
 	}
 	
 	@Override
-	@Transactional
-	public void updateCourses(long profileId, List<CourseDTO> updatedCourses) {
+	@EmulatedTransactional
+	public void updateCourses(String profileId, List<CourseDTO> updatedCourses) {
 		updateProfile(profileId, updatedCourses, CourseDTO.class, Course.class);
 	}
 	
 	@Override
-	public List<EducationDTO> getEducationFor(long profileId) {
-		return getDTOList(profileId, EducationDTO.class, Education.class);
+	public List<EducationDTO> getEducationFor(String profileId) {
+		return getDTOList(profileId, EducationDTO.class);
 	}
 	
 	@Override
-	@Transactional
-	public void updateEducation(long profileId, List<EducationDTO> updatedEducation) {
+	@EmulatedTransactional
+	public void updateEducation(String profileId, List<EducationDTO> updatedEducation) {
 		updateProfile(profileId, updatedEducation, EducationDTO.class, Education.class);
 	}
 	
 	@Override
-	public List<LanguageDTO> getLanguagesFor(long profileId) {
-		return getDTOList(profileId, LanguageDTO.class, Language.class);
+	public List<LanguageDTO> getLanguagesFor(String profileId) {
+		return getDTOList(profileId, LanguageDTO.class);
 	}
 	
 	@Override
-	@Transactional
-	public void updateLanguages(long profileId, List<LanguageDTO> updatedLanguages) {
+	@EmulatedTransactional
+	public void updateLanguages(String profileId, List<LanguageDTO> updatedLanguages) {
 		updateProfile(profileId, updatedLanguages, LanguageDTO.class, Language.class);
 	}
 	
 	@Override
-	public List<HobbyDTO> getHobbiesFor(long profileId) {
-		return getDTOList(profileId, HobbyDTO.class, Hobby.class);
+	public List<HobbyDTO> getHobbiesFor(String profileId) {
+		return getDTOList(profileId, HobbyDTO.class);
 	}
 	
 	@Override
-	@Transactional
-	public void updateHobbies(long profileId, List<HobbyDTO> updatedHobbies) {
+	@EmulatedTransactional
+	public void updateHobbies(String profileId, List<HobbyDTO> updatedHobbies) {
 		updateProfile(profileId, updatedHobbies, HobbyDTO.class, Hobby.class);
 	}
 
 	@Override
-	public List<SkillDTO> getSkillsFor(long profileId) {
-		return getDTOList(profileId, SkillDTO.class, Skill.class);
+	public List<SkillDTO> getSkillsFor(String profileId) {
+		return getDTOList(profileId, SkillDTO.class);
 	}
 	
 	@Override
-	@Transactional
-	public void updateSkills(long profileId, List<SkillDTO> updatedSkills) {
+	@EmulatedTransactional
+	public void updateSkills(String profileId, List<SkillDTO> updatedSkills) {
 		updateProfile(profileId, updatedSkills, SkillDTO.class, Skill.class);
 	}
 	
-	private <T> T getDTO(long profileId, Class<T> dtoClass) {
+	private <T> T getDTO(String profileId, Class<T> dtoClass) {
 		Profile profile = profileRepo.findOne(profileId);
 		return transformer.transform(profile, dtoClass);
 	}
 	
-	private <E extends ProfileEntity, T> List<T> getDTOList(long profileId, Class<T> dtoClass, Class<E> entityClass) {
-		List<E> profileEntities = profileEntitiesService.findByProfileOrderByIdAsc(profileId, entityClass);
-		return transformer.transformToList(profileEntities, entityClass, dtoClass);
+	private <T> List<T> getDTOList(String profileId, Class<T> dtoClass) {
+		Profile profile = profileRepo.findOne(profileId);
+		return transformer.transformToList(profile, dtoClass);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private <T,E extends ProfileEntity> void updateProfile(long profileId, List<T> updatedDTOList, Class<T> dtoClass,
+	private <T,E extends ProfileDocument> void updateProfile(String profileId, List<T> updatedDTOList, Class<T> dtoClass,
 			Class<E> entityClass) {
-		String collectionName = pluralize(entityClass);
-		List<E> profileData = profileEntitiesService.findByProfileOrderByIdAsc(profileId, entityClass);
 		Profile profile = profileRepo.findOne(profileId);
+		String collectionName = pluralize(entityClass);
+		List<E> profileData = getProfileData(profile, collectionName);
+		
 		CommonUtils.removeEmptyElements(updatedDTOList);
 		List<T> profileDataAsDTO = transformer.transformToList(profileData, entityClass, dtoClass);
 		
@@ -289,19 +288,33 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 			LOGGER.debug("{} for profile with id:{} - nothing to update", collectionName, profileId);
 		} else {
 			List<E> updatedEntityList = transformer.transformToList(updatedDTOList, dtoClass, entityClass);
-			profileEntitiesService.updateProfile(profile, updatedEntityList, entityClass);
+			updateProfileData(profile, updatedEntityList, collectionName);
 			
 			executeIfTransactionSuccess(
 					() -> {
 						evilcProfileCache(profile.getUid());
-						updateProfileEntitiesIndex(profile.getId(), updatedEntityList, entityClass);
+						updateProfileDataIndex(profile.getId(), updatedEntityList, entityClass);
 					});
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	private <E extends ProfileDocument> List<E> getProfileData(Profile profile, String collectionName) {
+		List<E> profileData = (List<E>) ReflectionUtil.readProperty(profile, collectionName);
+		if (profileData == null) {
+			profileData = Collections.emptyList();
+		}
+		return profileData;
+	}
+	
+	private <E extends ProfileDocument> void updateProfileData(Profile profile, List<E> updatedData, String collectionName) {
+		ReflectionUtil.writeProperty(profile, collectionName, updatedData);
+		profileRepo.save(profile);
+	}
 
-	private <E extends ProfileEntity> void updateProfileEntitiesIndex(
-			final Long profileId, final List<E> updatedEntityList, final Class<E> entityClass) {
-		searchIndexingService.updateProfileEntitiesIndex(profileId, updatedEntityList, entityClass);
+	private <E extends ProfileDocument> void updateProfileDataIndex(
+			final String profileId, final List<E> updatedEntityList, final Class<E> entityClass) {
+		searchIndexingService.updateProfileDataIndex(profileId, updatedEntityList, entityClass);
 		
 	}
 
@@ -309,7 +322,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 		return Comparable.class.isAssignableFrom(dtoClass);
 	}
 
-	private <E extends ProfileEntity> String pluralize(Class<E> entityClass) {
+	private <E extends ProfileDocument> String pluralize(Class<E> entityClass) {
 		String name = entityClass.getSimpleName().toLowerCase();
 		if (name.equals("practicalexperience")) {
 			return "experience";

@@ -1,5 +1,7 @@
 package com.revenat.myresume.presentation.security.service;
 
+import static com.revenat.myresume.infrastructure.util.TransactionUtils.executeIfTransactionSucceeded;
+
 import java.util.Optional;
 
 import javax.servlet.Filter;
@@ -11,16 +13,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.google.common.base.Objects;
+import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.service.notification.NotificationManagerService;
 import com.revenat.myresume.application.service.profile.RemoveProfileService;
-import com.revenat.myresume.domain.entity.Profile;
-import com.revenat.myresume.domain.entity.ProfileRestore;
+import com.revenat.myresume.domain.document.Profile;
+import com.revenat.myresume.domain.document.ProfileRestore;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRestoreRepository;
 import com.revenat.myresume.presentation.security.exception.InvalidRestoreAccessTokenException;
@@ -57,7 +57,7 @@ class SecurityServiceImpl implements SecurityService {
 	}
 
 	@Override
-	@Transactional
+	@EmulatedTransactional
 	public void restoreAccess(String anyUniqueId) {
 		Optional<Profile> profile = profileRepo.findByUidOrEmailOrPhone(anyUniqueId, anyUniqueId, anyUniqueId);
 		if (profile.isPresent()) {
@@ -69,14 +69,15 @@ class SecurityServiceImpl implements SecurityService {
 			}
 			restore.setToken(SecurityUtil.generateNewRestoreAccessToken());
 			profileRestoreRepo.save(restore);
-			sendRestoreLinkNotificationIfTransactionSuccess(p, restore);
+			
+			String restoreToken = restore.getToken();
+			executeIfTransactionSucceeded( () -> sendRestoreLinkNotification(p, restoreToken));
 		} else {
 			LOGGER.error("Profile not found by anyUniqueId: {}", anyUniqueId);
 		}
 	}
 
 	@Override
-	@Transactional
 	public void processPasswordResetToken(String token) {
 		Optional<ProfileRestore> restoreOptional = profileRestoreRepo.findByToken(token);
 		if (!restoreOptional.isPresent()) {
@@ -88,7 +89,7 @@ class SecurityServiceImpl implements SecurityService {
 	}
 
 	@Override
-	@Transactional
+	@EmulatedTransactional
 	public void resetPassword(AuthenticatedUser authUser, String token, String newPassword) {
 		Optional<ProfileRestore> restoreOptional = profileRestoreRepo.findByToken(token);
 		if (!restoreOptional.isPresent()) {
@@ -113,11 +114,11 @@ class SecurityServiceImpl implements SecurityService {
 		SecurityUtil.authenticate(profileToResetPassword);
 		profileRestoreRepo.delete(restore);
 		
-		sendPasswordChangedNotificationIfTransactionSuccess(profileToResetPassword);
+		executeIfTransactionSucceeded(() -> notificationManagerService.sendPasswordChanged(profileToResetPassword));
 	}
 
 	@Override
-	@Transactional
+	@EmulatedTransactional
 	public void updatePassword(AuthenticatedUser authUser, String oldPassword, String newPassword) {
 		Profile profile = profileRepo.findOne(authUser.getId());
 		if (!passwordEncoder.matches(oldPassword, profile.getPassword())) {
@@ -126,34 +127,18 @@ class SecurityServiceImpl implements SecurityService {
 		profile.setPassword(passwordEncoder.encode(newPassword));
 		profileRepo.save(profile);
 		SecurityUtil.authenticate(profile);
-		sendPasswordChangedNotificationIfTransactionSuccess(profile);
+		executeIfTransactionSucceeded(() -> notificationManagerService.sendPasswordChanged(profile));
 	}
 	
 	@Override
-	@Transactional
 	public void remove(AuthenticatedUser authUser) {
 		profileService.removeProfile(authUser.getId());
 		SecurityUtil.logout(securityFilterChain);
 	}
 
-	private void sendPasswordChangedNotificationIfTransactionSuccess(final Profile profile) {
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-			@Override
-			public void afterCommit() {
-				notificationManagerService.sendPasswordChanged(profile);
-			}
-		});
-		
-	}
-
-	private void sendRestoreLinkNotificationIfTransactionSuccess(final Profile profile, ProfileRestore restore) {
-		final String restoreLink = dataGenerator.generateRestoreAccessLink(restore.getToken());
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-			@Override
-			public void afterCommit() {
-				notificationManagerService.sendRestoreAccessLink(profile, restoreLink);
-			}
-		});
+	private void sendRestoreLinkNotification(final Profile profile, String restoreToken) {
+		final String restoreLink = dataGenerator.generateRestoreAccessLink(restoreToken);
+		notificationManagerService.sendRestoreAccessLink(profile, restoreLink);
 	}
 
 }

@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.SafeHtml;
 import org.hibernate.validator.constraints.URL;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
-import com.revenat.myresume.domain.entity.Contacts;
+import com.revenat.myresume.domain.document.Contacts;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class ContactsDTO implements Serializable {
@@ -48,14 +48,14 @@ public class ContactsDTO implements Serializable {
 	public ContactsDTO() {
 	}
 	
-	public ContactsDTO(Contacts entity) {
-		if (entity != null) {
-			this.skype = entity.getSkype();
-			this.vkontakte = entity.getVkontakte();
-			this.facebook = entity.getFacebook();
-			this.linkedin = entity.getLinkedin();
-			this.github = entity.getGithub();
-			this.stackoverflow = entity.getStackoverflow();
+	public ContactsDTO(Contacts contacts) {
+		if (contacts != null) {
+			this.skype = contacts.getSkype();
+			this.vkontakte = contacts.getVkontakte();
+			this.facebook = contacts.getFacebook();
+			this.linkedin = contacts.getLinkedin();
+			this.github = contacts.getGithub();
+			this.stackoverflow = contacts.getStackoverflow();
 		}
 	}
 

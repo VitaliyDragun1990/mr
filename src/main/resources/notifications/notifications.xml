@@ -1,6 +1,6 @@
 <!DOCTYPE xml>
 <beans>
-	<bean id="restoreAccessNotification" class="com.revenat.myresume.application.model.NotificationMessage">
+	<bean id="restoreAccessNotification" class="com.revenat.myresume.application.service.notification.NotificationMessage">
 		<property name="subject" value="Restore access" />
 		<property name="content">
 			<value><![CDATA[<div>
@@ -19,14 +19,14 @@
 		</property>
 	</bean>
 	
-	<bean id="passwordChangedNotification" class="com.revenat.myresume.application.model.NotificationMessage">
+	<bean id="passwordChangedNotification" class="com.revenat.myresume.application.service.notification.NotificationMessage">
 		<property name="subject" value="Password changed" />
 		<property name="content">
 			<value>This email is to notify you that the password for your account ${profile.uid} has been changed.</value>
 		</property>
 	</bean>
 	
-		<bean id="passwordGeneratedNotification" class="com.revenat.myresume.application.model.NotificationMessage">
+	<bean id="passwordGeneratedNotification" class="com.revenat.myresume.application.service.notification.NotificationMessage">
 		<property name="subject" value="Password generated" />
 		<property name="content">
 			<value>A new password for social account generated. Your credentials are: login=${profile.uid}, password=${generatedPassword}</value>

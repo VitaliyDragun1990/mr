@@ -1,68 +1,31 @@
-package com.revenat.myresume.domain.entity;
+package com.revenat.myresume.domain.document;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.revenat.myresume.infrastructure.util.CommonUtils;
 
-@Entity
-@Table(name = "experience")
-public class PracticalExperience extends AbstractEntity<Long> implements ProfileEntity {
+public class PracticalExperience implements ProfileDocument, Serializable {
 	private static final long serialVersionUID = 5676683812478918147L;
 
-	@Id
-	@SequenceGenerator(name = "experience_seq_generator", sequenceName = "experience_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "experience_seq_generator")
-	private Long id;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "profile_id", nullable = false)
-	@JsonIgnore
-	private Profile profile;
-
-	@Column(length = 100, nullable = false)
 	private String position;
 
-	@Column(length = 100, nullable = false)
 	private String company;
 
-	@Column(name = "start_date", nullable = false)
+	@JsonIgnore
 	private LocalDate startDate;
 
-	@Column(name = "end_date")
+	@JsonIgnore
 	private LocalDate endDate;
 
-	@Column(nullable = false)
 	private String responsibilities;
 
-	@Column
+	@JsonIgnore
 	private String demo;
 
-	@Column(name = "source_code")
+	@JsonIgnore
 	private String sourceCode;
-
-	@Override
-	public Long getId() {
-		return id;
-	}
-
-	public Profile getProfile() {
-		return profile;
-	}
-
-	public void setProfile(Profile profile) {
-		this.profile = profile;
-	}
 
 	public String getPosition() {
 		return position;
@@ -120,8 +83,8 @@ public class PracticalExperience extends AbstractEntity<Long> implements Profile
 		this.sourceCode = sourceCode;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	@Override
+	public String toString() {
+		return CommonUtils.toString(this);
 	}
-
 }

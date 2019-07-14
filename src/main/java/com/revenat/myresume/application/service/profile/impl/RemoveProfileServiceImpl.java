@@ -8,12 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.RemoveProfileService;
-import com.revenat.myresume.domain.entity.Certificate;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Certificate;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.infrastructure.service.SearchIndexingService;
@@ -29,8 +29,8 @@ class RemoveProfileServiceImpl extends AbstractModifyProfileService implements R
 	}
 
 	@Override
-	@Transactional
-	public void removeProfile(long profileId) {
+	@EmulatedTransactional
+	public void removeProfile(String profileId) {
 		Optional<Profile> optional = profileRepo.findOneById(profileId);
 		if (optional.isPresent()) {
 			Profile profile = optional.get();

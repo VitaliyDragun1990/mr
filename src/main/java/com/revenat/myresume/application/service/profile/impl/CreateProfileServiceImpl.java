@@ -7,15 +7,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
 import com.revenat.myresume.application.dto.MainInfoDTO;
 import com.revenat.myresume.application.dto.ProfileDTO;
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.CreateProfileService;
 import com.revenat.myresume.application.util.DataUtil;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.infrastructure.service.SearchIndexingService;
@@ -37,8 +37,8 @@ class CreateProfileServiceImpl extends AbstractModifyProfileService implements C
 	}
 
 	@Override
-	@Transactional
-	public long createProfile(ProfileDTO newProfileData) {
+	@EmulatedTransactional
+	public String createProfile(ProfileDTO newProfileData) {
 		MainInfoDTO mainProfileData = newProfileData.getMainInfo();
 
 		Profile profile = new Profile();
@@ -59,7 +59,7 @@ class CreateProfileServiceImpl extends AbstractModifyProfileService implements C
 		return saveNewProfileData(profile);
 	}
 
-	private long saveNewProfileData(Profile profile) {
+	private String saveNewProfileData(Profile profile) {
 		boolean isCompleted = isProfileCompleted(profile);
 		profile.setCompleted(isCompleted);
 

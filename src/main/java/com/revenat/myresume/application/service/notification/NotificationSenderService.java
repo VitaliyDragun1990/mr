@@ -2,7 +2,7 @@ package com.revenat.myresume.application.service.notification;
 
 import javax.annotation.Nonnull;
 
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 
 /**
  * Sends {@link NotificationMessage} via some kind of transport protocol.

@@ -48,7 +48,7 @@ class TemplateNotificationBuilderService implements NotificationBuilderService {
 	 *
 	 */
 	@Override
-	public NotificationMessage createNotificationMessage(NotificationType notificationType, Map<String, Object> model) {
+	public NotificationMessage buildNotificationMessage(NotificationType notificationType, Map<String, Object> model) {
 		String templateName = notificationType.getNotificationName();
 		NotificationMessage message = notificationTemplates.get(templateName);
 		if (message == null) {

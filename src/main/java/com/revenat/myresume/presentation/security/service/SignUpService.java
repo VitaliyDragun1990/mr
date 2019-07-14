@@ -2,7 +2,7 @@ package com.revenat.myresume.presentation.security.service;
 
 import javax.annotation.Nonnull;
 
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
 /**

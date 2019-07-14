@@ -1,263 +1,165 @@
-package com.revenat.myresume.domain.entity;
+package com.revenat.myresume.domain.document;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.PrePersist;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.revenat.myresume.domain.annotation.OptionalInfoField;
 import com.revenat.myresume.domain.annotation.RequiredInfoField;
 
-@Entity
-@Table(name = "profile")
+
 @Document(indexName = "my_resume", type = "profile")
-public class Profile extends AbstractEntity<Long> {
+@org.springframework.data.mongodb.core.mapping.Document(collection = "profile")
+public class Profile extends AbstractDocument<String> implements Serializable {
 	private static final long serialVersionUID = 8326456967466271180L;
-
+	
 	@Id
-	@SequenceGenerator(name = "profile_seq_generator", sequenceName = "profile_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profile_seq_generator")
-	private Long id;
+	private String id;
 
-	@Column(length = 100, unique = true, nullable = false)
+	@Indexed(unique = true)
 	private String uid;
 
-	@Column(name = "first_name", length = 50, nullable = false)
 	private String firstName;
 
-	@Column(name = "last_name", length = 50, nullable = false)
 	private String lastName;
 
-	@Column(name = "birth_day")
 	@RequiredInfoField
 	private LocalDate birthDay;
 
-	@Column(length = 20, unique = true)
 	@JsonIgnore
 	@RequiredInfoField
+	@Indexed(unique = true)
 	private String phone;
 
-	@Column(length = 100, unique = true)
 	@JsonIgnore
 	@RequiredInfoField
+	@Indexed(unique = true)
 	private String email;
 
-	@Column(length = 60)
 	@RequiredInfoField
 	private String country;
 
-	@Column(length = 100)
 	@RequiredInfoField
 	private String city;
 
-	@Column
 	@RequiredInfoField
 	private String objective;
 	
-	@Column
 	@RequiredInfoField
 	private String summary;
 
-	@Column(name = "large_photo")
 	@JsonIgnore
 	private String largePhoto;
 
-	@Column(name = "small_photo")
 	private String smallPhoto;
 
-	@Column
 	@OptionalInfoField
 	private String info;
 
-	@Column(nullable = false)
 	@JsonIgnore
 	private String password;
 
-	@Column(nullable = false)
 	@JsonIgnore
+	@Indexed
 	private boolean completed;
 
-	@Column(nullable = false, updatable = false)
 	@JsonIgnore
+	@Indexed
+	@CreatedDate
 	private LocalDateTime created;
 
-	@Embedded
 	@JsonIgnore
 	private Contacts contacts;
 	
-	@OneToMany(
-			mappedBy = "profile",
-			/*
-			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
-			 */
-			fetch = FetchType.LAZY
-			)
 	private List<Certificate> certificates = new ArrayList<>();
 	
-	@OneToMany(
-			mappedBy = "profile",
-			/*
-			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
-			 */
-			fetch = FetchType.LAZY
-			)
-	@OrderBy("id ASC"/* "endDate DESC" */)
 	private List<Course> courses = new ArrayList<>();
 	
-	@OneToMany(
-			mappedBy = "profile",
-			/*
-			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
-			 */
-			fetch = FetchType.LAZY
-			)
-	@OrderBy("id ASC"/* "endYear DESC, startYear DESC, id DESC" */)
 	@JsonIgnore
 	private List<Education> educations = new ArrayList<>();
 	
-	@OneToMany(
-			mappedBy = "profile",
-			/*
-			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
-			 */
-			fetch = FetchType.LAZY
-			)
-	@OrderBy("id ASC"/* "endDate DESC" */)
 	private List<PracticalExperience> experience = new ArrayList<>();
 	
-	@OneToMany(
-			mappedBy = "profile",
-			/*
-			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
-			 */
-			fetch = FetchType.LAZY
-			)
-	@OrderBy("id ASC")
 	private List<Language> languages = new ArrayList<>();
 	
-	@OneToMany(
-			mappedBy = "profile",
-			/*
-			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
-			 */
-			fetch = FetchType.LAZY
-			)
-	@OrderBy("id ASC"/* "category ASC" */)
 	private List<Skill> skills = new ArrayList<>();
 	
-	@OneToMany(
-			mappedBy = "profile",
-			/*
-			 * cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true,
-			 */
-			fetch = FetchType.LAZY
-			)
-	@OrderBy("id ASC"/* "name ASC" */)
 	@JsonIgnore
 	private List<Hobby> hobbies = new ArrayList<>();
 	
-	@PrePersist
-	public void prePersist() {
-		if (getId() == null) {
-			setCreated(LocalDateTime.now());
-		}
-	}
-	
 	public void addCertificate(Certificate certificate) {
 		certificates.add(certificate);
-		certificate.setProfile(this);
 	}
 	
 	public void updateCertificates(List<Certificate> certificates) {
 		this.certificates.clear();
 		this.certificates.addAll(certificates);
-		this.certificates.forEach(c -> c.setProfile(this));
 	}
 	
 	public void addCourse(Course course) {
 		courses.add(course);
-		course.setProfile(this);
 	}
 	
 	public void updateCourses(List<Course> courses) {
 		this.courses.clear();
 		this.courses.addAll(courses);
-		this.courses.forEach(c -> c.setProfile(this));
 	}
 	
 	public void addEducation(Education education) {
 		educations.add(education);
-		education.setProfile(this);
 	}
 	
 	public void updateEducation(List<Education> educations) {
 		this.educations.clear();
 		this.educations.addAll(educations);
-		this.educations.forEach(e -> e.setProfile(this));
 	}
 	
 	public void addExerience(PracticalExperience experience) {
 		this.experience.add(experience);
-		experience.setProfile(this);
 	}
 	
 	public void updateExperience(List<PracticalExperience> experience) {
 		this.experience.clear();
 		this.experience.addAll(experience);
-		this.experience.forEach(exp -> exp.setProfile(this));
 	}
 	
 	public void addLanguage(Language language) {
 		languages.add(language);
-		language.setProfile(this);
 	}
 	
 	public void updateLanguages(List<Language> languages) {
 		this.languages.clear();
 		this.languages.addAll(languages);
-		this.languages.forEach(l -> l.setProfile(this));
 	}
 	
 	public void addSkill(Skill skill) {
 		skills.add(skill);
-		skill.setProfile(this);
 	}
 	
 	public void updateSkills(List<Skill> skills) {
 		this.skills.clear();
 		this.skills.addAll(skills);
-		this.skills.forEach(skill -> skill.setProfile(this));
 	}
 	
 	public void addHobby(Hobby hobby) {
 		hobbies.add(hobby);
-		hobby.setProfile(this);
 	}
 	
 	public void updateHobbies(List<Hobby> hobbies) {
 		this.hobbies.clear();
 		this.hobbies.addAll(hobbies);
-		this.hobbies.forEach(h -> h.setProfile(this));
 	}
 
 	@Override
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -400,11 +302,10 @@ public class Profile extends AbstractEntity<Long> {
 		this.contacts = contacts;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	
-
 	public List<Certificate> getCertificates() {
 		return certificates;
 	}

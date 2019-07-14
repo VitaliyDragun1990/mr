@@ -12,15 +12,13 @@ import org.hibernate.validator.constraints.URL;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.application.validation.annotation.FirstFieldLessThanSecond;
-import com.revenat.myresume.domain.entity.PracticalExperience;
+import com.revenat.myresume.domain.document.PracticalExperience;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @FirstFieldLessThanSecond(first = "startDate", second = "endDate")
 public class PracticalExperienceDTO extends AbstractEndDateDTO implements Serializable, Comparable<PracticalExperienceDTO> {
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	
 	@NotBlank
 	@Size(max = 100)
 	@SafeHtml
@@ -57,23 +55,14 @@ public class PracticalExperienceDTO extends AbstractEndDateDTO implements Serial
 	public PracticalExperienceDTO() {
 	}
 
-	public PracticalExperienceDTO(PracticalExperience entity) {
-		this.id = entity.getId();
-		this.position = entity.getPosition();
-		this.company = entity.getCompany();
-		this.startDate = entity.getStartDate();
-		this.setEndDate(entity.getEndDate());
-		this.responsibilities = entity.getResponsibilities();
-		this.demo = entity.getDemo();
-		this.sourceCode = entity.getSourceCode();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public PracticalExperienceDTO(PracticalExperience practicalExperience) {
+		this.position = practicalExperience.getPosition();
+		this.company = practicalExperience.getCompany();
+		this.startDate = practicalExperience.getStartDate();
+		this.setEndDate(practicalExperience.getEndDate());
+		this.responsibilities = practicalExperience.getResponsibilities();
+		this.demo = practicalExperience.getDemo();
+		this.sourceCode = practicalExperience.getSourceCode();
 	}
 
 	public String getPosition() {
@@ -166,7 +155,6 @@ public class PracticalExperienceDTO extends AbstractEndDateDTO implements Serial
 		result = prime * result + ((company == null) ? 0 : company.hashCode());
 		result = prime * result + ((demo == null) ? 0 : demo.hashCode());
 		result = prime * result + ((getEndDate() == null) ? 0 : getEndDate().hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((position == null) ? 0 : position.hashCode());
 		result = prime * result + ((responsibilities == null) ? 0 : responsibilities.hashCode());
 		result = prime * result + ((sourceCode == null) ? 0 : sourceCode.hashCode());
@@ -199,11 +187,6 @@ public class PracticalExperienceDTO extends AbstractEndDateDTO implements Serial
 			if (other.getEndDate() != null)
 				return false;
 		} else if (!getEndDate().equals(other.getEndDate()))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
 			return false;
 		if (position == null) {
 			if (other.position != null)

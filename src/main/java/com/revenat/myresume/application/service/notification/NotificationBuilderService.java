@@ -13,12 +13,12 @@ import javax.annotation.Nonnull;
 public interface NotificationBuilderService {
 
 	/**
-	 * Creates {@link NotificationMessage} instance.
+	 * Builds {@link NotificationMessage} instance.
 	 * 
 	 * @param notificationType type of the notification message to create
 	 * @param model            map with additional arguments which may be needed to
 	 *                         build notification messsage
 	 * @return {@link NotificationMessage} instance
 	 */
-	NotificationMessage createNotificationMessage(@Nonnull NotificationType notificationType, @Nonnull Map<String, Object> model);
+	NotificationMessage buildNotificationMessage(@Nonnull NotificationType notificationType, @Nonnull Map<String, Object> model);
 }

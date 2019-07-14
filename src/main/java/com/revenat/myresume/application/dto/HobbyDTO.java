@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
-import com.revenat.myresume.domain.entity.Hobby;
+import com.revenat.myresume.domain.document.Hobby;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 /**
@@ -17,8 +17,6 @@ import com.revenat.myresume.infrastructure.util.CommonUtils;
 public class HobbyDTO implements Serializable, Comparable<HobbyDTO> {
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	
 	@NotBlank
 	@Size(max = 30)
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
@@ -38,9 +36,8 @@ public class HobbyDTO implements Serializable, Comparable<HobbyDTO> {
 		this.selected = selected;
 	}
 	
-	public HobbyDTO(Hobby entity) {
-		this.id = entity.getId();
-		this.name = entity.getName();
+	public HobbyDTO(Hobby hobby) {
+		this.name = hobby.getName();
 	}
 
 	public boolean isSelected() {
@@ -91,14 +88,6 @@ public class HobbyDTO implements Serializable, Comparable<HobbyDTO> {
 	@Override
 	public String toString() {
 		return CommonUtils.toString(this);
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getName() {

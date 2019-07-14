@@ -23,7 +23,7 @@ import com.revenat.myresume.application.exception.ProfileNotFoundException;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.SearchProfileService;
 import com.revenat.myresume.application.transformer.Transformer;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.search.ProfileSearchRepository;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 

@@ -36,9 +36,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.revenat.myresume.domain.entity.LanguageLevel;
-import com.revenat.myresume.domain.entity.LanguageType;
-import com.revenat.myresume.domain.entity.SkillCategory;
+import com.revenat.myresume.domain.document.LanguageLevel;
+import com.revenat.myresume.domain.document.LanguageType;
+import com.revenat.myresume.domain.document.SkillCategory;
 
 import net.coobird.thumbnailator.Thumbnails;
 

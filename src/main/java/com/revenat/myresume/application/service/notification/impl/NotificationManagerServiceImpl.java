@@ -13,7 +13,7 @@ import com.revenat.myresume.application.service.notification.NotificationManager
 import com.revenat.myresume.application.service.notification.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationSenderService;
 import com.revenat.myresume.application.service.notification.NotificationType;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Service
@@ -59,7 +59,7 @@ class NotificationManagerServiceImpl implements NotificationManagerService {
 	private void processNotification(Profile profile, NotificationType notificationType, Map<String, Object> model) {
 		String destinationAddress = notificationSenderService.getDestinationAddress(profile);
 		if (CommonUtils.isNotBlank(destinationAddress)) {
-			NotificationMessage notificationMessage = notificationBuilderService.createNotificationMessage(notificationType, model);
+			NotificationMessage notificationMessage = notificationBuilderService.buildNotificationMessage(notificationType, model);
 			notificationMessage.setDestinationAddress(destinationAddress);
 			notificationMessage.setDestinationName(getFullName(profile));
 			

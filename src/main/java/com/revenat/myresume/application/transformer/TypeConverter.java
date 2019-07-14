@@ -1,4 +1,4 @@
-package com.revenat.myresume.application.config.annotation;
+package com.revenat.myresume.application.transformer;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

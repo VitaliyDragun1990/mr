@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.revenat.myresume.application.service.notification.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationSenderService;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.exception.EmailGatewayException;
 import com.revenat.myresume.infrastructure.gateway.email.EmailGateway;
 

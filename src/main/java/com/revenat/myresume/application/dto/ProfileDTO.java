@@ -7,13 +7,13 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class ProfileDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
+	private String id;
 	
 	private String uid;
 	
@@ -78,11 +78,11 @@ public class ProfileDTO implements Serializable {
 		return mainInfo.getProfilePhoto();
 	}
 
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

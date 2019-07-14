@@ -4,9 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 
-public interface ProfileSearchRepository extends ElasticsearchRepository<Profile, Long> {
+public interface ProfileSearchRepository extends ElasticsearchRepository<Profile, String> {
 
 	/**
 	 * Example query if you're not using fuzzy elasticsearch 

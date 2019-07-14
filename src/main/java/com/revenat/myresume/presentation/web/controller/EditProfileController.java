@@ -28,7 +28,7 @@ import com.revenat.myresume.application.dto.HobbyDTO;
 import com.revenat.myresume.application.dto.MainInfoDTO;
 import com.revenat.myresume.application.exception.DTOValidationException;
 import com.revenat.myresume.application.service.profile.EditProfileService;
-import com.revenat.myresume.domain.entity.LanguageLevel;
+import com.revenat.myresume.domain.document.LanguageLevel;
 import com.revenat.myresume.presentation.image.model.UploadedCertificateResult;
 import com.revenat.myresume.presentation.image.model.UploadedImageResult;
 import com.revenat.myresume.presentation.image.service.ImageUploaderService;

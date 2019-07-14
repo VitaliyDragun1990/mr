@@ -25,6 +25,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.revenat.myresume.application.config.transaction.TransactionalEmulationAspect;
 import com.revenat.myresume.application.service.notification.NotificationMessage;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
@@ -60,6 +61,17 @@ public class ServiceConfig {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 	
+	@Bean
+	public static ConverterRegistryPostProcessor converterRegistryPostProcessor() {
+		return new ConverterRegistryPostProcessor();
+	}
+	
+	
+	@Bean
+	public TransactionalEmulationAspect transactionalEmulationAspect() {
+		return new TransactionalEmulationAspect();
+	}
+	
 	/**
 	 * {@link PropertiesFactoryBean} is a FactoryBean implementation which reads a properties file
 	 * and exposes that as an {@code Properties} object in the applicationcontext.
@@ -70,12 +82,6 @@ public class ServiceConfig {
 		properties.setLocations(new ClassPathResource("logic.properties"));
 		return properties;
 	}
-	
-	@Bean
-	public static ConverterRegistryPostProcessor converterRegistryPostProcessor() {
-		return new ConverterRegistryPostProcessor();
-	}
-	
 	@Bean("defaultExecutorService")
 	public ExecutorServiceFactoryBean executorService() {
 		ExecutorServiceFactoryBean executorServiceFactoryBean = new ExecutorServiceFactoryBean();

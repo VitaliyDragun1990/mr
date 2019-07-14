@@ -1,8 +1,8 @@
-package com.revenat.myresume.domain.entity;
+package com.revenat.myresume.domain.document;
 
 import java.io.Serializable;
 
-public abstract class AbstractEntity<T extends Serializable> implements Serializable {
+public abstract class AbstractDocument<T extends Serializable> implements Serializable {
 	private static final long serialVersionUID = -1527821981582779622L;
 	
 	public abstract T getId();
@@ -21,7 +21,7 @@ public abstract class AbstractEntity<T extends Serializable> implements Serializ
 		if (getClass() != obj.getClass())
 			return false;
 		@SuppressWarnings("unchecked")
-		AbstractEntity<T> other = (AbstractEntity<T>) obj;
+		AbstractDocument<T> other = (AbstractDocument<T>) obj;
 		return getId() != null &&
 				getId().equals(other.getId());
 	}

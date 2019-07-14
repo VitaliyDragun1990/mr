@@ -1,22 +1,20 @@
 package com.revenat.myresume.application.service.profile.impl;
 
+
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.revenat.myresume.application.dto.MainInfoDTO;
 import com.revenat.myresume.application.exception.DTOValidationException;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.util.ReflectionUtil;
 import com.revenat.myresume.domain.annotation.RequiredInfoField;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.infrastructure.service.SearchIndexingService;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
+import com.revenat.myresume.infrastructure.util.TransactionUtils;
 
 abstract class AbstractModifyProfileService {
 	private static final String[] EMPTY_ARRAY = new String[0];
@@ -57,7 +55,7 @@ abstract class AbstractModifyProfileService {
 	 */
 	protected synchronized Profile validateAndSave(Profile profile) {
 		validateEmailAndPhoneUniqueness(profile);
-		return profileRepo.saveAndFlush(profile);
+		return profileRepo.save(profile);
 	}
 	
 	protected static boolean isProfileCompleted(Profile profile) {
@@ -70,23 +68,11 @@ abstract class AbstractModifyProfileService {
 	}
 
 	protected static void executeIfTransactionSuccess(Runnable action) {
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-			@Override
-			public void afterCommit() {
-				action.run();
-			}
-		});
+		TransactionUtils.executeIfTransactionSucceeded(action);
 	}
 	
 	protected static void executeIfTransactionFailed(Runnable action) {
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-			@Override
-			public void afterCompletion(int status) {
-				if (status == TransactionSynchronization.STATUS_ROLLED_BACK) {
-					action.run();
-				}
-			}
-		});
+		TransactionUtils.executeIfTransactionFailed(action);
 	}
 	
 	private void validateEmailAndPhoneUniqueness(Profile profile) {

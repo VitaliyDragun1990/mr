@@ -6,17 +6,15 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 
-public interface ProfileRepository extends JpaRepository<Profile, Long> {
+public interface ProfileRepository extends PagingAndSortingRepository<Profile, String> {
 
 	Optional<Profile> findOneByUid(String uid);
 	
-	Optional<Profile> findOneById(Long id);
+	Optional<Profile> findOneById(String id);
 	
 	Optional<Profile> findByPhone(String phone);
 	
@@ -30,10 +28,4 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 	
 	List<Profile> findByCompletedFalseAndCreatedBefore(LocalDateTime oldDate);
 	
-	@Modifying
-	@Query("delete from Profile p where p.completed=false and p.created < ?1")
-	int deleteNotCompleted(LocalDateTime oldDate);
-	
-	@Query("select p.id from Profile p where p.completed=false and p.created < ?1")
-	List<Long> fetchNotCompletedProfileIds(LocalDateTime oldDate);
 }

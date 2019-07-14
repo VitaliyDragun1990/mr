@@ -18,7 +18,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.revenat.myresume.application.util.ReflectionUtil;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
 /**
@@ -51,7 +51,7 @@ public class SecurityUtil {
 	 * Returns {@code id} of the currently authenticated user, or {@code null} if
 	 * current user is not authenticated in the application.
 	 */
-	public static Long getAuthenticatedUserId() {
+	public static String getAuthenticatedUserId() {
 		AuthenticatedUser authenticatedUser = getAuthenticatedUser();
 		return authenticatedUser != null ? authenticatedUser.getId() : null;
 	}

@@ -5,20 +5,19 @@ import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.revenat.myresume.application.config.annotation.TypeConverter;
 import com.revenat.myresume.application.dto.LanguageDTO;
-import com.revenat.myresume.domain.entity.Language;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.application.transformer.TypeConverter;
+import com.revenat.myresume.domain.document.Language;
+import com.revenat.myresume.domain.document.Profile;
 
-@Deprecated
 @TypeConverter
 class ProfileToLanguageDTOsTransformer implements Converter<Profile, List<LanguageDTO>> {
 
 	@Override
-	public List<LanguageDTO> convert(Profile source) {
+	public List<LanguageDTO> convert(Profile profile) {
 		List<LanguageDTO> dtoList = new ArrayList<>();
-		if (source != null) {
-			for (Language language : source.getLanguages()) {
+		if (profile != null) {
+			for (Language language : profile.getLanguages()) {
 				dtoList.add(new LanguageDTO(language));
 			}
 		}

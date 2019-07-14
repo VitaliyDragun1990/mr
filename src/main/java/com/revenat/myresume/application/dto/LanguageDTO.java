@@ -8,15 +8,13 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
-import com.revenat.myresume.domain.entity.Language;
-import com.revenat.myresume.domain.entity.LanguageType;
+import com.revenat.myresume.domain.document.Language;
+import com.revenat.myresume.domain.document.LanguageType;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class LanguageDTO implements Serializable, Comparable<LanguageDTO> {
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	
 	@NotBlank
 	@Size(max = 60)
 	@EnglishLanguage(withNumbers = false, withPunctuations = false, withSpecSymbols = false)
@@ -34,19 +32,14 @@ public class LanguageDTO implements Serializable, Comparable<LanguageDTO> {
 	public LanguageDTO() {
 	}
 
-	public LanguageDTO(Language entity) {
-		this.id = entity.getId();
-		this.name = entity.getName();
-		this.type = entity.getType().getType();
-		this.level = entity.getLevel().getLevel();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public LanguageDTO(Language language) {
+		this.name = language.getName();
+		if (language.getType() != null) {
+			this.type = language.getType().getType();
+		}
+		if (language.getLevel() != null) {
+			this.level = language.getLevel().getLevel();
+		}
 	}
 
 	public String getName() {
@@ -91,7 +84,6 @@ public class LanguageDTO implements Serializable, Comparable<LanguageDTO> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((level == null) ? 0 : level.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
@@ -105,11 +97,6 @@ public class LanguageDTO implements Serializable, Comparable<LanguageDTO> {
 		if (!(obj instanceof LanguageDTO))
 			return false;
 		LanguageDTO other = (LanguageDTO) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
 		if (level == null) {
 			if (other.level != null)
 				return false;

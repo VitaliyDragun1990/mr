@@ -5,15 +5,13 @@ import java.io.Serializable;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
-import com.revenat.myresume.domain.entity.Skill;
-import com.revenat.myresume.domain.entity.SkillCategory;
+import com.revenat.myresume.domain.document.Skill;
+import com.revenat.myresume.domain.document.SkillCategory;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class SkillDTO implements Serializable, Comparable<SkillDTO> {
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	
 	@SafeHtml
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
 	private String category;
@@ -26,17 +24,10 @@ public class SkillDTO implements Serializable, Comparable<SkillDTO> {
 	}
 	
 	public SkillDTO(Skill entity) {
-		this.id = entity.getId();
-		this.category = entity.getCategory().getCategory();
+		if (entity.getCategory() != null) {
+			this.category = entity.getCategory().getCategory();
+		}
 		this.value = entity.getValue();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getCategory() {
@@ -60,7 +51,6 @@ public class SkillDTO implements Serializable, Comparable<SkillDTO> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((category == null) ? 0 : category.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
@@ -76,11 +66,6 @@ public class SkillDTO implements Serializable, Comparable<SkillDTO> {
 			if (other.category != null)
 				return false;
 		} else if (!category.equals(other.category))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
 			return false;
 		if (value == null) {
 			if (other.value != null)

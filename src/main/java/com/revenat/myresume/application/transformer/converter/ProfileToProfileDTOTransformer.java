@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.revenat.myresume.application.config.annotation.TypeConverter;
 import com.revenat.myresume.application.dto.CertificateDTO;
 import com.revenat.myresume.application.dto.ContactsDTO;
 import com.revenat.myresume.application.dto.CourseDTO;
@@ -17,15 +16,16 @@ import com.revenat.myresume.application.dto.LanguageDTO;
 import com.revenat.myresume.application.dto.MainInfoDTO;
 import com.revenat.myresume.application.dto.ProfileDTO;
 import com.revenat.myresume.application.dto.SkillDTO;
-import com.revenat.myresume.domain.entity.Certificate;
-import com.revenat.myresume.domain.entity.Contacts;
-import com.revenat.myresume.domain.entity.Course;
-import com.revenat.myresume.domain.entity.Education;
-import com.revenat.myresume.domain.entity.PracticalExperience;
-import com.revenat.myresume.domain.entity.Hobby;
-import com.revenat.myresume.domain.entity.Language;
-import com.revenat.myresume.domain.entity.Profile;
-import com.revenat.myresume.domain.entity.Skill;
+import com.revenat.myresume.application.transformer.TypeConverter;
+import com.revenat.myresume.domain.document.Certificate;
+import com.revenat.myresume.domain.document.Contacts;
+import com.revenat.myresume.domain.document.Course;
+import com.revenat.myresume.domain.document.Education;
+import com.revenat.myresume.domain.document.Hobby;
+import com.revenat.myresume.domain.document.Language;
+import com.revenat.myresume.domain.document.PracticalExperience;
+import com.revenat.myresume.domain.document.Profile;
+import com.revenat.myresume.domain.document.Skill;
 
 @TypeConverter
 class ProfileToProfileDTOTransformer implements Converter<Profile, ProfileDTO> {

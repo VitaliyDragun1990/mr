@@ -8,15 +8,13 @@ import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.application.validation.annotation.FirstFieldLessThanSecond;
-import com.revenat.myresume.domain.entity.Education;
+import com.revenat.myresume.domain.document.Education;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @FirstFieldLessThanSecond(first = "startYear", second = "endYear")
 public class EducationDTO implements Serializable, Comparable<EducationDTO> {
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	
 	@EnglishLanguage
 	@SafeHtml
 	private String summary;
@@ -37,21 +35,12 @@ public class EducationDTO implements Serializable, Comparable<EducationDTO> {
 	public EducationDTO() {
 	}
 
-	public EducationDTO(Education entity) {
-		this.id = entity.getId();
-		this.summary = entity.getSummary();
-		this.startYear = entity.getStartYear();
-		this.endYear = entity.getEndYear();
-		this.university = entity.getUniversity();
-		this.faculty = entity.getFaculty();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public EducationDTO(Education education) {
+		this.summary = education.getSummary();
+		this.startYear = education.getStartYear();
+		this.endYear = education.getEndYear();
+		this.university = education.getUniversity();
+		this.faculty = education.getFaculty();
 	}
 
 	public String getSummary() {
@@ -101,7 +90,6 @@ public class EducationDTO implements Serializable, Comparable<EducationDTO> {
 		result = prime * result + ((startYear == null) ? 0 : startYear.hashCode());
 		result = prime * result + ((faculty == null) ? 0 : faculty.hashCode());
 		result = prime * result + ((startYear == null) ? 0 : startYear.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((summary == null) ? 0 : summary.hashCode());
 		result = prime * result + ((university == null) ? 0 : university.hashCode());
 		return result;
@@ -128,11 +116,6 @@ public class EducationDTO implements Serializable, Comparable<EducationDTO> {
 			if (other.endYear != null)
 				return false;
 		} else if (!endYear.equals(other.endYear))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
 			return false;
 		if (summary == null) {
 			if (other.summary != null)

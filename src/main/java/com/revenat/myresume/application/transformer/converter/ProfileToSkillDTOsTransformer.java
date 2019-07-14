@@ -5,12 +5,11 @@ import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.revenat.myresume.application.config.annotation.TypeConverter;
 import com.revenat.myresume.application.dto.SkillDTO;
-import com.revenat.myresume.domain.entity.Profile;
-import com.revenat.myresume.domain.entity.Skill;
+import com.revenat.myresume.application.transformer.TypeConverter;
+import com.revenat.myresume.domain.document.Profile;
+import com.revenat.myresume.domain.document.Skill;
 
-@Deprecated
 @TypeConverter
 class ProfileToSkillDTOsTransformer implements Converter<Profile, List<SkillDTO>> {
 

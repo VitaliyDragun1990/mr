@@ -14,7 +14,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.core.convert.converter.Converter;
 
-import com.revenat.myresume.application.config.annotation.TypeConverter;
+import com.revenat.myresume.application.transformer.TypeConverter;
 
 /**
  * This custom implementation of {@link BeanDefinitionRegistryPostProcessor}

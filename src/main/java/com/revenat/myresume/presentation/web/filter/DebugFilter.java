@@ -16,10 +16,10 @@ public class DebugFilter extends AbstractFilter {
 			throws ServletException, IOException {
 		try {
 			LOGGER.info("******************************************************** start ***************************************");
-			DebugUtil.turnOnShowSQL();
+			DebugUtil.turnOnShowMongoQuery();
 			chain.doFilter(req, resp);
 		} finally {
-			DebugUtil.turnOffShowSQL();
+			DebugUtil.turnOffShowMongoQuery();
 			LOGGER.info("******************************************************** end ***************************************");
 		}
 	}

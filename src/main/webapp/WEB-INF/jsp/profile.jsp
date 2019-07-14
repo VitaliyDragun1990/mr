@@ -6,7 +6,7 @@
 
 <security:authorize access="isAuthenticated()">
 	<security:authentication property="principal" var="CURRENT_USER"/>
-	<c:set var="showEdit" value="${CURRENT_USER.id == profile.id}"/>
+	<c:set var="showEdit" value="${CURRENT_USER.id eq profile.id}"/>
 </security:authorize>
 
 	<div id="proifle-${profile.id}" class="row profile">

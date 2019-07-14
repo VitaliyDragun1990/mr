@@ -5,20 +5,19 @@ import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.revenat.myresume.application.config.annotation.TypeConverter;
 import com.revenat.myresume.application.dto.EducationDTO;
-import com.revenat.myresume.domain.entity.Education;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.application.transformer.TypeConverter;
+import com.revenat.myresume.domain.document.Education;
+import com.revenat.myresume.domain.document.Profile;
 
-@Deprecated
 @TypeConverter
 class ProfileToEducationDTOsTransformer implements Converter<Profile, List<EducationDTO>> {
 
 	@Override
-	public List<EducationDTO> convert(Profile source) {
+	public List<EducationDTO> convert(Profile profile) {
 		List<EducationDTO> dtoList = new ArrayList<>();
-		if (source != null) {
-			for (Education education : source.getEducations()) {
+		if (profile != null) {
+			for (Education education : profile.getEducations()) {
 				dtoList.add(new EducationDTO(education));
 			}
 		}

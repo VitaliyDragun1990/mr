@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.revenat.myresume.application.dto.HobbyDTO;
-import com.revenat.myresume.domain.entity.LanguageLevel;
-import com.revenat.myresume.domain.entity.LanguageType;
-import com.revenat.myresume.domain.entity.SkillCategory;
+import com.revenat.myresume.domain.document.LanguageLevel;
+import com.revenat.myresume.domain.document.LanguageType;
+import com.revenat.myresume.domain.document.SkillCategory;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 import com.revenat.myresume.presentation.web.service.StaticDataService;
 

@@ -80,6 +80,15 @@ public class ReflectionUtil {
 					+ obj.getClass() + "': " + e.getMessage(), e);
 		}
 	}
+	
+	public static void writeProperty(Object obj, String propertyName, Object propertyValue) {
+		try {
+			BeanUtils.getPropertyDescriptor(obj.getClass(), propertyName).getWriteMethod().invoke(obj, propertyValue);
+		} catch (IllegalAccessException | InvocationTargetException | RuntimeException e) {
+			throw new IllegalArgumentException("Can't write property: '" + propertyName + "' from object: '"
+					+ obj.getClass() + " with value:" + propertyValue.getClass() + "': " + e.getMessage(), e);
+		}
+	}
 
 	/**
 	 * Checks whether all declared fields in provided {@code element} have

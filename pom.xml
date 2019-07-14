@@ -16,11 +16,9 @@
 		<jsp-api.version>2.2</jsp-api.version>
 		<jstl.version>1.2</jstl.version>
 		<logback.version>1.2.3</logback.version>
-		<postgresql.version>42.2.5</postgresql.version>
 		<thumbnailator.version>0.4.8</thumbnailator.version>
 		<commons-lang3.version>3.8.1</commons-lang3.version>
 		<commons-io.version>2.6</commons-io.version>
-		<commons-dbcp2.version>2.6.0</commons-dbcp2.version>
 		<common-text.version>1.6</common-text.version>
 		<commons-fileupload.version>1.4</commons-fileupload.version>
 		<commons-beanutils.version>1.9.3</commons-beanutils.version>
@@ -29,7 +27,6 @@
 		<joda-time.version>2.10.2</joda-time.version>
 		<sitemash.version>3.0.1</sitemash.version>
 		<spring.version>4.3.24.RELEASE</spring.version>
-		<spring-data-jpa.version>1.11.22.RELEASE</spring-data-jpa.version>
 		<mongo-java-driver.version>3.10.2</mongo-java-driver.version>
 		<spring-data-mongodb.version>1.10.22.RELEASE</spring-data-mongodb.version>
 		<spring-data-elasticsearch.version>2.1.22.RELEASE</spring-data-elasticsearch.version>
@@ -51,6 +48,7 @@
 		<h2.version>1.4.199</h2.version>
 		<hamcrest-date.version>2.0.5</hamcrest-date.version>
 	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -78,19 +76,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
 			<version>${thumbnailator.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-dbcp2</artifactId>
-			<version>${commons-dbcp2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -146,11 +134,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-			<version>${spring-data-jpa.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
@@ -240,11 +223,6 @@
 		</dependency>
 
 		<!-- Hibernate dependencies -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>${hibernate.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>

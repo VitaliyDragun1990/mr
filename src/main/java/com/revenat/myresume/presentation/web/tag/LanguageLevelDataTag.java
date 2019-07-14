@@ -7,7 +7,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import com.revenat.myresume.application.util.DataUtil;
-import com.revenat.myresume.domain.entity.LanguageLevel;
+import com.revenat.myresume.domain.document.LanguageLevel;
 
 /**
  * For each valid {@link LanguageLevel#getLevel()} provide appropriate

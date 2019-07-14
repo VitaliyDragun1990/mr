@@ -7,14 +7,12 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
-import com.revenat.myresume.domain.entity.Certificate;
+import com.revenat.myresume.domain.document.Certificate;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class CertificateDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	
 	@NotBlank
 	@Size(max = 50)
 	@EnglishLanguage
@@ -24,25 +22,14 @@ public class CertificateDTO implements Serializable {
 	@Size(max = 255)
 	private String largeUrl;
 	
-//	@NotBlank
-//	@Size(max = 255)
 	private String smallUrl;
 	
 	public CertificateDTO() {}
 	
-	public CertificateDTO(Certificate entity) {
-		this.id = entity.getId();
-		this.largeUrl = entity.getLargeUrl();
-		this.name = entity.getName();
-		this.smallUrl = entity.getSmallUrl();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public CertificateDTO(Certificate certificate) {
+		this.largeUrl = certificate.getLargeUrl();
+		this.name = certificate.getName();
+		this.smallUrl = certificate.getSmallUrl();
 	}
 
 	public String getName() {
@@ -73,7 +60,6 @@ public class CertificateDTO implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((largeUrl == null) ? 0 : largeUrl.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((smallUrl == null) ? 0 : smallUrl.hashCode());
@@ -87,11 +73,6 @@ public class CertificateDTO implements Serializable {
 		if (!(obj instanceof CertificateDTO))
 			return false;
 		CertificateDTO other = (CertificateDTO) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
 		if (largeUrl == null) {
 			if (other.largeUrl != null)
 				return false;

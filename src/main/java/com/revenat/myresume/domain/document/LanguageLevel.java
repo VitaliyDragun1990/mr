@@ -1,4 +1,4 @@
-package com.revenat.myresume.domain.entity;
+package com.revenat.myresume.domain.document;
 
 import java.util.HashMap;
 import java.util.Map;

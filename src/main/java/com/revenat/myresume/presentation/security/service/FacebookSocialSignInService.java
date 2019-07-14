@@ -1,5 +1,7 @@
 package com.revenat.myresume.presentation.security.service;
 
+import static com.revenat.myresume.infrastructure.util.TransactionUtils.executeIfTransactionSucceeded;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,14 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.service.notification.NotificationManagerService;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkAccount;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkGateway;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
@@ -60,7 +60,7 @@ class FacebookSocialSignInService implements SocialSignInService {
 	}
 
 	@Override
-	@Transactional
+	@EmulatedTransactional
 	public AuthenticatedUser signIn(String verificationCode) {
 		SocialNetworkAccount socialAccount = socialGateway.getSocialAccount(verificationCode);
 		if (CommonUtils.isNotBlank(socialAccount.getEmail())) {
@@ -86,7 +86,8 @@ class FacebookSocialSignInService implements SocialSignInService {
 
 		AuthenticatedUser authenticatedUser = signUpService.signUp(newProfile);
 		newProfile.setUid(authenticatedUser.getUsername());
-		sendGeneratedPasswordIfTransactionSuccess(newProfile, generatedPassword);
+		
+		executeIfTransactionSucceeded(() -> sendGeneratedPassword(newProfile, generatedPassword));
 		return SecurityUtil.authenticateWithRememberMe(authenticatedUser);
 	}
 
@@ -102,14 +103,9 @@ class FacebookSocialSignInService implements SocialSignInService {
 		}
 	}
 	
-	private void sendGeneratedPasswordIfTransactionSuccess(final Profile profile, final String generatedPassword) {
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-			@Override
-			public void afterCommit() {
-				LOGGER.info("New profile has been created from facebook: {}", profile.getUid());
-				notificationManagerService.sendPasswordGenerated(profile, generatedPassword);
-			}
-		});
+	private void sendGeneratedPassword(final Profile profile, final String generatedPassword) {
+		LOGGER.info("New profile has been created from facebook: {}", profile.getUid());
+		notificationManagerService.sendPasswordGenerated(profile, generatedPassword);
 	}
 	
 	static class MultipartFromUrl implements MultipartFile {

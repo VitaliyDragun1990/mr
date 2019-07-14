@@ -6,5 +6,5 @@ import com.revenat.myresume.application.dto.ProfileDTO;
 
 public interface CreateProfileService {
 
-	long createProfile(@Nonnull ProfileDTO newProfileData);
+	String createProfile(@Nonnull ProfileDTO newProfileData);
 }

@@ -3,8 +3,8 @@ package com.revenat.myresume.infrastructure.service;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import com.revenat.myresume.domain.entity.Profile;
-import com.revenat.myresume.domain.entity.ProfileEntity;
+import com.revenat.myresume.domain.document.Profile;
+import com.revenat.myresume.domain.document.ProfileDocument;
 
 /**
  * Provides search indexing facilities
@@ -18,8 +18,8 @@ public interface SearchIndexingService {
 
 	void removeProfileIndex(Profile profile);
 
-	<T extends Annotation> void updateProfileIndex(Profile profile, Class<T> annotationClass);
+	<T extends Annotation> void updateProfileIndex(Profile updatedProfile, Class<T> annotationClass);
 
-	<E extends ProfileEntity> void updateProfileEntitiesIndex(long profileId, List<E> updatedData,
+	<E extends ProfileDocument> void updateProfileDataIndex(String profileId, List<E> updatedData,
 			Class<E> profileEntityClass);
 }

@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.revenat.myresume.application.provider.DateTimeProvider;
 import com.revenat.myresume.application.service.profile.RemoveProfileService;
 import com.revenat.myresume.application.service.task.TaskPerformer;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 
 @Service
@@ -38,15 +38,14 @@ class ScheduledTaskPerformer implements TaskPerformer {
 	}
 
 
-	@Transactional
 	@Scheduled(cron = "0 59 23 * * *") // every day at 23:59:00
 	@Override
 	public void removeNotCompletedProfiles() {
 		LocalDateTime date = dateTimeProvider.getCurrentDateTime().minusDays(removeNotCompletedProfilesInterval);
-		List<Long> profileIds = profileRepo.fetchNotCompletedProfileIds(date);
+		List<Profile> profilesToRemove = profileRepo.findByCompletedFalseAndCreatedBefore(date);
 		int removedCount = 0;
-		for (Long profileId : profileIds) {
-			profileService.removeProfile(profileId);
+		for (Profile profile : profilesToRemove) {
+			profileService.removeProfile(profile.getId());
 			removedCount++;
 		}
 		LOGGER.info("Removed {} not completed profiles", removedCount);

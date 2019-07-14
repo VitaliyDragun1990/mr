@@ -1,6 +1,6 @@
 package com.revenat.myresume.application.exception;
 
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 
 /**
  * Signals that {@link Profile} with specified {@code uid} can't be found.

@@ -1,7 +1,5 @@
 package com.revenat.myresume.presentation.config;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -14,12 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import com.revenat.myresume.presentation.security.adapter.MongoPersistentTokenRepositoryAdapter;
 import com.revenat.myresume.presentation.security.service.CustomRememberMeService;
+import com.revenat.myresume.presentation.security.token.repository.RememberMeTokenRepository;
 
 @Configuration
 @ComponentScan({ "com.revenat.myresume.presentation.security.service",
@@ -29,20 +28,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
 	@Autowired
 	@Qualifier("applicationAccessDeniedHandler")
 	private AccessDeniedHandler accessDeniedHandler;
+	
 	@Autowired
 	private CustomRememberMeService persistentTokenRememberMeService;
-
+	
 	@Bean
 	@Autowired
-	public PersistentTokenRepository persistentTokenRepository(DataSource dataSource) {
-		JdbcTokenRepositoryImpl persistentTokenRepository = new JdbcTokenRepositoryImpl();
-		persistentTokenRepository.setDataSource(dataSource);
-		return persistentTokenRepository;
+	public PersistentTokenRepository persistentTokenRepository(RememberMeTokenRepository rememberMeTokenRepository) {
+		return new MongoPersistentTokenRepositoryAdapter(rememberMeTokenRepository);
 	}
 
 	@Override
@@ -54,13 +54,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		registerCharacterEncodingFilter(http);
 
-		http.authorizeRequests().antMatchers("/my-profile", "/profile/edit", "/profile/edit/**", "/profile/remove")
-				.hasAnyAuthority(Constants.USER).anyRequest().permitAll().and().formLogin().loginPage("/sign-in")
-				.loginProcessingUrl("/sign-in-handler").usernameParameter("uid").passwordParameter("password")
-				.defaultSuccessUrl("/my-profile").failureUrl("/sign-in-failed").and().logout().logoutUrl("/sign-out")
-				.logoutSuccessUrl("/welcome").invalidateHttpSession(true).deleteCookies("JSESSIONID").and().rememberMe()
-				.rememberMeParameter("remember-me").rememberMeServices(persistentTokenRememberMeService).and()
-				.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+		http.authorizeRequests()
+			.antMatchers("/my-profile", "/profile/edit", "/profile/edit/**", "/profile/remove").hasAnyAuthority(Constants.USER)
+			.anyRequest().permitAll()
+		.and()
+			.formLogin()
+				.loginPage("/sign-in")
+				.loginProcessingUrl("/sign-in-handler")
+				.usernameParameter("uid")
+				.passwordParameter("password")
+				.defaultSuccessUrl("/my-profile")
+				.failureUrl("/sign-in-failed")
+		.and()
+			.logout()
+				.logoutUrl("/sign-out")
+				.logoutSuccessUrl("/welcome")
+				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID")
+		.and()
+			.rememberMe()
+				.rememberMeParameter("remember-me")
+				.rememberMeServices(persistentTokenRememberMeService)
+		.and()
+			.exceptionHandling()
+				.accessDeniedHandler(accessDeniedHandler);
 	}
 
 	/**

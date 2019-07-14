@@ -15,7 +15,7 @@ import com.revenat.myresume.application.validation.annotation.Adulthood;
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.application.validation.annotation.Phone;
 import com.revenat.myresume.domain.annotation.RequiredInfoField;
-import com.revenat.myresume.domain.entity.Profile;
+import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class MainInfoDTO implements Serializable {

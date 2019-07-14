@@ -7,7 +7,6 @@
 <%@ attribute name="experience" required="false" type="com.revenat.myresume.application.dto.PracticalExperienceDTO" %>
 
 <div id="ui-item-${index}" class="panel panel-default">
-	<input type="hidden" name="items[${index}].id" value="${experience.id}" />
 	<div class="panel-body ui-item">
 		<div class="row">
 			<div class="col-xs-12">

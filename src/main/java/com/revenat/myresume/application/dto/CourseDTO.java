@@ -8,14 +8,12 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
-import com.revenat.myresume.domain.entity.Course;
+import com.revenat.myresume.domain.document.Course;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 public class CourseDTO extends AbstractEndDateDTO implements Serializable, Comparable<CourseDTO> {
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-	
 	@NotBlank
 	@Size(max = 60)
 	@EnglishLanguage(withSpecSymbols = false)
@@ -31,19 +29,10 @@ public class CourseDTO extends AbstractEndDateDTO implements Serializable, Compa
 	public CourseDTO() {
 	}
 
-	public CourseDTO(Course entity) {
-		this.id = entity.getId();
-		this.name = entity.getName();
-		this.school = entity.getSchool();
-		this.setEndDate(entity.getEndDate());
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+	public CourseDTO(Course course) {
+		this.name = course.getName();
+		this.school = course.getSchool();
+		this.setEndDate(course.getEndDate());
 	}
 
 	public String getName() {
@@ -67,7 +56,6 @@ public class CourseDTO extends AbstractEndDateDTO implements Serializable, Compa
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((getEndDate() == null) ? 0 : getEndDate().hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((school == null) ? 0 : school.hashCode());
 		return result;
@@ -84,11 +72,6 @@ public class CourseDTO extends AbstractEndDateDTO implements Serializable, Compa
 			if (other.getEndDate() != null)
 				return false;
 		} else if (!getEndDate().equals(other.getEndDate()))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
 			return false;
 		if (name == null) {
 			if (other.name != null)
