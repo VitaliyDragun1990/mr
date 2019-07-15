@@ -1,6 +1,7 @@
 package com.revenat.myresume.application.service.profile.impl;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
+import com.revenat.myresume.application.config.transaction.EnableTransactionSynchronization;
 import com.revenat.myresume.application.dto.MainInfoDTO;
 import com.revenat.myresume.application.dto.ProfileDTO;
 import com.revenat.myresume.application.generator.DataGenerator;
@@ -37,7 +38,7 @@ class CreateProfileServiceImpl extends AbstractModifyProfileService implements C
 	}
 
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public String createProfile(ProfileDTO newProfileData) {
 		MainInfoDTO mainProfileData = newProfileData.getMainInfo();
 
@@ -48,15 +49,22 @@ class CreateProfileServiceImpl extends AbstractModifyProfileService implements C
 		profile.setLastName(DataUtil.capitalizeName(newProfileData.getLastName()));
 		profile.setPassword(passwordEncoder.encode(newProfileData.getPassword()));
 
-		boolean isProfilePhotosUploaded = mainProfileData.getLargePhoto() != null
-				&& mainProfileData.getSmallPhoto() != null;
-		setProfileMainInfo(profile, mainProfileData, isProfilePhotosUploaded);
+		updateProfileMainInfo(profile, mainProfileData);
+		
+		boolean isProfilePhotosUploaded = checkIfPhotosUploaded(mainProfileData);
 		if (isProfilePhotosUploaded) {
-			executeIfTransactionFailed(() -> removeProfileImages(
-					Arrays.asList(mainProfileData.getLargePhoto(), mainProfileData.getSmallPhoto())));
+			executeIfTransactionFailed(() -> removeImages(getUploadedPhotoLinks(mainProfileData)));
 		}
 
 		return saveNewProfileData(profile);
+	}
+
+	private List<String> getUploadedPhotoLinks(MainInfoDTO mainProfileData) {
+		return Arrays.asList(mainProfileData.getLargePhoto(), mainProfileData.getSmallPhoto());
+	}
+
+	private boolean checkIfPhotosUploaded(MainInfoDTO mainProfileData) {
+		return mainProfileData.getLargePhoto() != null && mainProfileData.getSmallPhoto() != null;
 	}
 
 	private String saveNewProfileData(Profile profile) {

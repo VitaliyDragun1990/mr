@@ -25,7 +25,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.revenat.myresume.application.config.transaction.TransactionalEmulationAspect;
+import com.revenat.myresume.application.config.transaction.TransactionSynchronizationSupport;
 import com.revenat.myresume.application.service.notification.NotificationMessage;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
@@ -68,8 +68,8 @@ public class ServiceConfig {
 	
 	
 	@Bean
-	public TransactionalEmulationAspect transactionalEmulationAspect() {
-		return new TransactionalEmulationAspect();
+	public TransactionSynchronizationSupport transactionalEmulationAspect() {
+		return new TransactionSynchronizationSupport();
 	}
 	
 	/**

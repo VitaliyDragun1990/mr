@@ -15,7 +15,7 @@ import org.springframework.security.web.FilterChainProxy;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Objects;
-import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
+import com.revenat.myresume.application.config.transaction.EnableTransactionSynchronization;
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.service.notification.NotificationManagerService;
 import com.revenat.myresume.application.service.profile.RemoveProfileService;
@@ -57,7 +57,7 @@ class SecurityServiceImpl implements SecurityService {
 	}
 
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void restoreAccess(String anyUniqueId) {
 		Optional<Profile> profile = profileRepo.findByUidOrEmailOrPhone(anyUniqueId, anyUniqueId, anyUniqueId);
 		if (profile.isPresent()) {
@@ -89,7 +89,7 @@ class SecurityServiceImpl implements SecurityService {
 	}
 
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void resetPassword(AuthenticatedUser authUser, String token, String newPassword) {
 		Optional<ProfileRestore> restoreOptional = profileRestoreRepo.findByToken(token);
 		if (!restoreOptional.isPresent()) {
@@ -118,7 +118,7 @@ class SecurityServiceImpl implements SecurityService {
 	}
 
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updatePassword(AuthenticatedUser authUser, String oldPassword, String newPassword) {
 		Profile profile = profileRepo.findOne(authUser.getId());
 		if (!passwordEncoder.matches(oldPassword, profile.getPassword())) {

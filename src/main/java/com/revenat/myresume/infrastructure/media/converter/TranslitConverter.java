@@ -1,5 +1,7 @@
 package com.revenat.myresume.infrastructure.media.converter;
 
+import javax.annotation.Nonnull;
+
 /**
  * Converts non ASCII text into ASCII.
  * 
@@ -8,5 +10,5 @@ package com.revenat.myresume.infrastructure.media.converter;
  */
 public interface TranslitConverter {
 
-	String translit(String text);
+	String translit(@Nonnull String text);
 }

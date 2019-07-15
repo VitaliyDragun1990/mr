@@ -6,7 +6,7 @@ import java.io.StringReader;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import com.revenat.myresume.application.exception.NotificationException;
+import com.revenat.myresume.application.exception.TemplateResolvingException;
 import com.revenat.myresume.application.template.TemplateContentResolver;
 
 import freemarker.template.Configuration;
@@ -31,7 +31,7 @@ class FreemarkerTemplateContentResolver implements TemplateContentResolver {
 					new Configuration(Configuration.VERSION_2_3_28));
 			return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 		} catch (IOException | TemplateException e) {
-			throw new NotificationException("Can't resolve freemarker string template: " + e.getMessage(), e);
+			throw new TemplateResolvingException("Can't resolve freemarker string template: " + e.getMessage(), e);
 		}
 	}
 

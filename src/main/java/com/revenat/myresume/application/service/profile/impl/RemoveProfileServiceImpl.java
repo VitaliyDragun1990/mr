@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
+import com.revenat.myresume.application.config.transaction.EnableTransactionSynchronization;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.RemoveProfileService;
 import com.revenat.myresume.domain.document.Certificate;
@@ -29,7 +29,7 @@ class RemoveProfileServiceImpl extends AbstractModifyProfileService implements R
 	}
 
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void removeProfile(String profileId) {
 		Optional<Profile> optional = profileRepo.findOneById(profileId);
 		if (optional.isPresent()) {
@@ -40,7 +40,7 @@ class RemoveProfileServiceImpl extends AbstractModifyProfileService implements R
 			executeIfTransactionSuccess( () -> {
 				LOGGER.info("Profile with id:{} and uid:'{}' has been removed", profileId, profile.getUid());
 				searchIndexingService.removeProfileIndex(profile);
-				removeProfileImages(imageLinksToRemove);
+				removeImages(imageLinksToRemove);
 				evilcProfileCache(profile.getUid());
 			} );
 		}

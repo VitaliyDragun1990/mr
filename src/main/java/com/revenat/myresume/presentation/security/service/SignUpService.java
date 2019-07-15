@@ -17,5 +17,5 @@ public interface SignUpService {
 	AuthenticatedUser signUp(@Nonnull String firstName, @Nonnull String lastName, @Nonnull String password);
 
 	@Nonnull
-	AuthenticatedUser signUp(@Nonnull Profile newProfile);
+	AuthenticatedUser signUp(@Nonnull Profile userData);
 }

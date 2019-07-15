@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.revenat.myresume.domain.exception.ApplicationException;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
+import com.revenat.myresume.presentation.security.exception.SocialSignInException;
 import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 import com.revenat.myresume.presentation.security.service.SocialSignInService;
 
@@ -32,7 +32,7 @@ public class SocialSignInController {
 		AuthenticatedUser authenticatedUser;
 		try {
 			authenticatedUser = signinService.signIn(code);
-		} catch (ApplicationException e) {
+		} catch (SocialSignInException e) {
 			return "redirect:/sign-in";
 		}
 		if (authenticatedUser.isRegistrationCompleted()) {

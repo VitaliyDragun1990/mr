@@ -3,7 +3,7 @@ package com.revenat.myresume.application.exception;
 import com.revenat.myresume.domain.exception.ApplicationException;
 
 /**
- * Signals about error about notificaiton process.
+ * Signals about error during notificaiton processing process.
  * 
  * @author Vitaliy Dragun
  *

@@ -1,7 +1,6 @@
 package com.revenat.myresume.presentation.image.service.impl;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,15 +98,15 @@ class ImageUploaderServiceImpl implements ImageUploaderService {
 	private UploadedImageResult saveUploadedImage(ImageType imageType, TemporaryImageStorage temporaryImageStorage) {
 		String largeImageName = generateNewImageName();
 		String smallImageName = generateSmallImageName(largeImageName);
-		String largeImageLink = imageStorageService.saveAndReturnImageLink(largeImageName, imageType,
+		String largeImageLink = imageStorageService.save(largeImageName, imageType,
 				temporaryImageStorage.getLargeImagePath());
-		String smallImageLink = imageStorageService.saveAndReturnImageLink(smallImageName, imageType,
+		String smallImageLink = imageStorageService.save(smallImageName, imageType,
 				temporaryImageStorage.getSmallImagePath());
 		return new UploadedImageResult(largeImageLink, smallImageLink);
 	}
 
 	private String generateNewImageName() {
-		return UUID.randomUUID().toString() + ".jpg";
+		return dataGenerator.generateRandomImageName();
 	}
 
 	private String generateSmallImageName(String largeImageName) {

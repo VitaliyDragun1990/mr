@@ -13,5 +13,5 @@ import javax.annotation.Nonnull;
  */
 public interface ImageFormatConverter {
 
-	void convertImage(@Nonnull Path sourceImageFile, @Nonnull Path destImagePath) throws IOException;
+	void convert(@Nonnull Path sourceImageFile, @Nonnull Path destImageFile) throws IOException;
 }

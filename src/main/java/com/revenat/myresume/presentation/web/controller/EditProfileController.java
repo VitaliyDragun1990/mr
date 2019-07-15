@@ -236,16 +236,16 @@ public class EditProfileController {
 	@GetMapping("/hobbies")
 	public String getEditHobbies(Model model, @AuthenticationPrincipal AuthenticatedUser authUser) {
 		model.addAttribute("hobbies",
-				staticDataService.listAllHobbiesWithSelectedMarked(profileService.getHobbiesFor(authUser.getId())));
+				staticDataService.getAllHobbiesWithSelectedMarked(profileService.getHobbiesFor(authUser.getId())));
 		return "edit/hobbies";
 	}
 	
 	@PostMapping("/hobbies")
 	public String saveEditHobbies(@RequestParam("hobbies") List<String> hobbies, Model model,
 			@AuthenticationPrincipal AuthenticatedUser authUser) {
-		List<HobbyDTO> selectedHobbies = staticDataService.createHobbyListByNames(hobbies);
+		List<HobbyDTO> selectedHobbies = staticDataService.getSelectedHobbiesByName(hobbies);
 		if (selectedHobbies.size() > maxHobbiesPerProfle) {
-			model.addAttribute("hobbies",staticDataService.listAllHobbiesWithSelectedMarked(selectedHobbies));
+			model.addAttribute("hobbies",staticDataService.getAllHobbiesWithSelectedMarked(selectedHobbies));
 			model.addAttribute("hobbiesLimitExcedeed", Boolean.TRUE);
 			return "edit/hobbies";
 			
@@ -276,27 +276,27 @@ public class EditProfileController {
 	}
 	
 	private String goToExperiencesPage(Model model) {
-		model.addAttribute("years", staticDataService.listExperienceYears());
-		model.addAttribute("months", staticDataService.mapMonths());
+		model.addAttribute("years", staticDataService.getExperienceYears());
+		model.addAttribute("months", staticDataService.getMonthMap());
 		return "edit/experience";
 	}
 	
 	private String goToCoursesPage(Model model) {
-		model.addAttribute("years", staticDataService.listCoursesYears());
-		model.addAttribute("months", staticDataService.mapMonths());
+		model.addAttribute("years", staticDataService.getCoursesYears());
+		model.addAttribute("months", staticDataService.getMonthMap());
 		return "edit/courses";
 	}
 	
 	
 	private String goToEducationPage(Model model) {
-		model.addAttribute("years", staticDataService.listEducationYears());
-		model.addAttribute("months", staticDataService.mapMonths());
+		model.addAttribute("years", staticDataService.getEducationYears());
+		model.addAttribute("months", staticDataService.getMonthMap());
 		return "edit/education";
 	}
 	
 	private String goToLanguagesPage(Model model) {
-		model.addAttribute("languageTypes", staticDataService.getLanguageTypes());
-		model.addAttribute("languageLevels", staticDataService.getLanguageLevels());
+		model.addAttribute("languageTypes", staticDataService.getAllLanguageTypes());
+		model.addAttribute("languageLevels", staticDataService.getAllLanguageLevels());
 		return "edit/languages";
 	}
 }

@@ -47,7 +47,7 @@ class ImageProcessorServiceImpl implements ImageProcessorService {
 	
 	private void processConversion(String contentType, Path sourcePath) throws IOException {
 		if (contentType.contains("png")) {
-			pngToJpegFormatConverter.convertImage(sourcePath, sourcePath);
+			pngToJpegFormatConverter.convert(sourcePath, sourcePath);
 		} else if (!contentType.contains("jpg") && !contentType.contains("jpeg")) {
 			throw new ImageProcessingException("Only png and jpg image formats are supported: Current content type=" + contentType);
 		}

@@ -9,13 +9,13 @@ import java.lang.annotation.Target;
 import com.revenat.myresume.domain.document.Profile;
 
 /**
- * Designates {@link Profile} properties (fields or getters) that represent optional info.
+ * Designates {@link Profile} properties (fields or getters) that represent required info.
  * 
  * @author Vitaliy Dragun
  *
  */
 @Retention(RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })
-public @interface OptionalInfoField {
+public @interface RequiredInfo {
 
 }

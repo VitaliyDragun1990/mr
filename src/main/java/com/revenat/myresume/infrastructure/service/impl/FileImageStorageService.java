@@ -28,7 +28,7 @@ class FileImageStorageService implements ImageStorageService {
 	}
 
 	@Override
-	public String saveAndReturnImageLink(String imageName, ImageType imageType, Path tempImageFile) {
+	public String save(String imageName, ImageType imageType, Path tempImageFile) {
 		try {
 			String imageLink = getImageLink(imageType.getFolderName(), imageName);
 			saveImageFile(tempImageFile, getDestinationImageFile(imageLink));

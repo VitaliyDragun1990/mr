@@ -19,6 +19,9 @@ public interface DataGenerator {
 
 	@Nullable
 	String generateCertificateName(@Nullable String fileName);
+	
+	@Nonnull
+	String generateRandomImageName();
 
 	@Nonnull
 	String generateRandomPassword();

@@ -18,10 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
+import com.revenat.myresume.application.config.transaction.EnableTransactionSynchronization;
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.service.notification.NotificationManagerService;
 import com.revenat.myresume.domain.document.Profile;
+import com.revenat.myresume.infrastructure.exception.SocialNetworkGatewayException;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkAccount;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkGateway;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
@@ -29,6 +30,8 @@ import com.revenat.myresume.infrastructure.util.CommonUtils;
 import com.revenat.myresume.presentation.image.exception.ImageUploadingException;
 import com.revenat.myresume.presentation.image.model.UploadedImageResult;
 import com.revenat.myresume.presentation.image.service.ImageUploaderService;
+import com.revenat.myresume.presentation.security.exception.SignUpException;
+import com.revenat.myresume.presentation.security.exception.SocialSignInException;
 import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
 @Service
@@ -60,8 +63,16 @@ class FacebookSocialSignInService implements SocialSignInService {
 	}
 
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public AuthenticatedUser signIn(String verificationCode) {
+		try {
+			return signInFacebookUser(verificationCode);
+		} catch (SocialNetworkGatewayException | SignUpException e) {
+			throw new SocialSignInException("Error during facebook user authentication", e);
+		}
+	}
+
+	private AuthenticatedUser signInFacebookUser(String verificationCode) {
 		SocialNetworkAccount socialAccount = socialGateway.getSocialAccount(verificationCode);
 		if (CommonUtils.isNotBlank(socialAccount.getEmail())) {
 			Optional<Profile> userOptional = profileRepo.findByEmail(socialAccount.getEmail());

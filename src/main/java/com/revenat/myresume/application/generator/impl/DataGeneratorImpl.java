@@ -1,5 +1,7 @@
 package com.revenat.myresume.application.generator.impl;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -75,6 +77,11 @@ class DataGeneratorImpl implements DataGenerator {
 			return fileName.substring(0, point);
 		}
 		return fileName;
+	}
+	
+	@Override
+	public String generateRandomImageName() {
+		return UUID.randomUUID().toString() + ".jpg";
 	}
 
 	@Override

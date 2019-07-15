@@ -2,7 +2,7 @@ package com.revenat.myresume.infrastructure.gateway.social;
 
 import javax.annotation.Nonnull;
 
-import com.revenat.myresume.infrastructure.exception.SocialNetworkAuthenticationException;
+import com.revenat.myresume.infrastructure.exception.SocialNetworkGatewayException;
 
 /**
  * This interface represents component responsible for getting access to
@@ -28,7 +28,7 @@ public interface SocialNetworkGateway {
 	 *                  in social network.
 	 * @return {@link SocialAccount} instance that represents user's social network
 	 *         account
-	 * @throws SocialNetworkAuthenticationException if error occurs while getting information
+	 * @throws SocialNetworkGatewayException if error occurs while getting information
 	 *                                 about client's social network account
 	 */
 	@Nonnull SocialNetworkAccount getSocialAccount(@Nonnull String verificationCode);

@@ -9,7 +9,7 @@ import com.restfb.Parameter;
 import com.restfb.scope.FacebookPermissions;
 import com.restfb.scope.ScopeBuilder;
 import com.restfb.types.User;
-import com.revenat.myresume.infrastructure.exception.SocialNetworkAuthenticationException;
+import com.revenat.myresume.infrastructure.exception.SocialNetworkGatewayException;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkAccount;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkGateway;
 import com.revenat.myresume.infrastructure.media.converter.TranslitConverter;
@@ -45,7 +45,7 @@ public class FacebookGateway implements SocialNetworkGateway {
 			String avatarUrl = getFacebookUserAvatarUrl(user.getId());
 			return buildSocialNetworkAccount(user, avatarUrl);
 		} catch (FacebookException e) {
-			throw new SocialNetworkAuthenticationException("Error while retrieving data from user's facebook account", e);
+			throw new SocialNetworkGatewayException("Error while retrieving data from user's facebook account", e);
 		}
 	}
 	

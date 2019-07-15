@@ -8,10 +8,10 @@ import com.revenat.myresume.domain.exception.ApplicationException;
  * @author Vitaliy Dragun
  *
  */
-public class SocialNetworkAuthenticationException extends ApplicationException {
+public class SocialNetworkGatewayException extends ApplicationException {
 	private static final long serialVersionUID = 1L;
 
-	public SocialNetworkAuthenticationException(String message, Throwable cause) {
+	public SocialNetworkGatewayException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

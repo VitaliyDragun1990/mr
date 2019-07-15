@@ -110,7 +110,7 @@ class StaticDataServiceImpl implements StaticDataService {
 	}
 	
 	@Override
-	public List<HobbyDTO> listAllHobbiesWithSelectedMarked(Collection<HobbyDTO> selectedHobbies) {
+	public List<HobbyDTO> getAllHobbiesWithSelectedMarked(Collection<HobbyDTO> selectedHobbies) {
 		List<HobbyDTO> hobbies = new ArrayList<>();
 		for (HobbyDTO h : listAllHobbies()) {
 			boolean selected = selectedHobbies.contains(h);
@@ -120,7 +120,7 @@ class StaticDataServiceImpl implements StaticDataService {
 	}
 
 	@Override
-	public List<HobbyDTO> createHobbyListByNames(List<String> names) {
+	public List<HobbyDTO> getSelectedHobbiesByName(List<String> names) {
 		List<HobbyDTO> result = new ArrayList<>();
 		for (String name : names) {
 			if (allHobbyNames.contains(name)) {
@@ -131,7 +131,7 @@ class StaticDataServiceImpl implements StaticDataService {
 	}
 	
 	@Override
-	public Map<Integer, String> mapMonths() {
+	public Map<Integer, String> getMonthMap() {
 		String[] months = {"January", "February", "March", "April", "May", "June", "July", "August",
 				"September", "October", "November", "December"};
 		Map<Integer, String> map = new LinkedHashMap<>();
@@ -142,17 +142,17 @@ class StaticDataServiceImpl implements StaticDataService {
 	}
 
 	@Override
-	public List<Integer> listExperienceYears() {
+	public List<Integer> getExperienceYears() {
 		return listYears(experienceYearsAgo);
 	}
 
 	@Override
-	public List<Integer> listCoursesYears() {
+	public List<Integer> getCoursesYears() {
 		return listYears(courseYearsAgo);
 	}
 
 	@Override
-	public List<Integer> listEducationYears() {
+	public List<Integer> getEducationYears() {
 		return listYears(educationYearsAgo);
 	}
 	
@@ -175,7 +175,7 @@ class StaticDataServiceImpl implements StaticDataService {
 	}
 
 	@Override
-	public Collection<String> getLanguageLevels() {
+	public Collection<String> getAllLanguageLevels() {
 		List<String> languageLevels = new ArrayList<>();
 		for (LanguageLevel level : LanguageLevel.values()) {
 			languageLevels.add(level.getLevel());
@@ -184,7 +184,7 @@ class StaticDataServiceImpl implements StaticDataService {
 	}
 
 	@Override
-	public Collection<String> getLanguageTypes() {
+	public Collection<String> getAllLanguageTypes() {
 		List<String> languageTypes = new ArrayList<>();
 		for (LanguageType type : LanguageType.values()) {
 			languageTypes.add(type.getType());

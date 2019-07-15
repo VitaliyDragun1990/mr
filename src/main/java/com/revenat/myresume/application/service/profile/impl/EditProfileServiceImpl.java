@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.base.Objects;
-import com.revenat.myresume.application.config.transaction.EmulatedTransactional;
+import com.revenat.myresume.application.config.transaction.EnableTransactionSynchronization;
 import com.revenat.myresume.application.dto.CertificateDTO;
 import com.revenat.myresume.application.dto.ContactsDTO;
 import com.revenat.myresume.application.dto.CourseDTO;
@@ -26,8 +26,8 @@ import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.EditProfileService;
 import com.revenat.myresume.application.transformer.Transformer;
 import com.revenat.myresume.application.util.ReflectionUtil;
-import com.revenat.myresume.domain.annotation.OptionalInfoField;
-import com.revenat.myresume.domain.annotation.RequiredInfoField;
+import com.revenat.myresume.domain.annotation.OptionalInfo;
+import com.revenat.myresume.domain.annotation.RequiredInfo;
 import com.revenat.myresume.domain.document.Certificate;
 import com.revenat.myresume.domain.document.Contacts;
 import com.revenat.myresume.domain.document.Course;
@@ -63,51 +63,16 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
-	public void updateMainInfo(String profileId, MainInfoDTO updatedMainInfo) {
-		Profile loadedProfile = profileRepo.findOne(profileId);
-		List<String> oldProfilePhotos = Collections.emptyList();
+	@EnableTransactionSynchronization
+	public void updateMainInfo(String profileId, MainInfoDTO updateData) {
+		Profile profileToUpdate = profileRepo.findOne(profileId);
+		List<String> photoLinksToRemove = findPhotoLinksToRemove(profileToUpdate, updateData);
 		
-		boolean isProfilePhotosUpdated = checkIfProfilePhotosUpdated(loadedProfile, updatedMainInfo);
-		if (isProfilePhotosUpdated) {
-			oldProfilePhotos = Arrays.asList(loadedProfile.getLargePhoto(), loadedProfile.getSmallPhoto());
-			executeIfTransactionFailed(
-					() -> removeProfileImages(
-							Arrays.asList(updatedMainInfo.getLargePhoto(), updatedMainInfo.getSmallPhoto())
-							));
+		boolean isProfileDataUpdated = updateProfileMainInfo(profileToUpdate, updateData);
+		
+		if (isProfileDataUpdated) {
+			persistUpdatedProfile(profileToUpdate, photoLinksToRemove);
 		}
-		int updatedFieldsCount = setProfileMainInfo(loadedProfile, updatedMainInfo, isProfilePhotosUpdated);
-		
-		boolean shouldProfileBeUpdated = isProfilePhotosUpdated || updatedFieldsCount > 0;
-		
-		if (shouldProfileBeUpdated) {
-			updateProfileData(loadedProfile, oldProfilePhotos);
-		}
-	}
-
-	private void updateProfileData(Profile loadedProfile, List<String> oldProfilePhotos) {
-		boolean isProfileCompleted = isProfileCompleted(loadedProfile);
-		loadedProfile.setCompleted(isProfileCompleted);
-		
-		validateAndSave(loadedProfile);
-		
-		executeIfTransactionSuccess(
-				() -> {
-					removeProfileImages(oldProfilePhotos);
-					evilcProfileCache(loadedProfile.getUid());
-					if (isProfileCompleted) {
-						updateProfileIndexData(loadedProfile, RequiredInfoField.class);
-					}
-				});
-	}
-	
-	private void updateProfileIndexData(final Profile loadedProfile,
-			final Class<? extends Annotation> annotationClass) {
-		searchIndexingService.updateProfileIndex(loadedProfile, annotationClass);
-	}
-
-	private boolean checkIfProfilePhotosUpdated(Profile loadedProfile, MainInfoDTO updatedMainInfo) {
-		return !Objects.equal(loadedProfile.getLargePhoto(), updatedMainInfo.getLargePhoto());
 	}
 
 	@Override
@@ -117,7 +82,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updateInfoFor(String profileId, String info) {
 		Profile profile = profileRepo.findOne(profileId);
 		if (Objects.equal(info, profile.getInfo())) {
@@ -129,7 +94,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 			executeIfTransactionSuccess(
 					() -> {
 						LOGGER.info("Info for profile with id: {} has been updated", profileId);
-						updateProfileIndexData(updatedProfile, OptionalInfoField.class);
+						updateProfileIndexData(updatedProfile, OptionalInfo.class);
 					});
 		}
 	}
@@ -140,7 +105,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updateContacts(String profileId, ContactsDTO updatedContacts) {
 		Profile profile = profileRepo.findOne(profileId);
 		ContactsDTO profileContacts = getDTO(profileId, ContactsDTO.class);
@@ -159,7 +124,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updateExperience(String profileId, List<PracticalExperienceDTO> updatedExperience) {
 		updateProfile(profileId, updatedExperience, PracticalExperienceDTO.class, PracticalExperience.class);
 	}
@@ -170,38 +135,18 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updateCertificates(String profileId, List<CertificateDTO> updatedCertificates, SuccessCallback successCallback) {
-		List<String> certificateImagesToRemove = findCertificateImagesToRemove(profileId, updatedCertificates);
+		List<String> certificateLinksToRemove = findCertificateLinksToRemove(profileId, updatedCertificates);
 		updateProfile(profileId, updatedCertificates, CertificateDTO.class, Certificate.class);
 		
 		executeIfTransactionSuccess(
 				() -> {
-					removeProfileImages(certificateImagesToRemove);
+					removeImages(certificateLinksToRemove);
 					if (successCallback != null) {
 						successCallback.onSuccess();
 					}
 				});
-	}
-	
-	private List<String> findCertificateImagesToRemove(String profileId, List<CertificateDTO> updatedCertificates) {
-		List<String> loadedCertificateImages = getCertificateImagesUrls(profileId);
-		// Removing actual certificates, only old and non-actual are left
-		for (CertificateDTO c : updatedCertificates) {
-			loadedCertificateImages.remove(c.getLargeUrl());
-			loadedCertificateImages.remove(c.getSmallUrl());
-		}
-		return loadedCertificateImages;
-	}
-	
-	private List<String> getCertificateImagesUrls(String profileId) {
-		List<CertificateDTO> loadedCertificates = getCertificatesFor(profileId);
-		List<String> result = new ArrayList<>(loadedCertificates.size() * 2);
-		for (CertificateDTO c : loadedCertificates) {
-			result.add(c.getLargeUrl());
-			result.add(c.getSmallUrl());
-		}
-		return result;
 	}
 
 	@Override
@@ -210,7 +155,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updateCourses(String profileId, List<CourseDTO> updatedCourses) {
 		updateProfile(profileId, updatedCourses, CourseDTO.class, Course.class);
 	}
@@ -221,7 +166,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updateEducation(String profileId, List<EducationDTO> updatedEducation) {
 		updateProfile(profileId, updatedEducation, EducationDTO.class, Education.class);
 	}
@@ -232,7 +177,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updateLanguages(String profileId, List<LanguageDTO> updatedLanguages) {
 		updateProfile(profileId, updatedLanguages, LanguageDTO.class, Language.class);
 	}
@@ -243,7 +188,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updateHobbies(String profileId, List<HobbyDTO> updatedHobbies) {
 		updateProfile(profileId, updatedHobbies, HobbyDTO.class, Hobby.class);
 	}
@@ -254,9 +199,62 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	}
 	
 	@Override
-	@EmulatedTransactional
+	@EnableTransactionSynchronization
 	public void updateSkills(String profileId, List<SkillDTO> updatedSkills) {
 		updateProfile(profileId, updatedSkills, SkillDTO.class, Skill.class);
+	}
+	
+	private List<String> findPhotoLinksToRemove(Profile profileToUpdate, MainInfoDTO updatedData) {
+		List<String> photoLinksToRemove = Collections.emptyList();
+
+		boolean isProfilePhotosUpdated = checkIfProfilePhotosUpdated(profileToUpdate, updatedData);
+		if (isProfilePhotosUpdated) {
+			List<String> photoLinksToUpdate = Arrays.asList(updatedData.getLargePhoto(), updatedData.getSmallPhoto());
+			photoLinksToRemove = Arrays.asList(profileToUpdate.getLargePhoto(), profileToUpdate.getSmallPhoto());
+			executeIfTransactionFailed(() -> removeImages(photoLinksToUpdate));
+		}
+		return photoLinksToRemove;
+	}
+
+	private void persistUpdatedProfile(Profile loadedProfile, List<String> photoLinksToRemove) {
+		boolean isProfileCompleted = isProfileCompleted(loadedProfile);
+		loadedProfile.setCompleted(isProfileCompleted);
+		
+		validateAndSave(loadedProfile);
+		
+		executeIfTransactionSuccess(
+				() -> {
+					removeImages(photoLinksToRemove);
+					evilcProfileCache(loadedProfile.getUid());
+					if (isProfileCompleted) {
+						updateProfileIndexData(loadedProfile, RequiredInfo.class);
+					}
+				});
+	}
+	
+	private List<String> findCertificateLinksToRemove(String profileId, List<CertificateDTO> updatedCertificates) {
+		List<String> profileCertificateLinks = getProfileCertificateLinks(profileId);
+		// Removing actual certificates, only old and non-actual are left
+		for (CertificateDTO c : updatedCertificates) {
+			profileCertificateLinks.remove(c.getLargeUrl());
+			profileCertificateLinks.remove(c.getSmallUrl());
+		}
+		return profileCertificateLinks;
+	}
+	
+	private List<String> getProfileCertificateLinks(String profileId) {
+		List<CertificateDTO> loadedCertificates = getCertificatesFor(profileId);
+		List<String> result = new ArrayList<>(loadedCertificates.size() * 2);
+		for (CertificateDTO c : loadedCertificates) {
+			result.add(c.getLargeUrl());
+			result.add(c.getSmallUrl());
+		}
+		return result;
+	}
+	
+	private void updateProfileIndexData(final Profile loadedProfile,
+			final Class<? extends Annotation> annotationClass) {
+		searchIndexingService.updateProfileIndex(loadedProfile, annotationClass);
 	}
 	
 	private <T> T getDTO(String profileId, Class<T> dtoClass) {
@@ -269,33 +267,49 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 		return transformer.transformToList(profile, dtoClass);
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private <T,E extends ProfileDocument> void updateProfile(String profileId, List<T> updatedDTOList, Class<T> dtoClass,
+	private <T,E extends ProfileDocument> void updateProfile(String profileId, List<T> updatedDTOData, Class<T> dtoClass,
 			Class<E> entityClass) {
-		Profile profile = profileRepo.findOne(profileId);
-		String collectionName = pluralize(entityClass);
-		List<E> profileData = getProfileData(profile, collectionName);
+		CommonUtils.removeEmptyElements(updatedDTOData);
 		
-		CommonUtils.removeEmptyElements(updatedDTOList);
-		List<T> profileDataAsDTO = transformer.transformToList(profileData, entityClass, dtoClass);
+		Profile profileToUpdate = profileRepo.findOne(profileId);
+		
+		boolean isUpdateRequired = checkIfUpdateRequired(updatedDTOData, dtoClass, entityClass, profileToUpdate);
+		
+		if (isUpdateRequired) {
+			performProfileUpdate(updatedDTOData, dtoClass, entityClass, profileToUpdate);
+		} else {
+			String propertyName = pluralize(entityClass);
+			LOGGER.debug("{} for profile with id:{} - nothing to update", propertyName, profileId);
+		}
+	}
+
+	private <E extends ProfileDocument, T> void performProfileUpdate(List<T> updatedDTOData, Class<T> dtoClass,
+			Class<E> entityClass, Profile profileToUpdate) {
+		String propertyName = pluralize(entityClass);
+		List<E> updatedData = transformer.transformToList(updatedDTOData, dtoClass, entityClass);
+		
+		updateProfileData(profileToUpdate, updatedData, propertyName);
+		
+		executeIfTransactionSuccess(
+				() -> {
+					evilcProfileCache(profileToUpdate.getUid());
+					updateProfileDataIndex(profileToUpdate.getId(), updatedData, entityClass);
+				});
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private <T, E extends ProfileDocument> boolean checkIfUpdateRequired(List<T> updatedDTOData, Class<T> dtoClass,
+			Class<E> entityClass, Profile profileToUpdate) {
+		String propertyName = pluralize(entityClass);
+		List<T> profileDTOData = transformer.transformToList(getProfileData(profileToUpdate, propertyName),
+				entityClass, dtoClass);
 		
 		if (isComparable(dtoClass)) {
-			Collections.sort((List<? extends Comparable>) updatedDTOList);
-			Collections.sort((List<? extends Comparable>) profileDataAsDTO);
+			Collections.sort((List<? extends Comparable>) updatedDTOData);
+			Collections.sort((List<? extends Comparable>) profileDTOData);
 		}
 		
-		if (CommonUtils.isEqualList(updatedDTOList, profileDataAsDTO)) {
-			LOGGER.debug("{} for profile with id:{} - nothing to update", collectionName, profileId);
-		} else {
-			List<E> updatedEntityList = transformer.transformToList(updatedDTOList, dtoClass, entityClass);
-			updateProfileData(profile, updatedEntityList, collectionName);
-			
-			executeIfTransactionSuccess(
-					() -> {
-						evilcProfileCache(profile.getUid());
-						updateProfileDataIndex(profile.getId(), updatedEntityList, entityClass);
-					});
-		}
+		return !CommonUtils.isEqualList(updatedDTOData, profileDTOData);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -307,15 +321,14 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 		return profileData;
 	}
 	
-	private <E extends ProfileDocument> void updateProfileData(Profile profile, List<E> updatedData, String collectionName) {
-		ReflectionUtil.writeProperty(profile, collectionName, updatedData);
-		profileRepo.save(profile);
+	private <E extends ProfileDocument> void updateProfileData(Profile profileToUpdate, List<E> updatedData, String propertyName) {
+		ReflectionUtil.writeProperty(profileToUpdate, propertyName, updatedData);
+		profileRepo.save(profileToUpdate);
 	}
 
 	private <E extends ProfileDocument> void updateProfileDataIndex(
 			final String profileId, final List<E> updatedEntityList, final Class<E> entityClass) {
 		searchIndexingService.updateProfileDataIndex(profileId, updatedEntityList, entityClass);
-		
 	}
 
 	private boolean isComparable(Class<?> dtoClass) {

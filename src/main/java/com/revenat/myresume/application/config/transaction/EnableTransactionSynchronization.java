@@ -6,18 +6,18 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
 
 /**
- * May be placed on methods to emulate to some degree behaviour of
- * {@link Transactional} annotation in conjuction with
- * {@link TransactionalEmulationAspect}
+ * May be placed on methods to enable support for registering
+ * {@link TransactionSynchronization} actions. Used in conjuction with
+ * {@link TransactionSynchronizationSupport} component
  * 
  * @author Vitaliy Dragun
  *
  */
 @Retention(RUNTIME)
 @Target(METHOD)
-public @interface EmulatedTransactional {
+public @interface EnableTransactionSynchronization {
 
 }

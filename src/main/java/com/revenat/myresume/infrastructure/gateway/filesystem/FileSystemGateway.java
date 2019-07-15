@@ -5,6 +5,8 @@ import java.io.InputStream;
 import com.revenat.myresume.infrastructure.exception.FileSystemGatewayException;
 
 /**
+ * NOTE: This component for demostration purpose only. Not used in project.
+ * 
  * Represents gateway to underlying filesystem
  * 
  * @author Vitaliy Dragun
