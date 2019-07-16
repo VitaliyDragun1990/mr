@@ -26,6 +26,7 @@ import com.revenat.myresume.domain.document.Skill;
 import com.revenat.myresume.infrastructure.repository.search.ProfileSearchRepository;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.service.SearchIndexingService;
+import com.revenat.myresume.infrastructure.util.Checks;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Service
@@ -65,6 +66,8 @@ class ElasticSearchIndexingService implements SearchIndexingService {
 
 	@Override
 	public void createNewProfileIndex(Profile profile) {
+		Checks.checkParam(profile != null, "Profile to create new index for can not be null");
+		
 		if (CommonUtils.isNullOrEmpty(profile.getCertificates())) {
 			profile.setCertificates(Collections.emptyList());
 		}
@@ -87,17 +90,23 @@ class ElasticSearchIndexingService implements SearchIndexingService {
 	
 	@Override
 	public void removeProfileIndex(Profile profile) {
+		Checks.checkParam(profile != null, "Profile to remove index for can not be null");
+		
 		searchRepo.delete(profile);
 		LOGGER.info("Profile index deleted: {}", profile.getUid());
 	}
 
 	@Override
-	public <T extends Annotation> void updateProfileIndex(Profile updatedProfile, Class<T> annotaionClass) {
+	public <T extends Annotation> void updateProfileIndex(Profile updatedProfile, Class<T> dataTypeAnnotationClass) {
+		Checks.checkParam(updatedProfile != null, "Profile to update index for can not be null");
+		Checks.checkParam(dataTypeAnnotationClass != null, "Annotation which designates which profile data should be updated "
+				+ "can not be null");
+		
 		Profile profileToUpdate = searchRepo.findOne(updatedProfile.getId());
 		if (profileToUpdate == null) {
 			createNewProfileIndex(updatedProfile);
 		} else {
-			ReflectionUtil.copyFields(updatedProfile, profileToUpdate, annotaionClass);
+			ReflectionUtil.copyFields(updatedProfile, profileToUpdate, dataTypeAnnotationClass);
 			if (CommonUtils.isNotBlank(updatedProfile.getLargePhoto()) || CommonUtils.isNotBlank(updatedProfile.getSmallPhoto())) {
 				profileToUpdate.setLargePhoto(updatedProfile.getLargePhoto());
 				profileToUpdate.setSmallPhoto(updatedProfile.getSmallPhoto());
@@ -109,43 +118,47 @@ class ElasticSearchIndexingService implements SearchIndexingService {
 	}
 	
 	@Override
-	public <E extends ProfileDocument> void updateProfileDataIndex(String profileId, List<E> updatedData,
-			Class<E> profileDataClass) {
-		ProfileDataIndexUpdater indexUpdater = updaterRegistry.get(profileDataClass);
+	public <E extends ProfileDocument> void updateProfileAggregateDataIndex(String profileId, List<E> updatedData,
+			Class<E> profileAggregateDataClass) {
+		Checks.checkParam(profileId != null, "index for profile to update index for can not be null");
+		Checks.checkParam(updatedData != null, "list with updated profile data can not be null");
+		Checks.checkParam(profileAggregateDataClass != null, "class of profile data to update can not be null");
+		
+		ProfileDataIndexUpdater indexUpdater = updaterRegistry.get(profileAggregateDataClass);
 		if (indexUpdater != null) {
 			indexUpdater.updateProfileDataIndex(profileId, updatedData);
 		}
 	}
 
-	void updateIndexProfileSkills(String profileId, List<Skill> updatedData) {
+	protected void updateIndexProfileSkills(String profileId, List<Skill> updatedData) {
 		Profile profile = searchRepo.findOne(profileId);
 		profile.setSkills(updatedData);
 		searchRepo.save(profile);
 		LOGGER.info("Skills for profile with uid: {} have been updated", profile.getUid());
 	}
 
-	void updateIndexProfileCertificates(String profileId, List<Certificate> updatedData) {
+	protected void updateIndexProfileCertificates(String profileId, List<Certificate> updatedData) {
 		Profile profile = searchRepo.findOne(profileId);
 		profile.setCertificates(updatedData);
 		searchRepo.save(profile);
 		LOGGER.info("Certificates for profile with uid: {} have been updated", profile.getUid());
 	}
 
-	void updateIndexProfileCourses(String profileId, List<Course> updatedData) {
+	protected void updateIndexProfileCourses(String profileId, List<Course> updatedData) {
 		Profile profile = searchRepo.findOne(profileId);
 		profile.setCourses(updatedData);
 		searchRepo.save(profile);
 		LOGGER.info("Courses for profile with uid: {} have been updated", profile.getUid());
 	}
 
-	void updateIndexProfileExperience(String profileId, List<PracticalExperience> updatedData) {
+	protected void updateIndexProfileExperience(String profileId, List<PracticalExperience> updatedData) {
 		Profile profile = searchRepo.findOne(profileId);
 		profile.setExperience(updatedData);
 		searchRepo.save(profile);
 		LOGGER.info("Practical experience for profile with uid: {} has been updated", profile.getUid());
 	}
 
-	void updateIndexProfileLanguages(String profileId, List<Language> updatedData) {
+	protected void updateIndexProfileLanguages(String profileId, List<Language> updatedData) {
 		Profile profile = searchRepo.findOne(profileId);
 		profile.setLanguages(updatedData);
 		searchRepo.save(profile);
@@ -153,7 +166,7 @@ class ElasticSearchIndexingService implements SearchIndexingService {
 	}
 
 	@PostConstruct
-	void buildSearchIndex() {
+	protected void buildSearchIndex() {
 		if (indexAllDuringStartup) {
 			LOGGER.info("Detected index all command");
 			LOGGER.info("Clear old index");
@@ -169,7 +182,7 @@ class ElasticSearchIndexingService implements SearchIndexingService {
 		}
 	}
 
-	Iterable<Profile> findAllForIndexing() {
+	protected Iterable<Profile> findAllForIndexing() {
 		return profileRepo.findAll();
 	}
 	

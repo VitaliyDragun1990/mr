@@ -12,8 +12,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.revenat.myresume.domain.annotation.OptionalInfo;
-import com.revenat.myresume.domain.annotation.RequiredInfo;
+import com.revenat.myresume.domain.annotation.OptionalData;
+import com.revenat.myresume.domain.annotation.RequiredData;
 
 
 @Document(indexName = "my_resume", type = "profile")
@@ -31,29 +31,29 @@ public class Profile extends AbstractDocument<String> implements Serializable {
 
 	private String lastName;
 
-	@RequiredInfo
+	@RequiredData
 	private LocalDate birthDay;
 
 	@JsonIgnore
-	@RequiredInfo
+	@RequiredData
 	@Indexed(unique = true)
 	private String phone;
 
 	@JsonIgnore
-	@RequiredInfo
+	@RequiredData
 	@Indexed(unique = true)
 	private String email;
 
-	@RequiredInfo
+	@RequiredData
 	private String country;
 
-	@RequiredInfo
+	@RequiredData
 	private String city;
 
-	@RequiredInfo
+	@RequiredData
 	private String objective;
 	
-	@RequiredInfo
+	@RequiredData
 	private String summary;
 
 	@JsonIgnore
@@ -61,7 +61,7 @@ public class Profile extends AbstractDocument<String> implements Serializable {
 
 	private String smallPhoto;
 
-	@OptionalInfo
+	@OptionalData
 	private String info;
 
 	@JsonIgnore

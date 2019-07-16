@@ -14,6 +14,7 @@ import com.revenat.myresume.application.service.notification.NotificationBuilder
 import com.revenat.myresume.application.service.notification.NotificationMessage;
 import com.revenat.myresume.application.service.notification.NotificationType;
 import com.revenat.myresume.application.template.TemplateContentResolver;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 /**
  * Builds {@link NotificationMessage} from some kind of template
@@ -49,6 +50,8 @@ class TemplateNotificationBuilderService implements NotificationBuilderService {
 	 */
 	@Override
 	public NotificationMessage buildNotificationMessage(NotificationType notificationType, Map<String, Object> model) {
+		checkParams(notificationType, model);
+		
 		String templateName = notificationType.getNotificationName();
 		NotificationMessage message = notificationTemplates.get(templateName);
 		if (message == null) {
@@ -57,6 +60,11 @@ class TemplateNotificationBuilderService implements NotificationBuilderService {
 		String resolvedSubject = contentResolver.resolve(message.getSubject(), model);
 		String resolvedContent = contentResolver.resolve(message.getContent(), model);
 		return new NotificationMessage(resolvedSubject, resolvedContent);
+	}
+
+	private static void checkParams(NotificationType notificationType, Map<String, Object> model) {
+		Checks.checkParam(notificationType != null, "notificationType to build notification message for can not be null");
+		Checks.checkParam(model != null, "model to build notification message with can not be null");
 	}
 
 }

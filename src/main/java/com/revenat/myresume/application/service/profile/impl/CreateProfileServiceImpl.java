@@ -20,6 +20,7 @@ import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.infrastructure.service.SearchIndexingService;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 @Service
 class CreateProfileServiceImpl extends AbstractModifyProfileService implements CreateProfileService {
@@ -40,6 +41,8 @@ class CreateProfileServiceImpl extends AbstractModifyProfileService implements C
 	@Override
 	@EnableTransactionSynchronization
 	public String createProfile(ProfileDTO newProfileData) {
+		Checks.checkParam(newProfileData != null, "newProfileData to create new profile from can not be null");
+		
 		MainInfoDTO mainProfileData = newProfileData.getMainInfo();
 
 		Profile profile = new Profile();

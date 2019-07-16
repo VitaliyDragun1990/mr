@@ -19,8 +19,8 @@ public interface ImageResizer {
 	 * 
 	 * @param sourceImageFile path to image file to resize
 	 * @param destImageFile   path to file resized image should be saved as
-	 * @param width           with of the image to resize to
-	 * @param height          height of the image to resize to
+	 * @param width           with of the image to resize to, must be postitive value
+	 * @param height          height of the image to resize to, must be positive value
 	 * @throws IOException
 	 */
 	void resizeImage(@Nonnull Path sourceImageFile, @Nonnull Path destImageFile, int width, int height)

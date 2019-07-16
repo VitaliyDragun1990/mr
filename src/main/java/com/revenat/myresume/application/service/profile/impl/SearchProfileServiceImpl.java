@@ -26,6 +26,7 @@ import com.revenat.myresume.application.transformer.Transformer;
 import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.search.ProfileSearchRepository;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 @Service
 @Transactional(readOnly = true)
@@ -47,6 +48,8 @@ class SearchProfileServiceImpl implements SearchProfileService {
 
 	@Override
 	public ProfileDTO getByUid(String uid) {
+		Checks.checkParam(uid != null, "uid to get profile with can not be null");
+		
 		Optional<Profile> profile = cacheService.findProfileByUid(uid);
 		if (profile.isPresent()) {
 			return transformer.transform(profile.get(), ProfileDTO.class);
@@ -57,6 +60,8 @@ class SearchProfileServiceImpl implements SearchProfileService {
 	
 	@Override
 	public Optional<ProfileDTO> findByEmail(String email) {
+		Checks.checkParam(email != null, "email to find profile with can not be null");
+		
 		Optional<Profile> optional = profileRepo.findByEmail(email);
 		if (optional.isPresent()) {
 			return Optional.of(transformer.transform(optional.get(), ProfileDTO.class));
@@ -66,6 +71,8 @@ class SearchProfileServiceImpl implements SearchProfileService {
 
 	@Override
 	public Page<ProfileDTO> findAll(Pageable pageable) {
+		Checks.checkParam(pageable != null, "pageable to find profiles with can not be null");
+		
 		Page<Profile> page = profileRepo.findAllByCompletedTrue(pageable);
 		List<Profile> content = page.getContent();
 		List<ProfileDTO> dtoList = transformer.transformToList(content, Profile.class, ProfileDTO.class);
@@ -74,6 +81,9 @@ class SearchProfileServiceImpl implements SearchProfileService {
 	
 	@Override
 	public Page<ProfileDTO> findBySearchQuery(String query, Pageable pageable) {
+		Checks.checkParam(query != null, "query to find profile with can not be null");
+		Checks.checkParam(pageable != null, "pageable to find profile with can not be null");
+		
 		SearchQuery searchQuery = new NativeSearchQueryBuilder()
 				.withQuery(QueryBuilders.multiMatchQuery(query)
 						.field("objective")

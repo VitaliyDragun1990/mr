@@ -16,6 +16,6 @@ import com.revenat.myresume.domain.document.Profile;
  */
 @Retention(RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })
-public @interface OptionalInfo {
+public @interface OptionalData {
 
 }

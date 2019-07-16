@@ -13,7 +13,7 @@ public interface SearchProfileService {
 
 	@Nonnull Page<ProfileDTO> findAll(@Nonnull Pageable pageable);
 	
-	@Nonnull ProfileDTO getByUid(String uid);
+	@Nonnull ProfileDTO getByUid(@Nonnull String uid);
 	
 	@Nonnull Optional<ProfileDTO> findByEmail(@Nonnull String email);
 	

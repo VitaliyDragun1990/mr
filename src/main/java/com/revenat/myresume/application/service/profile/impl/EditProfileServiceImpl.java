@@ -26,8 +26,8 @@ import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.service.profile.EditProfileService;
 import com.revenat.myresume.application.transformer.Transformer;
 import com.revenat.myresume.application.util.ReflectionUtil;
-import com.revenat.myresume.domain.annotation.OptionalInfo;
-import com.revenat.myresume.domain.annotation.RequiredInfo;
+import com.revenat.myresume.domain.annotation.OptionalData;
+import com.revenat.myresume.domain.annotation.RequiredData;
 import com.revenat.myresume.domain.document.Certificate;
 import com.revenat.myresume.domain.document.Contacts;
 import com.revenat.myresume.domain.document.Course;
@@ -41,6 +41,7 @@ import com.revenat.myresume.domain.document.Skill;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.infrastructure.service.SearchIndexingService;
+import com.revenat.myresume.infrastructure.util.Checks;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
 @Service
@@ -59,12 +60,16 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 
 	@Override
 	public MainInfoDTO getMainInfoFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get main info for can not be null");
 		return getDTO(profileId, MainInfoDTO.class);
 	}
 	
 	@Override
 	@EnableTransactionSynchronization
 	public void updateMainInfo(String profileId, MainInfoDTO updateData) {
+		Checks.checkParam(profileId != null, "profileId for profile to update main info for can not be null");
+		Checks.checkParam(updateData != null, "updateData for profile to update main info can not be null");
+		
 		Profile profileToUpdate = profileRepo.findOne(profileId);
 		List<String> photoLinksToRemove = findPhotoLinksToRemove(profileToUpdate, updateData);
 		
@@ -77,6 +82,8 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 
 	@Override
 	public String getInfoFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get info for can not be null");
+		
 		Profile profile = profileRepo.findOne(profileId);
 		return profile.getInfo();
 	}
@@ -84,6 +91,9 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	@Override
 	@EnableTransactionSynchronization
 	public void updateInfoFor(String profileId, String info) {
+		Checks.checkParam(profileId != null, "profileId for profile to update info for can not be null");
+		Checks.checkParam(info != null, "info for profile to update can not be null");
+		
 		Profile profile = profileRepo.findOne(profileId);
 		if (Objects.equal(info, profile.getInfo())) {
 			LOGGER.debug("Info for profile with id: {} - nothing to update", profileId);
@@ -94,19 +104,23 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 			executeIfTransactionSuccess(
 					() -> {
 						LOGGER.info("Info for profile with id: {} has been updated", profileId);
-						updateProfileIndexData(updatedProfile, OptionalInfo.class);
+						updateProfileIndexData(updatedProfile, OptionalData.class);
 					});
 		}
 	}
 	
 	@Override
 	public ContactsDTO getContactsFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get contacts for can not be null");
 		return getDTO(profileId, ContactsDTO.class);
 	}
 	
 	@Override
 	@EnableTransactionSynchronization
 	public void updateContacts(String profileId, ContactsDTO updatedContacts) {
+		Checks.checkParam(profileId != null, "profileId for profile to update contacts for can not be null");
+		Checks.checkParam(updatedContacts != null, "updatedContacts for profile to update can not be null");
+		
 		Profile profile = profileRepo.findOne(profileId);
 		ContactsDTO profileContacts = getDTO(profileId, ContactsDTO.class);
 		if (profileContacts.equals(updatedContacts)) {
@@ -120,23 +134,31 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 	
 	@Override
 	public List<PracticalExperienceDTO> getExperienceFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get practical experience for can not be null");
 		return getDTOList(profileId, PracticalExperienceDTO.class);
 	}
 	
 	@Override
 	@EnableTransactionSynchronization
 	public void updateExperience(String profileId, List<PracticalExperienceDTO> updatedExperience) {
+		Checks.checkParam(profileId != null, "profileId for profile to update practical experience for can not be null");
+		Checks.checkParam(updatedExperience != null, "updatedExperience for profile to update can not be null");
+		
 		updateProfile(profileId, updatedExperience, PracticalExperienceDTO.class, PracticalExperience.class);
 	}
 	
 	@Override
 	public List<CertificateDTO> getCertificatesFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get certificates for can not be null");
 		return getDTOList(profileId, CertificateDTO.class);
 	}
 	
 	@Override
 	@EnableTransactionSynchronization
 	public void updateCertificates(String profileId, List<CertificateDTO> updatedCertificates, SuccessCallback successCallback) {
+		Checks.checkParam(profileId != null, "profileId for profile to update certificates for can not be null");
+		Checks.checkParam(updatedCertificates != null, "updatedCertificates for profile to update can not be null");
+		
 		List<String> certificateLinksToRemove = findCertificateLinksToRemove(profileId, updatedCertificates);
 		updateProfile(profileId, updatedCertificates, CertificateDTO.class, Certificate.class);
 		
@@ -151,56 +173,76 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 
 	@Override
 	public List<CourseDTO> getCoursesFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get courses for can not be null");
 		return getDTOList(profileId, CourseDTO.class);
 	}
 	
 	@Override
 	@EnableTransactionSynchronization
 	public void updateCourses(String profileId, List<CourseDTO> updatedCourses) {
+		Checks.checkParam(profileId != null, "profileId for profile to update courses for can not be null");
+		Checks.checkParam(updatedCourses != null, "updatedCourses for profile to update can not be null");
+		
 		updateProfile(profileId, updatedCourses, CourseDTO.class, Course.class);
 	}
 	
 	@Override
 	public List<EducationDTO> getEducationFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get education for can not be null");
 		return getDTOList(profileId, EducationDTO.class);
 	}
 	
 	@Override
 	@EnableTransactionSynchronization
 	public void updateEducation(String profileId, List<EducationDTO> updatedEducation) {
+		Checks.checkParam(profileId != null, "profileId for profile to update education for can not be null");
+		Checks.checkParam(updatedEducation != null, "updatedEducation for profile to update can not be null");
+		
 		updateProfile(profileId, updatedEducation, EducationDTO.class, Education.class);
 	}
 	
 	@Override
 	public List<LanguageDTO> getLanguagesFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get languages for can not be null");
 		return getDTOList(profileId, LanguageDTO.class);
 	}
 	
 	@Override
 	@EnableTransactionSynchronization
 	public void updateLanguages(String profileId, List<LanguageDTO> updatedLanguages) {
+		Checks.checkParam(profileId != null, "profileId for profile to update languages for can not be null");
+		Checks.checkParam(updatedLanguages != null, "updatedLanguages for profile to update can not be null");
+		
 		updateProfile(profileId, updatedLanguages, LanguageDTO.class, Language.class);
 	}
 	
 	@Override
 	public List<HobbyDTO> getHobbiesFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get hobbies for can not be null");
 		return getDTOList(profileId, HobbyDTO.class);
 	}
 	
 	@Override
 	@EnableTransactionSynchronization
 	public void updateHobbies(String profileId, List<HobbyDTO> updatedHobbies) {
+		Checks.checkParam(profileId != null, "profileId for profile to update hobbies for can not be null");
+		Checks.checkParam(updatedHobbies != null, "updatedHobbies for profile to update can not be null");
+		
 		updateProfile(profileId, updatedHobbies, HobbyDTO.class, Hobby.class);
 	}
 
 	@Override
 	public List<SkillDTO> getSkillsFor(String profileId) {
+		Checks.checkParam(profileId != null, "profileId for profile to get skills for can not be null");
 		return getDTOList(profileId, SkillDTO.class);
 	}
 	
 	@Override
 	@EnableTransactionSynchronization
 	public void updateSkills(String profileId, List<SkillDTO> updatedSkills) {
+		Checks.checkParam(profileId != null, "profileId for profile to update skills for can not be null");
+		Checks.checkParam(updatedSkills != null, "updatedSkills for profile to update can not be null");
+		
 		updateProfile(profileId, updatedSkills, SkillDTO.class, Skill.class);
 	}
 	
@@ -227,7 +269,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 					removeImages(photoLinksToRemove);
 					evilcProfileCache(loadedProfile.getUid());
 					if (isProfileCompleted) {
-						updateProfileIndexData(loadedProfile, RequiredInfo.class);
+						updateProfileIndexData(loadedProfile, RequiredData.class);
 					}
 				});
 	}
@@ -328,7 +370,7 @@ class EditProfileServiceImpl extends AbstractModifyProfileService implements Edi
 
 	private <E extends ProfileDocument> void updateProfileDataIndex(
 			final String profileId, final List<E> updatedEntityList, final Class<E> entityClass) {
-		searchIndexingService.updateProfileDataIndex(profileId, updatedEntityList, entityClass);
+		searchIndexingService.updateProfileAggregateDataIndex(profileId, updatedEntityList, entityClass);
 	}
 
 	private boolean isComparable(Class<?> dtoClass) {

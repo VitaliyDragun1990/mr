@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 @Service
 class CacheServiceImpl implements CacheService {
@@ -27,6 +28,8 @@ class CacheServiceImpl implements CacheService {
 	@Override
 	@Cacheable(cacheNames = "profile")
 	public Optional<Profile> findProfileByUid(String uid) {
+		Checks.checkParam(uid != null, "uid of the profile to find can not be null");
+		
 		try {
 			LOGGER.debug("Profile not found in cache by uid={}, loading profile from repository ", uid);
 			return profileRepo.findOneByUid(uid);
@@ -38,6 +41,8 @@ class CacheServiceImpl implements CacheService {
 	@Override
 	@CacheEvict(cacheNames = "profile")
 	public void deleteProfileByUid(String uid) {
+		Checks.checkParam(uid != null, "uid of the profile to delete can not be null");
+		
 		LOGGER.debug("Profile removed from cache by uid={}", uid);
 	}
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.revenat.myresume.application.exception.DataGenerationException;
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.application.util.DataUtil;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 @Component
 class DataGeneratorImpl implements DataGenerator {
@@ -37,6 +38,8 @@ class DataGeneratorImpl implements DataGenerator {
 
 	@Override
 	public String generateUid(String firstName, String lastName, ResultChecker uidChecker) {
+		checkParams(firstName, lastName, uidChecker);
+		
 		String baseUid = DataUtil.generateProfileUid(firstName, lastName);
 		String uid = baseUid;
 		for (int i = 0; attemptFailed(uidChecker, uid); i++) {
@@ -48,17 +51,11 @@ class DataGeneratorImpl implements DataGenerator {
 		}
 		return uid;
 	}
-
-	private boolean attemptFailed(ResultChecker uidChecker, String uid) {
-		return !uidChecker.isAcceptable(uid);
-	}
-
-	private boolean isExceededTryCount(int i) {
-		return i >= maxTryCountToGenerateUid;
-	}
 	
 	@Override
 	public String generateRestoreAccessLink(String token) {
+		Checks.checkParam(token != null, "token to generate restore access link can not be null");
+		
 		return appHost + "/restore/" + token;
 	}
 	
@@ -71,13 +68,6 @@ class DataGeneratorImpl implements DataGenerator {
 		return DataUtil.capitalizeName(fileName);
 	}
 	
-	private String getRidOfFileExtension(String fileName) {
-		int point = fileName.lastIndexOf('.');
-		if (point != -1) {
-			return fileName.substring(0, point);
-		}
-		return fileName;
-	}
 	
 	@Override
 	public String generateRandomImageName() {
@@ -87,6 +77,28 @@ class DataGeneratorImpl implements DataGenerator {
 	@Override
 	public String generateRandomPassword() {
 		return DataUtil.generateRandomString(generatedPasswordAlphabet, generatedPasswordLength);
+	}
+	
+	private String getRidOfFileExtension(String fileName) {
+		int point = fileName.lastIndexOf('.');
+		if (point != -1) {
+			return fileName.substring(0, point);
+		}
+		return fileName;
+	}
+	
+	private boolean attemptFailed(ResultChecker uidChecker, String uid) {
+		return !uidChecker.isAcceptable(uid);
+	}
+	
+	private boolean isExceededTryCount(int i) {
+		return i >= maxTryCountToGenerateUid;
+	}
+	
+	private static void checkParams(String firstName, String lastName, ResultChecker uidChecker) {
+		Checks.checkParam(firstName != null, "firstName to generate uid for can not be null");
+		Checks.checkParam(lastName != null, "lastName to generate uid for can not be null");
+		Checks.checkParam(uidChecker != null, "uidChecker to verify generated uid with can not be null");
 	}
 
 }

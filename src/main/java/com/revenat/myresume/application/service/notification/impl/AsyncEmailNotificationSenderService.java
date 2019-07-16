@@ -14,6 +14,7 @@ import com.revenat.myresume.application.service.notification.NotificationSenderS
 import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.exception.EmailGatewayException;
 import com.revenat.myresume.infrastructure.gateway.email.EmailGateway;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 /**
  * Implementation of {@link NotificationSenderService} which uses email to send
@@ -45,11 +46,15 @@ class AsyncEmailNotificationSenderService implements NotificationSenderService {
 
 	@Override
 	public void sendNotification(NotificationMessage message) {
+		Checks.checkParam(message != null, "message to send notificaiton with can not be null");
+		
 		executorService.submit(new EmailItem(message, tryAttempts));
 	}
 
 	@Override
 	public String getDestinationAddress(Profile profile) {
+		Checks.checkParam(profile != null, "profile to get destination address for can not be null");
+		
 		return profile.getEmail();
 	}
 

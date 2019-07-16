@@ -17,6 +17,7 @@ import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
 import com.revenat.myresume.infrastructure.service.SearchIndexingService;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 @Service
 class RemoveProfileServiceImpl extends AbstractModifyProfileService implements RemoveProfileService {
@@ -31,6 +32,8 @@ class RemoveProfileServiceImpl extends AbstractModifyProfileService implements R
 	@Override
 	@EnableTransactionSynchronization
 	public void removeProfile(String profileId) {
+		Checks.checkParam(profileId != null, "profileId to remove profile with can not be null");
+		
 		Optional<Profile> optional = profileRepo.findOneById(profileId);
 		if (optional.isPresent()) {
 			Profile profile = optional.get();

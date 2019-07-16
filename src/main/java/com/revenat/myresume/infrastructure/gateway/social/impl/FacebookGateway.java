@@ -13,6 +13,7 @@ import com.revenat.myresume.infrastructure.exception.SocialNetworkGatewayExcepti
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkAccount;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkGateway;
 import com.revenat.myresume.infrastructure.media.converter.TranslitConverter;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 public class FacebookGateway implements SocialNetworkGateway {
 	private final String appId;
@@ -40,6 +41,8 @@ public class FacebookGateway implements SocialNetworkGateway {
 
 	@Override
 	public SocialNetworkAccount getSocialAccount(String verificationCode) {
+		Checks.checkParam(verificationCode != null, "verificationCode to get social account with can not be null");
+		
 		try {
 			User user = getFacebookUser(verificationCode);
 			String avatarUrl = getFacebookUserAvatarUrl(user.getId());

@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.SafeHtml;
 import com.revenat.myresume.application.validation.annotation.Adulthood;
 import com.revenat.myresume.application.validation.annotation.EnglishLanguage;
 import com.revenat.myresume.application.validation.annotation.Phone;
-import com.revenat.myresume.domain.annotation.RequiredInfo;
+import com.revenat.myresume.domain.annotation.RequiredData;
 import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 
@@ -29,45 +29,45 @@ public class MainInfoDTO implements Serializable {
 	
 	@NotNull
 	@Adulthood
-	@RequiredInfo
+	@RequiredData
 	private LocalDate birthDay;
 	
 	@NotBlank
 	@Size(max = 60)
 	@SafeHtml
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
-	@RequiredInfo
+	@RequiredData
 	private String country;
 	
 	@NotBlank
 	@Size(max = 100)
 	@SafeHtml
 	@EnglishLanguage(withNumbers = false, withSpecSymbols = false)
-	@RequiredInfo
+	@RequiredData
 	private String city;
 	
 	@NotBlank
 	@Email
 	@Size(max = 100)
 	@EnglishLanguage
-	@RequiredInfo
+	@RequiredData
 	private String email;
 	
 	@NotBlank
 	@Size(max = 20)
 	@Phone
-	@RequiredInfo
+	@RequiredData
 	private String phone;
 	
 	@NotBlank
 	@SafeHtml
 	@EnglishLanguage
-	@RequiredInfo
+	@RequiredData
 	private String objective;
 	
 	@NotBlank
 	@EnglishLanguage
-	@RequiredInfo
+	@RequiredData
 	private String summary;
 	
 	public MainInfoDTO() {

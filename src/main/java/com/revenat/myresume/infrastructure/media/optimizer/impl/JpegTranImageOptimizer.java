@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.revenat.myresume.infrastructure.media.optimizer.ImageOptimizer;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 /**
  * Optimizes image using jpegtran tool.
@@ -31,6 +32,8 @@ class JpegTranImageOptimizer implements ImageOptimizer {
 
 	@Override
 	public void optimize(Path imagePath) {
+		Checks.checkParam(imagePath != null, "imagePath for image to optimize ca not be null");
+		
 		try {
 			optimizeImageFile(imagePath);
 		} catch (Exception e) {

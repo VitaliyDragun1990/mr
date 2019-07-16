@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.revenat.myresume.infrastructure.exception.ImageStorageException;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
+import com.revenat.myresume.infrastructure.util.Checks;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 import com.revenat.myresume.presentation.image.model.ImageType;
 
@@ -29,6 +30,10 @@ class FileImageStorageService implements ImageStorageService {
 
 	@Override
 	public String save(String imageName, ImageType imageType, Path tempImageFile) {
+		Checks.checkParam(imageName != null, "imageName for image to save can not be null");
+		Checks.checkParam(imageType != null, "imageType for image to save can not be null");
+		Checks.checkParam(tempImageFile != null, "tempImageFile for image to save can not be null");
+		
 		try {
 			String imageLink = getImageLink(imageType.getFolderName(), imageName);
 			saveImageFile(tempImageFile, getDestinationImageFile(imageLink));

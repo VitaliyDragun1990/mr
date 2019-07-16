@@ -8,7 +8,7 @@ import com.revenat.myresume.application.dto.MainInfoDTO;
 import com.revenat.myresume.application.exception.DTOValidationException;
 import com.revenat.myresume.application.service.cache.CacheService;
 import com.revenat.myresume.application.util.ReflectionUtil;
-import com.revenat.myresume.domain.annotation.RequiredInfo;
+import com.revenat.myresume.domain.annotation.RequiredData;
 import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
@@ -48,7 +48,7 @@ abstract class AbstractModifyProfileService {
 			profile.setLargePhoto(mainInfo.getLargePhoto());
 			profile.setSmallPhoto(mainInfo.getSmallPhoto());
 		}
-		return ReflectionUtil.copyFields(mainInfo, profile, RequiredInfo.class) > 0 || isProfilePhotosUpdated;
+		return ReflectionUtil.copyFields(mainInfo, profile, RequiredData.class) > 0 || isProfilePhotosUpdated;
 	}
 	
 	protected boolean checkIfProfilePhotosUpdated(Profile loadedProfile, MainInfoDTO updatedMainInfo) {

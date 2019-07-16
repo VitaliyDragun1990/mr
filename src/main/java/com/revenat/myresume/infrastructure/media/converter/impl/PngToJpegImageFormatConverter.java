@@ -10,12 +10,15 @@ import javax.imageio.ImageIO;
 import org.springframework.stereotype.Component;
 
 import com.revenat.myresume.infrastructure.media.converter.ImageFormatConverter;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 @Component("pngToJpegImageFormatConverter")
 class PngToJpegImageFormatConverter implements ImageFormatConverter {
 
 	@Override
 	public void convert(Path sourceImageFile, Path destImageFile) throws IOException {
+		checkParams(sourceImageFile, destImageFile);
+		
 		BufferedImage bufferedImage = null;
 		try {
 			bufferedImage = ImageIO.read(sourceImageFile.toFile());
@@ -29,6 +32,11 @@ class PngToJpegImageFormatConverter implements ImageFormatConverter {
 			}
 		}
 
+	}
+
+	private static void checkParams(Path sourceImageFile, Path destImageFile) {
+		Checks.checkParam(sourceImageFile != null, "sourceImageFile to convert image from can not be null");
+		Checks.checkParam(destImageFile != null, "destImageFile to save converted image to can not be null");
 	}
 
 }

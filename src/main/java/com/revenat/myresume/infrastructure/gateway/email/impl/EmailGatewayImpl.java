@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.revenat.myresume.infrastructure.exception.EmailGatewayException;
 import com.revenat.myresume.infrastructure.gateway.email.EmailGateway;
+import com.revenat.myresume.infrastructure.util.Checks;
 
 @Component
 class EmailGatewayImpl implements EmailGateway {
@@ -34,6 +35,8 @@ class EmailGatewayImpl implements EmailGateway {
 
 	@Override
 	public void sendEmail(String recipientAddress, String recipientName, String subject, String content, boolean isHtml) {
+		checkParams(recipientAddress, recipientName, subject, content);
+		
 		try {
 			MimeMessage message = buildMessage(recipientAddress, recipientName, subject, content, isHtml);
 			mailSender.send(message);
@@ -50,6 +53,13 @@ class EmailGatewayImpl implements EmailGateway {
 		messageHelper.setFrom(fromEmail, fromName);
 		messageHelper.setText(content, isHtml);
 		return new MimeMailMessage(messageHelper).getMimeMessage();
+	}
+	
+	private static void checkParams(String recipientAddress, String recipientName, String subject, String content) {
+		Checks.checkParam(recipientAddress != null, "recipientAddress to send email to can not be null");
+		Checks.checkParam(recipientName != null, "recipientName to send email to can not be null");
+		Checks.checkParam(subject != null, "subject of the email to send can not be null");
+		Checks.checkParam(content != null, "content of the email to send can not be null");
 	}
 
 }
