@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.revenat.myresume.application.generator.DataGenerator;
 import com.revenat.myresume.domain.exception.ApplicationException;
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
+import com.revenat.myresume.infrastructure.util.Checks;
 import com.revenat.myresume.presentation.image.exception.ImageUploadingException;
 import com.revenat.myresume.presentation.image.model.ImageType;
 import com.revenat.myresume.presentation.image.model.UploadedCertificateResult;
@@ -46,6 +47,8 @@ class ImageUploaderServiceImpl implements ImageUploaderService {
 	@Override
 	@EnableTemporaryImageStorage
 	public UploadedImageResult uploadNewProfilePhoto(MultipartFile uploadedPhoto) {
+		Checks.checkParam(uploadedPhoto != null, "uploadedPhoto multipart file to upload new photo can not be null");
+		
 		try {
 			return processUpload(uploadedPhoto, ImageType.AVATAR);
 		} catch (IOException | ApplicationException e) {
@@ -56,13 +59,16 @@ class ImageUploaderServiceImpl implements ImageUploaderService {
 	@Override
 	@EnableTemporaryImageStorage
 	public UploadedCertificateResult uploadNewCertificateImage(MultipartFile uploadedCertificateImage) {
+		Checks.checkParam(uploadedCertificateImage != null,
+				"uploadedCertificateImage multipart file to upload new certificate image can not be null");
+		
 		try {
 			UploadedImageResult uploadedImage = processUpload(uploadedCertificateImage, ImageType.CERTIFICATES);
 			uploadedImageManager.addImageLinks(uploadedImage);
 			String certificateName = dataGenerator
 					.generateCertificateName(uploadedCertificateImage.getOriginalFilename());
-			return new UploadedCertificateResult(certificateName, uploadedImage.getLargeUrl(),
-					uploadedImage.getSmallUrl());
+			return new UploadedCertificateResult(certificateName, uploadedImage.getLargeImageLink(),
+					uploadedImage.getSmallImageLink());
 		} catch (IOException | ApplicationException e) {
 			throw new ImageUploadingException("Can't save uploaded sertificate image: " + e.getMessage(), e);
 		}

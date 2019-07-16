@@ -42,7 +42,7 @@ public class RestoreAccessController {
 	@GetMapping("/{token}")
 	public String restoreAccess(@PathVariable("token") String token, RedirectAttributes redirectAttributes) {
 		try {
-			securityService.processPasswordResetToken(token);
+			securityService.verifyPasswordResetToken(token);
 		} catch (InvalidRestoreAccessTokenException e) {
 			return "restore-failed";
 		}

@@ -1,5 +1,7 @@
 package com.revenat.myresume.presentation.image.storage;
 
+import javax.annotation.Nonnull;
+
 import com.revenat.myresume.presentation.image.exception.TemporaryImageStorageException;
 
 /**
@@ -18,5 +20,5 @@ public interface TemporaryImageStorageManager {
 	 * @throws {@link TemporaryImageStorageException} if current temporary storage
 	 *                can not be obtained for some reason
 	 */
-	TemporaryImageStorage getCurrentTemporaryImageStorage();
+	@Nonnull TemporaryImageStorage getCurrentTemporaryImageStorage();
 }

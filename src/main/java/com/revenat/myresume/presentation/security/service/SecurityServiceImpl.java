@@ -23,6 +23,7 @@ import com.revenat.myresume.domain.document.Profile;
 import com.revenat.myresume.domain.document.ProfileRestore;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRestoreRepository;
+import com.revenat.myresume.infrastructure.util.Checks;
 import com.revenat.myresume.presentation.security.exception.InvalidRestoreAccessTokenException;
 import com.revenat.myresume.presentation.security.model.AuthenticatedUser;
 
@@ -59,6 +60,8 @@ class SecurityServiceImpl implements SecurityService {
 	@Override
 	@EnableTransactionSynchronization
 	public void restoreAccess(String anyUniqueId) {
+		Checks.checkParam(anyUniqueId != null, "anyUniqueId to restore access can not be null");
+		
 		Optional<Profile> profile = profileRepo.findByUidOrEmailOrPhone(anyUniqueId, anyUniqueId, anyUniqueId);
 		if (profile.isPresent()) {
 			Profile p = profile.get();
@@ -78,7 +81,9 @@ class SecurityServiceImpl implements SecurityService {
 	}
 
 	@Override
-	public void processPasswordResetToken(String token) {
+	public void verifyPasswordResetToken(String token) {
+		Checks.checkParam(token != null, "token to verify can not be null");
+		
 		Optional<ProfileRestore> restoreOptional = profileRestoreRepo.findByToken(token);
 		if (!restoreOptional.isPresent()) {
 			throw new InvalidRestoreAccessTokenException("Specified restore access token is invalid: " + token);
@@ -91,26 +96,16 @@ class SecurityServiceImpl implements SecurityService {
 	@Override
 	@EnableTransactionSynchronization
 	public void resetPassword(AuthenticatedUser authUser, String token, String newPassword) {
-		Optional<ProfileRestore> restoreOptional = profileRestoreRepo.findByToken(token);
-		if (!restoreOptional.isPresent()) {
-			SecurityUtil.logout(securityFilterChain);
-			throw new InvalidRestoreAccessTokenException("Specified restore access token is invalid: " + token);
-		}
-		ProfileRestore restore = restoreOptional.get();
+		checkResetPasswordParams(authUser, token, newPassword);
+		
+		ProfileRestore restore = getProfileRestore(token);
 		Profile profileToResetPassword = restore.getProfile();
 		
-		boolean attemptToResetForAnotherUser = !Objects.equal(profileToResetPassword.getId(), authUser.getId());
-		if (attemptToResetForAnotherUser) {
-			SecurityUtil.logout(securityFilterChain);
-			LOGGER.warn("Attempt to restore password for another user: token for user='{}', but provided by user='{}'",
-					profileToResetPassword.getUid(), authUser.getUsername());
-			throw new InvalidRestoreAccessTokenException("Specified restore access token doesn't belong to given user: "
-					+ "token for user with uid: '" + profileToResetPassword.getUid() + "' but current authenticated user: '"
-					+ authUser.getUsername() + "'");
-		}
+		verifyResetAttemptValidity(authUser, profileToResetPassword);
 		
 		profileToResetPassword.setPassword(passwordEncoder.encode(newPassword));
 		profileRepo.save(profileToResetPassword);
+		
 		SecurityUtil.authenticate(profileToResetPassword);
 		profileRestoreRepo.delete(restore);
 		
@@ -120,25 +115,68 @@ class SecurityServiceImpl implements SecurityService {
 	@Override
 	@EnableTransactionSynchronization
 	public void updatePassword(AuthenticatedUser authUser, String oldPassword, String newPassword) {
+		checkUpdatePasswordParams(authUser, oldPassword, newPassword);
+		
 		Profile profile = profileRepo.findOne(authUser.getId());
-		if (!passwordEncoder.matches(oldPassword, profile.getPassword())) {
-			throw new BadCredentialsException("Can not update password: provided user password is incorrect.");
-		}
+		verifyOldPassword(oldPassword, profile);
+		
 		profile.setPassword(passwordEncoder.encode(newPassword));
 		profileRepo.save(profile);
+		
 		SecurityUtil.authenticate(profile);
 		executeIfTransactionSucceeded(() -> notificationManagerService.sendPasswordChanged(profile));
 	}
 	
 	@Override
 	public void remove(AuthenticatedUser authUser) {
+		Checks.checkParam(authUser != null, "authUser to remove can not be null");
+		
 		profileService.removeProfile(authUser.getId());
 		SecurityUtil.logout(securityFilterChain);
+	}
+	
+	private void verifyOldPassword(String oldPassword, Profile profile) {
+		if (!passwordEncoder.matches(oldPassword, profile.getPassword())) {
+			throw new BadCredentialsException("Can not update password: provided user password is incorrect.");
+		}
+	}
+	
+	private void verifyResetAttemptValidity(AuthenticatedUser authUser, Profile profileToResetPassword) {
+		boolean attemptToResetForAnotherUser = !Objects.equal(profileToResetPassword.getId(), authUser.getId());
+		if (attemptToResetForAnotherUser) {
+			SecurityUtil.logout(securityFilterChain);
+			LOGGER.warn("Attempt to restore password for another user: token for user='{}', but provided by user='{}'",
+					profileToResetPassword.getUid(), authUser.getUsername());
+			throw new InvalidRestoreAccessTokenException("Specified restore access token doesn't belong to given user: "
+					+ "token for user with uid: '" + profileToResetPassword.getUid() + "' but current authenticated user: '"
+					+ authUser.getUsername() + "'");
+		}
+	}
+	
+	private ProfileRestore getProfileRestore(String token) {
+		Optional<ProfileRestore> restoreOptional = profileRestoreRepo.findByToken(token);
+		if (!restoreOptional.isPresent()) {
+			SecurityUtil.logout(securityFilterChain);
+			throw new InvalidRestoreAccessTokenException("Specified restore access token is invalid: " + token);
+		}
+		return restoreOptional.get();
 	}
 
 	private void sendRestoreLinkNotification(final Profile profile, String restoreToken) {
 		final String restoreLink = dataGenerator.generateRestoreAccessLink(restoreToken);
 		notificationManagerService.sendRestoreAccessLink(profile, restoreLink);
+	}
+	
+	private static void checkResetPasswordParams(AuthenticatedUser authUser, String token, String newPassword) {
+		Checks.checkParam(authUser != null, "authUser to reset password for can not be null");
+		Checks.checkParam(token != null, "token to reset password with can not be null");
+		Checks.checkParam(newPassword != null, "newPassword to set can not be null");
+	}
+	
+	private static void checkUpdatePasswordParams(AuthenticatedUser authUser, String oldPassword, String newPassword) {
+		Checks.checkParam(authUser != null, "authUser to update password for can not be null");
+		Checks.checkParam(oldPassword != null, "oldPassword to update can not be null");
+		Checks.checkParam(newPassword != null, "newPassword to set can not be null");
 	}
 
 }

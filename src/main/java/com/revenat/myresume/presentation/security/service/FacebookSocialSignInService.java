@@ -26,6 +26,7 @@ import com.revenat.myresume.infrastructure.exception.SocialNetworkGatewayExcepti
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkAccount;
 import com.revenat.myresume.infrastructure.gateway.social.SocialNetworkGateway;
 import com.revenat.myresume.infrastructure.repository.storage.ProfileRepository;
+import com.revenat.myresume.infrastructure.util.Checks;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 import com.revenat.myresume.presentation.image.exception.ImageUploadingException;
 import com.revenat.myresume.presentation.image.model.UploadedImageResult;
@@ -65,6 +66,7 @@ class FacebookSocialSignInService implements SocialSignInService {
 	@Override
 	@EnableTransactionSynchronization
 	public AuthenticatedUser signIn(String verificationCode) {
+		Checks.checkParam(verificationCode != null, "verificationCode to sign in via facebook can not be null");
 		try {
 			return signInFacebookUser(verificationCode);
 		} catch (SocialNetworkGatewayException | SignUpException e) {
@@ -106,8 +108,8 @@ class FacebookSocialSignInService implements SocialSignInService {
 		if (avatarUrl != null) {
 			try {
 				UploadedImageResult uploadedResult = imageUploadService.uploadNewProfilePhoto(new MultipartFromUrl(avatarUrl));
-				profile.setLargePhoto(uploadedResult.getLargeUrl());
-				profile.setSmallPhoto(uploadedResult.getSmallUrl());
+				profile.setLargePhoto(uploadedResult.getLargeImageLink());
+				profile.setSmallPhoto(uploadedResult.getSmallImageLink());
 			} catch (ImageUploadingException e) {
 				LOGGER.warn("Can't extract social network avatar and set it as profile photo: " + e.getMessage(), e);
 			}

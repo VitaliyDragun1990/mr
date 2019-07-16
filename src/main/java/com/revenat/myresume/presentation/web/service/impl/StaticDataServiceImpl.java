@@ -19,6 +19,7 @@ import com.revenat.myresume.application.dto.HobbyDTO;
 import com.revenat.myresume.domain.document.LanguageLevel;
 import com.revenat.myresume.domain.document.LanguageType;
 import com.revenat.myresume.domain.document.SkillCategory;
+import com.revenat.myresume.infrastructure.util.Checks;
 import com.revenat.myresume.infrastructure.util.CommonUtils;
 import com.revenat.myresume.presentation.web.service.StaticDataService;
 
@@ -111,6 +112,8 @@ class StaticDataServiceImpl implements StaticDataService {
 	
 	@Override
 	public List<HobbyDTO> getAllHobbiesWithSelectedMarked(Collection<HobbyDTO> selectedHobbies) {
+		Checks.checkParam(selectedHobbies != null, "selectedHobbies can not be null");
+		
 		List<HobbyDTO> hobbies = new ArrayList<>();
 		for (HobbyDTO h : listAllHobbies()) {
 			boolean selected = selectedHobbies.contains(h);
@@ -120,9 +123,11 @@ class StaticDataServiceImpl implements StaticDataService {
 	}
 
 	@Override
-	public List<HobbyDTO> getSelectedHobbiesByName(List<String> names) {
+	public List<HobbyDTO> getSelectedHobbiesByName(List<String> hobbyNames) {
+		Checks.checkParam(hobbyNames != null, "hobbyNames ca not be null");
+		
 		List<HobbyDTO> result = new ArrayList<>();
-		for (String name : names) {
+		for (String name : hobbyNames) {
 			if (allHobbyNames.contains(name)) {
 				result.add(new HobbyDTO(name, true));
 			}

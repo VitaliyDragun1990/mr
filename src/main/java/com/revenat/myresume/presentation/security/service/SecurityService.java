@@ -48,7 +48,7 @@ public interface SecurityService {
 	 * @throws InvalidRestoreAccessTokenException if specified access token is
 	 *                                            invalid
 	 */
-	void processPasswordResetToken(@Nonnull String token);
+	void verifyPasswordResetToken(@Nonnull String token);
 
 	/**
 	 * Removes profile associated with profided {@link AuthenticatedUser} user. If

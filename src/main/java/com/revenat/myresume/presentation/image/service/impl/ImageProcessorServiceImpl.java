@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.revenat.myresume.infrastructure.media.converter.ImageFormatConverter;
 import com.revenat.myresume.infrastructure.media.optimizer.ImageOptimizer;
 import com.revenat.myresume.infrastructure.media.resizer.ImageResizer;
+import com.revenat.myresume.infrastructure.util.Checks;
 import com.revenat.myresume.presentation.image.exception.ImageProcessingException;
 import com.revenat.myresume.presentation.image.model.ImageType;
 import com.revenat.myresume.presentation.image.service.ImageProcessorService;
@@ -34,6 +35,8 @@ class ImageProcessorServiceImpl implements ImageProcessorService {
 
 	@Override
 	public void processImage(TemporaryImageStorage temporaryStorage, ImageType imageType, String contentType) {
+		checkParams(temporaryStorage, imageType);
+		
 		Path sourcePath = temporaryStorage.getLargeImagePath();
 		try {
 			processConversion(contentType, sourcePath);
@@ -64,6 +67,12 @@ class ImageProcessorServiceImpl implements ImageProcessorService {
 	private void processOptimization(TemporaryImageStorage temporaryStorage) {
 		imageOptimizer.optimize(temporaryStorage.getSmallImagePath());
 		imageOptimizer.optimize(temporaryStorage.getLargeImagePath());
+	}
+	
+	private static void checkParams(TemporaryImageStorage temporaryStorage, ImageType imageType) {
+		Checks.checkParam(temporaryStorage != null, "temporaryStorage to process image can not be null");
+		Checks.checkParam(imageType != null, "imageType of the image to process can not be null");
+		Checks.checkParam(imageType != null, "contentType of the image to process can not be null");
 	}
 
 }

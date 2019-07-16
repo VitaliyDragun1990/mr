@@ -36,7 +36,7 @@ public interface StaticDataService {
 	 * @return list of hobbies
 	 */
 	@Nonnull
-	List<HobbyDTO> getSelectedHobbiesByName(@Nonnull List<String> names);
+	List<HobbyDTO> getSelectedHobbiesByName(@Nonnull List<String> hobbyNames);
 
 	/**
 	 * Returns a map containing key-value pairs in form of 'month ordinal number -

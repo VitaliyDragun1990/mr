@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.revenat.myresume.infrastructure.service.ImageStorageService;
+import com.revenat.myresume.infrastructure.util.Checks;
 import com.revenat.myresume.presentation.image.model.UploadedImageResult;
 
 /**
@@ -48,7 +50,9 @@ public class UploadedImageManager implements Serializable {
 		return imageLinks;
 	}
 
-	public void addImageLinks(UploadedImageResult imageLinks) {
+	public void addImageLinks(@Nonnull UploadedImageResult imageLinks) {
+		Checks.checkParam(imageLinks != null, "imageLinks to add can not be null");
+		
 		getImageLinks().add(imageLinks);
 	}
 
@@ -60,8 +64,8 @@ public class UploadedImageManager implements Serializable {
 	private void removeImageLinks() {
 		if (!getImageLinks().isEmpty()) {
 			for (UploadedImageResult image : imageLinks) {
-				imageService.remove(image.getLargeUrl());
-				imageService.remove(image.getSmallUrl());
+				imageService.remove(image.getLargeImageLink());
+				imageService.remove(image.getSmallImageLink());
 			}
 			LOGGER.info("Removed {} temporary images", imageLinks);
 		}

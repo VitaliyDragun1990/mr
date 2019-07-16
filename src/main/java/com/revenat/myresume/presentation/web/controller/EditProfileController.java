@@ -97,8 +97,8 @@ public class EditProfileController {
 		
 		if (!uploadedPhoto.isEmpty()) {
 			UploadedImageResult uploadedResult = uploaderService.uploadNewProfilePhoto(uploadedPhoto);
-			mainInfo.setLargePhoto(uploadedResult.getLargeUrl());
-			mainInfo.setSmallPhoto(uploadedResult.getSmallUrl());
+			mainInfo.setLargePhoto(uploadedResult.getLargeImageLink());
+			mainInfo.setSmallPhoto(uploadedResult.getSmallImageLink());
 		}
 		
 		try {

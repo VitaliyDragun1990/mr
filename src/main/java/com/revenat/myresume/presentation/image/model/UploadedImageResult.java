@@ -13,20 +13,20 @@ import com.revenat.myresume.infrastructure.util.CommonUtils;
 public class UploadedImageResult implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final String largeUrl;
-	private final String smallUrl;
+	private final String largeImageLink;
+	private final String smallImageLink;
 
 	public UploadedImageResult(String largeUrl, String smallUrl) {
-		this.largeUrl = largeUrl;
-		this.smallUrl = smallUrl;
+		this.largeImageLink = largeUrl;
+		this.smallImageLink = smallUrl;
 	}
 
-	public String getLargeUrl() {
-		return largeUrl;
+	public String getLargeImageLink() {
+		return largeImageLink;
 	}
 
-	public String getSmallUrl() {
-		return smallUrl;
+	public String getSmallImageLink() {
+		return smallImageLink;
 	}
 
 	@Override
