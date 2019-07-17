@@ -1,12 +1,8 @@
 package com.revenat.myresume.infrastructure.config;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,6 +20,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @EnableElasticsearchRepositories("com.revenat.myresume.infrastructure.repository.search")
 public class ElasticSearchConfig {
 	
+	/*
 	// Separate elastic search server instance config
 	@Value("${elasticsearch.host}")
 	private String esHost;
@@ -54,12 +51,12 @@ public class ElasticSearchConfig {
 	public ElasticsearchOperations elasticsearchTemplate() throws UnknownHostException {
 		return new ElasticsearchTemplate(client(), new CustomEntityMapper());
 	}
+	*/
 	
 
 	// Embedded elastic search server instance config
 
 
-	/*
 	@Value("${elasticsearch.home}")
 	private String elasticSearchHome;
 	
@@ -85,5 +82,4 @@ public class ElasticSearchConfig {
 	public ElasticsearchOperations elasticsearchTemplate() {
 		return new ElasticsearchTemplate(node().client(), new CustomEntityMapper());
 	}
-	*/
 }

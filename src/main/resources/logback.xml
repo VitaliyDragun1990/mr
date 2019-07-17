@@ -9,7 +9,7 @@
 	</appender>
 	<!-- http://logback.qos.ch/manual/appenders.html -->
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>E:/servers/my-resume-tomcat-8.5.39/logs/resume.log</file>
+		<file>/var/myresume/logs/resume.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- daily rollover -->
 			<fileNamePattern>resume.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -21,8 +21,6 @@
 			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
-
-	<!--logger name="org.hibernate.SQL" level="debug" /> <logger name="org.hibernate.type" level="trace" /-->
 
 	<logger name="com.revenat.myresume.application.service" level="debug" />
 

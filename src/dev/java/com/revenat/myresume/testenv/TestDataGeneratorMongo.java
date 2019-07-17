@@ -54,8 +54,8 @@ public class TestDataGeneratorMongo {
 	private static final String COLLECTION_REMEMBER_ME_TOKEN = "rememberMeToken";
 	private static final String COLLECTION_PROFILE = "profile";
 	// Settings for MongoDB
-	private static final String MONGO_URL = "192.168.99.100";
-	private static final int MONGO_PORT = 27017;
+	private static final String MONGO_URL = "127.0.0.1";
+	private static final int MONGO_PORT = 27117;
 	private static final String MONGO_DB = "resume";
 
 	private static final String PHOTO_PATH = "external/test-data/photos/";
