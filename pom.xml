@@ -42,7 +42,7 @@
 		<junidecode.version>0.1.1</junidecode.version>
 		<jsr305-findbugs.version>3.0.2</jsr305-findbugs.version>
 		<!-- Test dependencies -->
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<mockito.version>2.13.0</mockito.version>
 		<hamcrest.version>2.1</hamcrest.version>
 		<logback.version>1.2.3</logback.version>
