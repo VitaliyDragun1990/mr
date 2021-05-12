@@ -31,7 +31,7 @@
 		<spring.version>4.3.24.RELEASE</spring.version>
 		<spring-data-jpa.version>1.11.22.RELEASE</spring-data-jpa.version>
 		<spring-data-elasticsearch.version>2.1.22.RELEASE</spring-data-elasticsearch.version>
-		<spring-security.version>4.2.12.RELEASE</spring-security.version>
+		<spring-security.version>5.2.10.RELEASE</spring-security.version>
 		<jna.version>4.5.2</jna.version>
 		<hibernate.version>5.4.3.Final</hibernate.version>
 		<javax.mail.version>1.6.2</javax.mail.version>
