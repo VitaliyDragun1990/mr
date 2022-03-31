@@ -28,7 +28,7 @@
 		<libphonenumber.version>8.10.14</libphonenumber.version>
 		<joda-time.version>2.10.2</joda-time.version>
 		<sitemash.version>3.0.1</sitemash.version>
-		<spring.version>4.3.24.RELEASE</spring.version>
+		<spring.version>5.3.18</spring.version>
 		<spring-data-jpa.version>1.11.22.RELEASE</spring-data-jpa.version>
 		<spring-data-elasticsearch.version>2.1.22.RELEASE</spring-data-elasticsearch.version>
 		<spring-security.version>4.2.12.RELEASE</spring-security.version>
